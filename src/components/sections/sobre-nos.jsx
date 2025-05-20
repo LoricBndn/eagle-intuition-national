@@ -8,7 +8,7 @@ export default function SobreNos() {
       {/* Partie Image */}
       <div className="w-1/2 max-lg:w-full relative">
         <Image
-          src="images/sobrenos.png"
+          src="/images/sobrenos.png"
           alt="Sobre Nos Image"
           width={1200}
           height={675}

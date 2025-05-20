@@ -31,7 +31,7 @@ export default function Navbar() {
     <nav className="w-full h-20 default-p-x bg-white border-b border-[#E7DAED] flex justify-between items-center fixed z-90">
       {/* Logo */}
       <Link href={"/"}>
-        <Image src="images/Logo.png" alt="Logo" width={191} height={38} priority />
+        <Image src="/images/Logo.png" alt="Logo" width={191} height={38} priority />
       </Link>
 
       {/* Liens Grand Ecran */}

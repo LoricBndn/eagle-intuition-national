@@ -9,15 +9,15 @@ export default function Formação() {
   const [itemsPerPage, setItemsPerPage] = useState(3);
 
   const formacoes = [
-    { icon: "/icons/language.svg", title: "Cursos de Línguas" },
-    { icon: "/icons/tech.svg", title: "Tecnologia & Inovação" },
-    { icon: "/icons/teacher.svg", title: "Formação Pedagógica" },
-    { icon: "/icons/leadership.svg", title: "Gestão e Liderança" },
-    { icon: "/icons/marketing.svg", title: "Marketing Digital" },
-    { icon: "/icons/accounting.svg", title: "Contabilidade" },
-    { icon: "/icons/soft-skills.svg", title: "Soft Skills" },
-    { icon: "/icons/web-dev.svg", title: "Desenvolvimento Web" },
-    { icon: "/icons/business-language.svg", title: "Idiomas para Negócios" },
+    { icon: "icons/language.svg", title: "Cursos de Línguas" },
+    { icon: "icons/tech.svg", title: "Tecnologia & Inovação" },
+    { icon: "icons/teacher.svg", title: "Formação Pedagógica" },
+    { icon: "icons/leadership.svg", title: "Gestão e Liderança" },
+    { icon: "icons/marketing.svg", title: "Marketing Digital" },
+    { icon: "icons/accounting.svg", title: "Contabilidade" },
+    { icon: "icons/soft-skills.svg", title: "Soft Skills" },
+    { icon: "icons/web-dev.svg", title: "Desenvolvimento Web" },
+    { icon: "icons/business-language.svg", title: "Idiomas para Negócios" },
   ];
 
   useEffect(() => {

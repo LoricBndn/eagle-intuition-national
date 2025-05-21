@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Newsletter {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Image {
+  id                  Int             @id @default(autoincrement())
+  url                 String
+  postId              Int?
+  post                Post?           @relation(fields: [postId], references: [id])
+  courseIcon          Course?         @relation("CourseIcon")
+  erasmusCourseImage  ErasmusCourse?  @relation("ErasmusCourseImage")
+  erasmusProjectImage ErasmusProject? @relation("ErasmusProjectImage")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  date        DateTime @default(now())
+  iconId      Int      @unique
+  icon        Image    @relation("CourseIcon", fields: [iconId], references: [id])
+}
+
+model ErasmusCourse {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  content     String
+  date        DateTime @default(now())
+  imageId     Int      @unique
+  image       Image    @relation("ErasmusCourseImage", fields: [imageId], references: [id])
+}
+
+model ErasmusProject {
+  id      Int      @id @default(autoincrement())
+  title   String
+  url     String
+  date    DateTime @default(now())
+  imageId Int      @unique
+  image   Image    @relation("ErasmusProjectImage", fields: [imageId], references: [id])
+}
+
+model Post {
+  id       Int      @id @default(autoincrement())
+  title    String
+  category String
+  content  String
+  date     DateTime @default(now())
+  images   Image[] // One-to-many: one post → many images
+}
+
+model Video {
+  id    Int    @id @default(autoincrement())
+  title String
+  url   String
+  date  DateTime @default(now())
+}

@@ -4,11 +4,16 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import FormaçãoCard from "@/components/cards/formação-card";
 
-export default function Formação() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+interface FormaçãoItem {
+  icon: string;
+  title: string;
+}
 
-  const formacoes = [
+export default function Formação() {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(3);
+
+  const formacoes: FormaçãoItem[] = [
     { icon: "/icons/language.svg", title: "Cursos de Línguas" },
     { icon: "/icons/tech.svg", title: "Tecnologia & Inovação" },
     { icon: "/icons/teacher.svg", title: "Formação Pedagógica" },
@@ -39,8 +44,8 @@ export default function Formação() {
     );
   };
 
-  const getVisibleItems = () => {
-    const items = [];
+  const getVisibleItems = (): FormaçãoItem[] => {
+    const items: FormaçãoItem[] = [];
     for (let i = 0; i < itemsPerPage; i++) {
       const index = (currentIndex + i) % formacoes.length;
       items.push(formacoes[index]);
@@ -54,6 +59,7 @@ export default function Formação() {
         <button
           className="w-8 h-8 rounded-full mr-4 cursor-pointer"
           onClick={handlePrev}
+          aria-label="Previous"
         >
           <ChevronLeft className="w-8 h-8 text-primary" />
         </button>
@@ -69,8 +75,8 @@ export default function Formação() {
         <button
           className="w-8 h-8 rounded-full ml-4 cursor-pointer"
           onClick={handleNext}
+          aria-label="Next"
         >
-          {" "}
           <ChevronRight className="w-8 h-8 text-primary" />
         </button>
       </div>

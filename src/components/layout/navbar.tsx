@@ -5,8 +5,13 @@ import Image from "next/image";
 import Button from "@/components/ui/button";
 import { useState } from "react";
 
+interface NavLink {
+  title: string;
+  link: string;
+}
+
 export default function Navbar() {
-  const navLinks = [
+  const navLinks: NavLink[] = [
     {
       title: "Home",
       link: "/",
@@ -25,7 +30,7 @@ export default function Navbar() {
     },
   ];
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <nav className="w-full h-20 default-p-x bg-white border-b border-[#E7DAED] flex justify-between items-center fixed z-90">

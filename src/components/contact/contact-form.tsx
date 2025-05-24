@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Title from "@/components/ui/title";
 import { Button } from "@/components/ui/button";
 import {

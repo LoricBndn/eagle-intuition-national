@@ -18,7 +18,7 @@ export default function Navbar() {
     },
     {
       title: "Formação",
-      link: "/formação",
+      link: "/formacao",
     },
     {
       title: "Erasmus +",
@@ -26,7 +26,7 @@ export default function Navbar() {
     },
     {
       title: "Notícias",
-      link: "/notícias",
+      link: "/noticias",
     },
   ];
 

@@ -72,7 +72,7 @@ export default function Footer() {
           <div className="w-fit">
             <Link href={"/"}>
               <Image
-                src="/logo.png"
+                src="/images/Logo.png"
                 alt="Logo"
                 width={191}
                 height={38}

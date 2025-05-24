@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Title from "@/components/ui/title";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function SobreNos() {
   return (

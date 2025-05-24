@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import FormaçãoCard from "@/components/cards/formação-card";
+import CourseCard from "@/components/course/course-card";
 
-interface FormaçãoItem {
+interface CourseItem {
   icon: string;
   title: string;
 }
 
-export default function Formação() {
+export default function Course() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [itemsPerPage, setItemsPerPage] = useState<number>(3);
 
-  const formacoes: FormaçãoItem[] = [
+  const formacoes: CourseItem[] = [
     { icon: "/icons/language.svg", title: "Cursos de Línguas" },
     { icon: "/icons/tech.svg", title: "Tecnologia & Inovação" },
     { icon: "/icons/teacher.svg", title: "Formação Pedagógica" },
@@ -44,8 +44,8 @@ export default function Formação() {
     );
   };
 
-  const getVisibleItems = (): FormaçãoItem[] => {
-    const items: FormaçãoItem[] = [];
+  const getVisibleItems = (): CourseItem[] => {
+    const items: CourseItem[] = [];
     for (let i = 0; i < itemsPerPage; i++) {
       const index = (currentIndex + i) % formacoes.length;
       items.push(formacoes[index]);
@@ -69,7 +69,7 @@ export default function Formação() {
           }`}
         >
           {getVisibleItems().map((item, index) => (
-            <FormaçãoCard key={index} icon={item.icon} title={item.title} />
+            <CourseCard key={index} icon={item.icon} title={item.title} />
           ))}
         </div>
         <button

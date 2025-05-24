@@ -1,13 +1,15 @@
-import Hero from "@/components/sections/hero";
-import SobreNos from "@/components/sections/sobre-nos";
-import Formação from "@/components/sections/formação";
+import Hero from "@/components/home/hero";
+import SobreNos from "@/components/home/sobre-nos";
+import Course from "@/components/course/course";
+import Post from "@/components/post/post";
 
 export default function Home() {
   return (
     <div>
       <Hero />
       <SobreNos />
-      <Formação />
+      <Course />
+      <Post />
     </div>
   );
 }

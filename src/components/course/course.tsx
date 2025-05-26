@@ -54,7 +54,7 @@ export default function Course() {
   };
 
   return (
-    <div className="bg-secondary w-full default-p-x default-p-y flex justify-center items-center">
+    <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
       <div className="max-w-6xl w-full flex items-center">
         <button
           className="w-8 h-8 rounded-full mr-4 cursor-pointer"

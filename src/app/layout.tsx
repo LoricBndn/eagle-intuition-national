@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
+import LayoutContent from '@/components/layout/layout-content';
 
 export const metadata: Metadata = {
   title: "Eagle Intuition",
@@ -10,13 +9,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt">
       <body>
-        {children}
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
   );

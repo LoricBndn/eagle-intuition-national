@@ -13,7 +13,7 @@ type LinkGroup = {
 
 const LINKS: LinkGroup[] = [
   {
-    title: "Mapa do sítio",
+    title: "Mapa",
     items: [
       { label: "Home", href: "#" },
       { label: "Formação", href: "#" },
@@ -23,7 +23,7 @@ const LINKS: LinkGroup[] = [
     ],
   },
   {
-    title: "Socials",
+    title: "Redes Sociais",
     items: [
       {
         label: "Facebook",
@@ -52,7 +52,7 @@ const LINKS: LinkGroup[] = [
     ],
   },
   {
-    title: "Head Office",
+    title: "Sede",
     items: [
       {
         label:
@@ -85,7 +85,7 @@ export default function Footer() {
               <ul
                 key={title}
                 className={
-                  title === "Head Office"
+                  title === "Sede"
                     ? "md:col-span-1 sm:col-span-2 col-span-full"
                     : ""
                 }
@@ -111,7 +111,7 @@ export default function Footer() {
                     )}
                   </li>
                 ))}
-                {title === "Head Office" && (
+                {title === "Sede" && (
                   <li className="mt-6">
                     <h4 className="mb-2 text-sm font-semibold text-title">
                       Newsletter
@@ -119,14 +119,14 @@ export default function Footer() {
                     <form className="flex flex-col gap-2">
                       <input
                         type="email"
-                        placeholder="Votre email"
+                        placeholder="Subscrever"
                         className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                       <button
                         type="submit"
                         className="rounded-md bg-primary px-3 py-2 text-sm text-white cursor-pointer"
                       >
-                        S'inscrire
+                        Subscrever
                       </button>
                     </form>
                   </li>

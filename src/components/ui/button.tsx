@@ -2,16 +2,28 @@ import Link from "next/link";
 
 interface ButtonProps {
   text: string;
-  link: string;
+  link?: string;
+  type?: 'button' | 'submit';
   className?: string;
 }
 
-export function Button({ text, link, className = "" }: ButtonProps) {
+export default function Button({ text, link, type = 'button', className = '' }: ButtonProps) {
+  const baseClass = `${className} text-white bg-primary cursor-pointer py-2 px-6 rounded-md`;
+
+  if (link) {
+    return (
+      <Link href={link}>
+        <button className={baseClass} type="button">
+          {text}
+        </button>
+      </Link>
+    );
+  }
+
   return (
-    <Link href={link}>
-      <button className={`${className} text-white bg-primary cursor-pointer py-2 px-6 rounded-md`}>
-        {text}
-      </button>
-    </Link>
+    <button type={type} className={baseClass}>
+      {text}
+    </button>
   );
 }
+

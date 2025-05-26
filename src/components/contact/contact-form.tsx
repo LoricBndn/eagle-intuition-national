@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Title from "@/components/ui/title";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import {
   MapPin,
   Phone,

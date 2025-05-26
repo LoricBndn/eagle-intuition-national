@@ -1,7 +1,7 @@
 import postsData from "@/data/posts.js";
 import Posts from "@/components/post/posts";
 import Title from "@/components/ui/title";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 
 export default function Post() {
   return (

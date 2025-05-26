@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import { useState } from "react";
 
 interface NavLink {
@@ -15,10 +15,6 @@ export default function Navbar() {
     {
       title: "Home",
       link: "/",
-    },
-    {
-      title: "Formação",
-      link: "/formacao",
     },
     {
       title: "Erasmus +",
@@ -39,7 +35,7 @@ export default function Navbar() {
         <Image src="/images/Logo.png" alt="Logo" width={191} height={38} priority />
       </Link>
 
-      {/* Liens Grand Ecran */}
+      {/* Big Screen Links */}
       <ul className="hidden lg:flex items-center gap-6">
         {navLinks.map((navLink) => (
           <li className="text-title" key={navLink.link}>
@@ -48,10 +44,10 @@ export default function Navbar() {
         ))}
       </ul>
 
-      {/* Bouton Contact Grand Ecran */}
+      {/* Contact button Large Screen */}
       <Button className="hidden lg:flex" text="Contactos" link="/contactos" />
 
-      {/* Icone Menu déroulant */}
+      {/* Icon Drop-down menu */}
       <div
         className="lg:hidden cursor-pointer space-y-1.5"
         onClick={() => {
@@ -63,7 +59,7 @@ export default function Navbar() {
         <span className="block h-0.5 w-6 bg-primary"></span>
       </div>
 
-      {/* Liens Petit écran (menu déroulant) */}
+      {/* Small Screen Links (Drop-down menu) */}
       <ul
         className={`${
           isOpen ? "flex" : "hidden"

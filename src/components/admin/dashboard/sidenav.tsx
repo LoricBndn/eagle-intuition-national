@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import NavLinks from '@/components/admin/dashboard/nav-links';
-import AcmeLogo from '@/components/admin/acme-logo';
+import EagleIntuitionLogo from '@/components/admin/eagle-intuition-logo';
 
 export default function SideNav() {
   return (
@@ -10,7 +10,7 @@ export default function SideNav() {
         href="/"
       >
         <div className="w-32 text-white md:w-40">
-          <AcmeLogo />
+          <EagleIntuitionLogo />
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">

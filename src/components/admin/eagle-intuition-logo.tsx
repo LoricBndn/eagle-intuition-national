@@ -1,6 +1,6 @@
 import { Globe } from 'lucide-react';
 
-export default function AcmeLogo() {
+export default function EagleIntuitionLogo() {
   return (
     <div
       className={`flex flex-row items-center gap-2 leading-none text-white`}

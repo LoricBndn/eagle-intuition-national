@@ -2,6 +2,9 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+  "seed": "ts-node prisma/seed.ts"
+},
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -10,15 +13,20 @@
     "seed": "ts-node seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@prisma/client": "^6.8.2",
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
+    "postgre": "^0.1.8",
+    "postgres": "^3.4.7",
     "prisma": "^6.8.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "^10.0.4",
+    "uuid": "^11.1.0",
+    "zod": "^3.25.30"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

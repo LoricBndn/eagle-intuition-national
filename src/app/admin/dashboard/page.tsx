@@ -1,6 +1,3 @@
-import { Card } from '@/components/admin/dashboard/cards';
-import RevenueChart from '@/components/admin/dashboard/revenue-chart';
-import LatestInvoices from '@/components/admin/dashboard/latest-invoices';
 
 export default async function Page() {
   return (

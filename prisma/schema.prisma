@@ -23,8 +23,6 @@ model Newsletter {
 model Course {
   id          String   @id @default(uuid())
   title       String
-  description String
-  active      Boolean
   createdAt   DateTime @default(now())
   iconUrl     String   @unique
 }

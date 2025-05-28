@@ -6,7 +6,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/ui/button';
 import { updateCourse, State } from '@/lib/actions';
 import { useActionState } from 'react';
 

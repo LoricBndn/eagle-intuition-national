@@ -13,9 +13,8 @@ interface Post {
   title: string;
   category: string;
   content: string;
-  date: string;
-  images: { [key: string]: any }[];
-  link?: string;
+  createdAt: string;
+  imagesUrl: string[];
 }
 
 export default function Page() {

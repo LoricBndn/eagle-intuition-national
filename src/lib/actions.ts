@@ -9,22 +9,16 @@ const prisma = new PrismaClient();
 
 const CourseSchema = z.object({
   title: z.string().min(1, 'Course title is required.'),
-  description: z.string().min(1, 'Course description is required.'),
-  active: z.boolean(),
-  iconId: z.string().uuid('iconId must be a valid UUID'),
+  iconUrl: z.string().url('Icon must be a valid URL.'),
 });
 
 const PostSchema = z.object({
   title: z.string().min(1, 'Post title is required.'),
   content: z.string().min(1, 'Post content is required.'),
+  imagesUrl: z
+    .array(z.string().url('Each image must be a valid URL.'))
+    .min(1, 'At least one image is required.'),
 });
-
-function parseBoolean(value: FormDataEntryValue | null): boolean {
-  if (typeof value === 'string') {
-    return value === 'true' || value === 'on';
-  }
-  return false;
-}
 
 function parseString(value: FormDataEntryValue | null): string | null {
   if (typeof value === 'string' && value.trim() !== '') {
@@ -33,12 +27,16 @@ function parseString(value: FormDataEntryValue | null): string | null {
   return null;
 }
 
+function parseStringArray(values: FormDataEntryValue[] | null): string[] {
+  return (values ?? []).filter(
+    (val): val is string => typeof val === 'string' && val.trim() !== ''
+  );
+}
+
 export async function createCourse(formData: FormData) {
   const data = {
     title: parseString(formData.get('title')),
-    description: parseString(formData.get('description')),
-    active: parseBoolean(formData.get('active')),
-    iconId: parseString(formData.get('iconId')),
+    iconUrl: parseString(formData.get('iconUrl')),
   };
 
   const validated = CourseSchema.safeParse(data);
@@ -50,14 +48,12 @@ export async function createCourse(formData: FormData) {
     };
   }
 
-  const { title, description, active, iconId } = validated.data;
+  const { title, iconUrl } = validated.data;
 
   await prisma.course.create({
     data: {
       title,
-      description,
-      active,
-      iconId,
+      iconUrl,
     },
   });
 
@@ -68,9 +64,7 @@ export async function createCourse(formData: FormData) {
 export async function updateCourse(id: string, formData: FormData) {
   const data = {
     title: parseString(formData.get('title')),
-    description: parseString(formData.get('description')),
-    active: parseBoolean(formData.get('active')),
-    iconId: parseString(formData.get('iconId')),
+    iconUrl: parseString(formData.get('iconUrl')),
   };
 
   const validated = CourseSchema.safeParse(data);
@@ -82,15 +76,13 @@ export async function updateCourse(id: string, formData: FormData) {
     };
   }
 
-  const { title, description, active, iconId } = validated.data;
+  const { title, iconUrl } = validated.data;
 
   await prisma.course.update({
     where: { id },
     data: {
       title,
-      description,
-      active,
-      iconId,
+      iconUrl,
     },
   });
 
@@ -109,6 +101,7 @@ export async function createPost(formData: FormData) {
   const data = {
     title: parseString(formData.get('title')),
     content: parseString(formData.get('content')),
+    imagesUrl: parseStringArray(formData.getAll('imagesUrl')),
   };
 
   const validated = PostSchema.safeParse(data);
@@ -120,13 +113,14 @@ export async function createPost(formData: FormData) {
     };
   }
 
-  const { title, content } = validated.data;
+  const { title, content, imagesUrl } = validated.data;
 
   await prisma.post.create({
     data: {
       title,
       content,
-      category: 'Web',  // majuscule pour l'enum
+      imagesUrl,
+      category: 'Web',
     },
   });
 
@@ -138,6 +132,7 @@ export async function updatePost(id: string, formData: FormData) {
   const data = {
     title: parseString(formData.get('title')),
     content: parseString(formData.get('content')),
+    imagesUrl: parseStringArray(formData.getAll('imagesUrl')),
   };
 
   const validated = PostSchema.safeParse(data);
@@ -149,13 +144,14 @@ export async function updatePost(id: string, formData: FormData) {
     };
   }
 
-  const { title, content } = validated.data;
+  const { title, content, imagesUrl } = validated.data;
 
   await prisma.post.update({
     where: { id },
     data: {
       title,
       content,
+      imagesUrl,
       category: 'Web',
     },
   });

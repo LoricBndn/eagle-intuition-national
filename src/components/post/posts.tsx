@@ -7,9 +7,8 @@ interface Post {
   title: string;
   category: string;
   content: string;
-  date: string;
-  images: { [key: string]: any }[];
-  link?: string;
+  createdAt: string;
+  images: string[];
 }
 
 interface PostsProps {

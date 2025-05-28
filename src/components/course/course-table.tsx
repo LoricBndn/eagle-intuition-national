@@ -51,9 +51,6 @@ export default async function CoursesTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Course
                 </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -72,8 +69,6 @@ export default async function CoursesTable({
                     />
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">{course.title}</td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateCourse id={course.id} />

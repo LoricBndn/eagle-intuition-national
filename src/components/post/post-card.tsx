@@ -1,5 +1,5 @@
-import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "@/components/ui/button";
 
 interface PostCardProps {
@@ -22,11 +22,7 @@ export default function PostCard({
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
       <Link href={id}>
-        <img
-          className="rounded-t-lg w-full h-48 object-cover cursor-pointer"
-          src={images[0] || ""}
-          alt={title}
-        />
+        <Image src={images[0]} alt={title} width={300} height={200} className="rounded-t-lg w-full h-48 object-cover cursor-pointer"/>
       </Link>
       <div className="p-5">
         <p className="text-sm font-semibold text-primary mb-1">{category}</p>

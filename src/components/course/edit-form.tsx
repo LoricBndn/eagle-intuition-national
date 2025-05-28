@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import Button from '@/components/ui/button';
 import { updateCourse, CourseState } from '@/lib/actions';
 import { useActionState } from 'react';
@@ -74,7 +75,7 @@ export default function EditCourseForm({
         <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
           Current icon preview:
           {/* Ici tu peux charger dynamiquement l'image via URL */}
-          <img src={course.iconUrl} alt="Current icon" className="h-5 w-5" />
+          <Image src={course.iconUrl} alt={course.title} width={300} height={200} />
         </div>
       </div>
 

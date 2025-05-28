@@ -72,7 +72,7 @@ export default function CreateCourseForm() {
 
       {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
-        <Button text="Cancel" link="/admin/dashboard/formacao" className="bg-gray-100 text-gray-600 hover:bg-gray-200" />
+        <Button text="Cancel" link="/admin/dashboard/courses" className="bg-gray-100 text-gray-600 hover:bg-gray-200" />
         <Button text="Create Course" type="submit" />
       </div>
     </form>

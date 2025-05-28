@@ -61,7 +61,7 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
       skip: offset,
       take: itemsPerPage,
       include: {
-        images: {
+        icon: {
           select: {
             url: true,
           },

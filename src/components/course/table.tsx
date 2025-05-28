@@ -27,7 +27,7 @@ export default async function CoursesTable({
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={course.iconId}
+                        src={course.icon.url}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
@@ -35,7 +35,6 @@ export default async function CoursesTable({
                       />
                       <p>{course.title}</p>
                     </div>
-                    <CourseStatus status={course.active} />
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateCourse id={course.id} />
@@ -70,7 +69,7 @@ export default async function CoursesTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <Image
-                      src={course.iconId}
+                      src={course.icon.url}
                       className="rounded-full"
                       width={28}
                       height={28}
@@ -79,7 +78,6 @@ export default async function CoursesTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">{course.title}</td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <CourseStatus status={course.active} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

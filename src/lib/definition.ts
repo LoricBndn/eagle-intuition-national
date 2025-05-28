@@ -1,163 +1,52 @@
 export type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password: string;
 };
 
 export type Newsletter = {
-  id: number;
+  id: string;
   email: string;
   createdAt: string;
 };
 
-export type Image = {
-  id: number;
-  url: string;
-  postId?: number;
-  courseIconId?: number;
-  erasmusCourseImageId?: number;
-  erasmusProjectImageId?: number;
-};
-
-export type Post = {
-  id: number;
-  title: string;
-  category: string;
-  content: string;
-  date: string;
-  images: Image[];
-};
-
 export type Course = {
-  id: number;
+  id: string;
   title: string;
-  description: string;
-  date: string;
-  iconId: number;
-  icon: Image;
-};
-
-export type Revenue = {
-  month: string;
-  revenue: number;
-};
-
-export type LatestCourse = {
-  id: number;
-  title: string;
-  image_url: string;
-  description: string;
-  date: string;
-};
-
-export type LatestCourseRaw = Omit<LatestCourse, 'date'> & {
-  date: Date;
-};
-
-export type CoursesTable = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  iconId: number;
+  createdAt: string;
   iconUrl: string;
 };
 
-export type PostsTableType = {
-  id: number;
+export type Post = {
+  id: string;
   title: string;
-  category: string;
-  date: string;
-  imageCount: number;
-};
-
-export type FormattedPostsTable = {
-  id: number;
-  title: string;
-  category: string;
-  date: string;
-  imageCount: number;
-};
-
-export type PostField = {
-  id: number;
-  title: string;
-};
-
-export type CourseForm = {
-  id: number;
-  title: string;
-  description: string;
-  iconId: number;
+  category: 'Web' | 'Facebook';
+  content: string;
+  createdAt: string;
+  imagesUrl: string[];
 };
 
 export type ErasmusCourse = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   content: string;
-  date: string;
-  imageId: number;
-  image: Image;
-};
-
-export type ErasmusCourseTable = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
+  createdAt: string;
   imageUrl: string;
-};
-
-export type ErasmusCourseForm = {
-  id: number;
-  title: string;
-  description: string;
-  content: string;
-  imageId: number;
 };
 
 export type ErasmusProject = {
-  id: number;
+  id: string;
   title: string;
   url: string;
-  date: string;
-  imageId: number;
-  image: Image;
-};
-
-export type ErasmusProjectTable = {
-  id: number;
-  title: string;
-  url: string;
-  date: string;
+  createdAt: string;
   imageUrl: string;
 };
 
-export type ErasmusProjectForm = {
-  id: number;
-  title: string;
-  url: string;
-  imageId: number;
-};
-
 export type Video = {
-  id: number;
+  id: string;
   title: string;
   url: string;
-  date: string;
-};
-
-export type VideoTable = {
-  id: number;
-  title: string;
-  url: string;
-  date: string;
-};
-
-export type VideoForm = {
-  id: number;
-  title: string;
-  url: string;
+  createdAt: string;
 };

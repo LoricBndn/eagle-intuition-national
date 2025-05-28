@@ -3,7 +3,13 @@ import Breadcrumbs from '@/components/admin/breadcrumbs';
 import { fetchCourseById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default async function Page({ params }: Props) {
   const course = await fetchCourseById(params.id);
 
   if (!course) {

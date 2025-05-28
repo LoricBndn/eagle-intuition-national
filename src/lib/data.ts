@@ -38,12 +38,6 @@ export async function fetchCourseById(id: string) {
   return await prisma.course.findUnique({ where: { id } });
 }
 
-export async function fetchCourseActive() {
-  return await prisma.course.findMany({
-    where: { active: true },
-  });
-}
-
 export async function fetchFilteredCourses(query: string, currentPage: number, itemsPerPage = 6) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -53,20 +47,12 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
         ? {
             OR: [
               { title: { contains: query, mode: 'insensitive' } },
-              { description: { contains: query, mode: 'insensitive' } },
             ],
           }
         : {},
       orderBy: { title: 'asc' },
       skip: offset,
       take: itemsPerPage,
-      include: {
-        icon: {
-          select: {
-            url: true,
-          },
-        },
-      },
     });
 
     return courses;
@@ -78,17 +64,16 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
 
 export async function fetchCoursesPages(query: string, itemsPerPage = 10): Promise<number> {
   const where: Prisma.CourseWhereInput = query
-  ? {
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-      ],
-    }
-  : {};
+    ? {
+        OR: [
+          { title: { contains: query, mode: 'insensitive' } },
+        ],
+      }
+    : {};
 
   const totalCourses = await prisma.course.count({ where });
   return Math.ceil(totalCourses / itemsPerPage);
-} 
+}
 
 // Erasmus Courses
 export async function fetchErasmusCourses() {
@@ -136,7 +121,7 @@ export async function fetchFilteredPosts(query: string, currentPage: number, ite
             ],
           }
         : {},
-      orderBy: { date: 'desc' },
+      orderBy: { createdAt: 'desc' },
       skip: offset,
       take: itemsPerPage,
     });
@@ -146,13 +131,4 @@ export async function fetchFilteredPosts(query: string, currentPage: number, ite
     console.error('Database Error:', error);
     throw new Error('Failed to fetch filtered posts.');
   }
-}
-
-// Images
-export async function fetchImages() {
-  return await prisma.image.findMany();
-}
-
-export async function fetchImageById(id: string) {
-  return await prisma.image.findUnique({ where: { id } });
 }

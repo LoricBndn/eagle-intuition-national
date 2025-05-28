@@ -1,6 +1,7 @@
 import Pagination from '@/components/ui/pagination';
 import Search from '@/components/ui/search';
-import CourseTable from '@/components/course/table';
+import CourseTable from '@/components/course/course-table';
+import { CreateCourse} from '@/components/course/buttons';
 import { CourseSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchCoursesPages } from '@/lib/data';
@@ -28,8 +29,7 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search courses..." />
-        {/* Bouton pour créer un nouveau cours à créer si besoin */}
-        {/* <CreateCourse /> */}
+        <CreateCourse />
       </div>
       <Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
         <CourseTable query={query} currentPage={currentPage} />

@@ -43,16 +43,17 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
 
   try {
     const courses = await prisma.course.findMany({
-      where: query
-        ? {
-            OR: [
-              { title: { contains: query, mode: 'insensitive' } },
-            ],
-          }
-        : {},
-      orderBy: { title: 'asc' },
+      where: {
+        title: {
+          contains: query,
+          mode: 'insensitive',
+        },
+      },
       skip: offset,
       take: itemsPerPage,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return courses;
@@ -62,14 +63,15 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
   }
 }
 
-export async function fetchCoursesPages(query: string, itemsPerPage = 10): Promise<number> {
-  const where: Prisma.CourseWhereInput = query
+export async function fetchCoursesPages(query: string, itemsPerPage = 10) {
+  const where: Prisma.CourseWhereInput | undefined = query?.trim()
     ? {
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-        ],
+            title: {
+              contains: query,
+              mode: 'insensitive',
+            },
       }
-    : {};
+    : undefined;
 
   const totalCourses = await prisma.course.count({ where });
   return Math.ceil(totalCourses / itemsPerPage);

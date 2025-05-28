@@ -20,6 +20,23 @@ const PostSchema = z.object({
     .min(1, 'At least one image is required.'),
 });
 
+export type CourseState = {
+  errors?: {
+    title?: string[];
+    iconUrl?: string[];
+  };
+  message?: string | null;
+};
+
+export type PostState = {
+  errors?: {
+    title?: string[];
+    content?: string[];
+    imagesUrl?: string[];
+  };
+  message?: string | null;
+};
+
 function parseString(value: FormDataEntryValue | null): string | null {
   if (typeof value === 'string' && value.trim() !== '') {
     return value;
@@ -33,7 +50,9 @@ function parseStringArray(values: FormDataEntryValue[] | null): string[] {
   );
 }
 
-export async function createCourse(formData: FormData) {
+// -------------------- COURSE --------------------
+
+export async function createCourse(prevState: CourseState, formData: FormData): Promise<CourseState> {
   const data = {
     title: parseString(formData.get('title')),
     iconUrl: parseString(formData.get('iconUrl')),
@@ -61,7 +80,7 @@ export async function createCourse(formData: FormData) {
   redirect('/admin/dashboard/courses');
 }
 
-export async function updateCourse(id: string, formData: FormData) {
+export async function updateCourse(id: string, prevState: CourseState, formData: FormData): Promise<CourseState> {
   const data = {
     title: parseString(formData.get('title')),
     iconUrl: parseString(formData.get('iconUrl')),
@@ -97,7 +116,7 @@ export async function deleteCourse(id: string) {
 
 // -------------------- POSTS --------------------
 
-export async function createPost(formData: FormData) {
+export async function createPost(prevState: PostState, formData: FormData): Promise<PostState> {
   const data = {
     title: parseString(formData.get('title')),
     content: parseString(formData.get('content')),
@@ -128,7 +147,7 @@ export async function createPost(formData: FormData) {
   redirect('/admin/dashboard/posts');
 }
 
-export async function updatePost(id: string, formData: FormData) {
+export async function updatePost(id: string, prevState: PostState, formData: FormData): Promise<PostState> {
   const data = {
     title: parseString(formData.get('title')),
     content: parseString(formData.get('content')),

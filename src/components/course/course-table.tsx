@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { UpdateCourse, DeleteCourse } from "@/components/course/buttons";
-import CourseStatus from "@/components/course/status";
-import { formatDateToLocal, formatCurrency } from "@/lib/utils";
 import { fetchFilteredCourses } from "@/lib/data";
 
 export default async function CoursesTable({
@@ -27,7 +25,7 @@ export default async function CoursesTable({
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={course.icon.url}
+                        src={course.iconUrl}
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
@@ -53,9 +51,6 @@ export default async function CoursesTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Course
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -69,7 +64,7 @@ export default async function CoursesTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <Image
-                      src={course.icon.url}
+                      src={course.iconUrl}
                       className="rounded-full"
                       width={28}
                       height={28}

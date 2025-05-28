@@ -21,10 +21,10 @@ model Newsletter {
 }
 
 model Course {
-  id          String   @id @default(uuid())
-  title       String
-  createdAt   DateTime @default(now())
-  iconUrl     String   @unique
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  iconUrl   String   @unique
 }
 
 enum Category {

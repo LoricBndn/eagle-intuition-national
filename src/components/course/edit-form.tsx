@@ -1,10 +1,5 @@
 'use client';
 
-import {
-  BookOpen,
-  CheckCircle,
-  XCircle,
-} from 'lucide-react';
 import Link from 'next/link';
 import Button from '@/components/ui/button';
 import { updateCourse, CourseState } from '@/lib/actions';

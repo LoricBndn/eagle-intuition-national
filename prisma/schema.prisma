@@ -20,24 +20,13 @@ model Newsletter {
   createdAt DateTime @default(now())
 }
 
-model Image {
-  id                  String          @id @default(uuid())
-  url                 String
-  postId              String?
-  post                Post?           @relation(fields: [postId], references: [id])
-  courseIcon          Course?         @relation("CourseIcon")
-  erasmusCourseImage  ErasmusCourse?  @relation("ErasmusCourseImage")
-  erasmusProjectImage ErasmusProject? @relation("ErasmusProjectImage")
-}
-
 model Course {
   id          String   @id @default(uuid())
   title       String
   description String
   active      Boolean
-  date        DateTime @default(now())
-  iconId      String   @unique
-  icon        Image    @relation("CourseIcon", fields: [iconId], references: [id])
+  createdAt   DateTime @default(now())
+  iconUrl     String   @unique
 }
 
 model ErasmusCourse {
@@ -45,18 +34,16 @@ model ErasmusCourse {
   title       String
   description String
   content     String
-  date        DateTime @default(now())
-  imageId     String   @unique
-  image       Image    @relation("ErasmusCourseImage", fields: [imageId], references: [id])
+  createdAt   DateTime @default(now())
+  imageUrl    String   @unique
 }
 
 model ErasmusProject {
-  id      String   @id @default(uuid())
-  title   String
-  url     String
-  date    DateTime @default(now())
-  imageId String   @unique
-  image   Image    @relation("ErasmusProjectImage", fields: [imageId], references: [id])
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  createdAt DateTime @default(now())
+  imageUrl  String   @unique
 }
 
 enum Category {
@@ -65,17 +52,17 @@ enum Category {
 }
 
 model Post {
-  id       String   @id @default(uuid())
-  title    String
-  category Category
-  content  String
-  date     DateTime @default(now())
-  images   Image[]
+  id        String   @id @default(uuid())
+  title     String
+  category  Category
+  content   String
+  createdAt DateTime @default(now())
+  imagesUrl String[]
 }
 
 model Video {
-  id    String   @id @default(uuid())
-  title String
-  url   String
-  date  DateTime @default(now())
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  createdAt DateTime @default(now())
 }

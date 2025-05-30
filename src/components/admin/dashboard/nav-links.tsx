@@ -1,9 +1,10 @@
 'use client';
 
 import {
-  Users,
+  Newspaper,
   Home,
-  FileText,
+  GraduationCap,
+  Mails,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -14,9 +15,10 @@ const links = [
   {
     name: 'Courses',
     href: '/admin/dashboard/courses',
-    icon: FileText,
+    icon: GraduationCap,
   },
-  { name: 'Posts', href: '/admin/dashboard/posts', icon: Users },
+  { name: 'Posts', href: '/admin/dashboard/posts', icon: Newspaper },
+  { name: 'Newsletters', href: '/admin/dashboard/newsletters', icon: Mails },
 ];
 
 export default function NavLinks() {

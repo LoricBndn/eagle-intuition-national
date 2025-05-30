@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from '@/components/ui/button';
@@ -16,12 +17,24 @@ export default function EditCourseForm({
   };
 }) {
   const initialState: CourseState = { message: null, errors: {} };
-  const updateCourseWithId = updateCourse.bind(null, course.id);
-  const [state, formAction] = useActionState(updateCourseWithId, initialState);
+    const [state, formAction] = useActionState(updateCourse, initialState);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
 
   return (
     <form action={formAction}>
-      {/* ID caché si utile côté backend */}
       <input type="hidden" name="id" value={course.id} />
 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -48,37 +61,64 @@ export default function EditCourseForm({
           </div>
         </div>
 
-        {/* Icon URL input (obligatoire côté backend) */}
+        {/* Icon Upload */}
         <div className="mb-4">
-          <label htmlFor="iconUrl" className="mb-2 block text-sm font-medium">
-            Icon URL
+          <label htmlFor="icon" className="mb-2 block text-sm font-medium">
+            Upload New Icon Image
           </label>
           <input
-            id="iconUrl"
-            name="iconUrl"
-            type="text"
-            defaultValue={course.iconUrl}
-            placeholder="https://example.com/icon.svg"
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-            aria-describedby="iconUrl-error"
+            id="icon"
+            name="icon"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:rounded-md file:border-0
+              file:bg-secondary file:px-4 file:py-2
+              file:text-sm file:font-semibold
+              file:text-primary hover:file:bg-primary hover:file:text-white"
+            aria-describedby="icon-error"
           />
-          <div id="iconUrl-error" aria-live="polite" aria-atomic="true">
+          <div id="icon-error" aria-live="polite" aria-atomic="true">
             {state.errors?.iconUrl?.map((error) => (
               <p key={error} className="mt-2 text-sm text-red-500">
                 {error}
               </p>
             ))}
           </div>
+
+          {/* Image Preview */}
+          <div className="mt-4">
+            <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
+            <div className="border rounded-md p-2 bg-white max-w-sm">
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="h-32 w-auto rounded-md border border-gray-300 object-cover"
+                />
+              ) : (
+                <Image
+                  src={course.iconUrl}
+                  alt={course.title}
+                  width={300}
+                  height={200}
+                  className="rounded-md border border-gray-300 object-cover"
+                />
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Affichage visuel de l'icône (optionnel) */}
-        <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
-          Current icon preview:
-          {/* Ici tu peux charger dynamiquement l'image via URL */}
-          <Image src={course.iconUrl} alt={course.title} width={300} height={200} />
+        {/* Global Error */}
+        <div id="form-error" aria-live="polite" aria-atomic="true">
+          {state.message && (
+            <p className="mt-2 text-sm text-red-500">{state.message}</p>
+          )}
         </div>
       </div>
 
+      {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/admin/dashboard/courses"

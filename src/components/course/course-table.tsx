@@ -2,13 +2,6 @@ import Image from "next/image";
 import { UpdateCourse, DeleteCourse } from "@/components/course/buttons";
 import { fetchFilteredCourses } from "@/lib/data";
 
-interface Course {
-  id: string;
-  title: string;
-  createdAt: string;
-  iconUrl: string;
-}
-
 export default async function CoursesTable({
   query,
   currentPage,
@@ -23,7 +16,7 @@ export default async function CoursesTable({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {courses?.map((course: Course) => (
+            {courses?.map((course) => (
               <div
                 key={course.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -61,7 +54,7 @@ export default async function CoursesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {courses?.map((course: Course) => (
+              {courses?.map((course) => (
                 <tr
                   key={course.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"

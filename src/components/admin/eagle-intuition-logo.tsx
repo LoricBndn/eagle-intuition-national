@@ -1,12 +1,14 @@
-import { Globe } from 'lucide-react';
+import Image from 'next/image';
 
 export default function EagleIntuitionLogo() {
   return (
-    <div
-      className={`flex flex-row items-center gap-2 leading-none text-white`}
-    >
-      <Globe className="h-12 w-12 rotate-[15deg]" />
-      <p className="text-[36px]">Eagle Intuition</p>
-    </div>
+    <Image
+      src="/images/Logo_EI.png"
+      alt="Eagle Intuition Logo"
+      fill // pour que l'image remplisse le conteneur parent (qui doit être positionné)
+      style={{ objectFit: 'cover' }} // ou 'contain' selon rendu souhaité
+      sizes="(max-width: 768px) 128px, 160px" // responsive
+      className="rounded-md"
+    />
   );
 }

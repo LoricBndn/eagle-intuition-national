@@ -80,7 +80,7 @@ export default function EditPostForm({
           </label>
           <input
             id="images"
-            name="images"
+            name="imagesUrl"
             type="file"
             multiple
             accept="image/*"

@@ -4,12 +4,23 @@ import Course from "@/components/course/course";
 import Post from "@/components/post/post";
 import ContactForm from "@/components/contact/contact-form";
 
-export default function Home() {
+import { fetchCourses } from "@/lib/data"; // adapte selon ton projet
+
+export default async function Home() {
+  console.log(fetchCourses())
+  const coursesFromDb = await fetchCourses();
+
+const courses = coursesFromDb.map(({ iconUrl, ...rest }) => ({
+  ...rest,
+  icon: iconUrl,
+}));
+
+
   return (
     <div>
       <Hero />
       <SobreNos />
-      <Course />
+      <Course items={courses} />
       <Post />
       <ContactForm />
     </div>

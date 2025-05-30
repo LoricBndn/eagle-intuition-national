@@ -5,25 +5,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import CourseCard from "@/components/course/course-card";
 
 interface CourseItem {
-  icon: string;
+  id: string;
   title: string;
+  icon: string;
 }
 
-export default function Course() {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(3);
-
-  const formacoes: CourseItem[] = [
-    { icon: "/icons/language.svg", title: "Cursos de Línguas" },
-    { icon: "/icons/tech.svg", title: "Tecnologia & Inovação" },
-    { icon: "/icons/teacher.svg", title: "Formação Pedagógica" },
-    { icon: "/icons/leadership.svg", title: "Gestão e Liderança" },
-    { icon: "/icons/marketing.svg", title: "Marketing Digital" },
-    { icon: "/icons/accounting.svg", title: "Contabilidade" },
-    { icon: "/icons/soft-skills.svg", title: "Soft Skills" },
-    { icon: "/icons/web-dev.svg", title: "Desenvolvimento Web" },
-    { icon: "/icons/business-language.svg", title: "Idiomas para Negócios" },
-  ];
+export default function Course({ items }: { items: CourseItem[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,23 +24,23 @@ export default function Course() {
   }, []);
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % formacoes.length);
+    setCurrentIndex((prev) => (prev + 1) % items.length);
   };
 
   const handlePrev = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + formacoes.length) % formacoes.length
-    );
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
   };
 
-  const getVisibleItems = (): CourseItem[] => {
-    const items: CourseItem[] = [];
-    for (let i = 0; i < itemsPerPage; i++) {
-      const index = (currentIndex + i) % formacoes.length;
-      items.push(formacoes[index]);
-    }
-    return items;
-  };
+const getVisibleItems = (): CourseItem[] => {
+  const visible: CourseItem[] = [];
+  for (let i = 0; i < itemsPerPage; i++) {
+    const index = (currentIndex + i) % items.length;
+    const item = items[index];
+    console.log(`Course icon URL (index ${index}):`, item.icon); // <-- ajout ici
+    visible.push(item);
+  }
+  return visible;
+};
 
   return (
     <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">

@@ -33,7 +33,7 @@ export default function PostCard({
         </Link>
         <p className="mb-3 font-normal text-gray-700">{content.length > 100 ? content.slice(0, 100) + "..." : content}</p>
         <p className="text-xs text-gray-500 mb-3">{createdAt}</p>
-        <Button text="Read More" link={id} />
+        <Button text="Read More" link={`/noticias/${id}`} />
       </div>
     </div>
   );

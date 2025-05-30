@@ -3,7 +3,7 @@
 import PostCard from "@/components/post/post-card";
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
   category: string;
   content: string;

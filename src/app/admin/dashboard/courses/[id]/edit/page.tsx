@@ -3,12 +3,10 @@ import Breadcrumbs from '@/components/admin/breadcrumbs';
 import { fetchCourseById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
-export default async function Page(props: { id: string }) {
-  const course = await fetchCourseById(props.id);
+export default async function Page({ params }: { params: { id: string } }) {
+  const course = await fetchCourseById(params.id);
 
-  if (!course) {
-    notFound();
-  }
+  if (!course) notFound();
 
   return (
     <main>
@@ -17,7 +15,7 @@ export default async function Page(props: { id: string }) {
           { label: 'Courses', href: '/dashboard/courses' },
           {
             label: 'Edit Course',
-            href: `/dashboard/courses/${props.id}/edit`,
+            href: `/dashboard/courses/${params.id}/edit`,
             active: true,
           },
         ]}

@@ -13,10 +13,10 @@ const links = [
   { name: 'Home', href: '/admin/dashboard', icon: Home },
   {
     name: 'Formaçao',
-    href: '/admin/dashboard/formacao',
+    href: '/admin/dashboard/courses',
     icon: FileText,
   },
-  { name: 'Noticias', href: '/admin/dashboard/noticias', icon: Users },
+  { name: 'Noticias', href: '/admin/dashboard/posts', icon: Users },
 ];
 
 export default function NavLinks() {

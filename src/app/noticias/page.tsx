@@ -8,22 +8,13 @@ import Pagination from "@/components/ui/pagination";
 
 const POSTS_PER_PAGE = 9;
 
-interface Post {
-  id: number;
-  title: string;
-  category: string;
-  content: string;
-  createdAt: string;
-  imagesUrl: string[];
-}
-
 export default function Page() {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const query = searchParams.get("query")?.toLowerCase() || "";
   const category = searchParams.get("category") || "All";
 
-  const filteredPosts = (postsData as Post[]).filter((post) => {
+  const filteredPosts = postsData.filter((post) => {
     const matchesQuery = post.title.toLowerCase().includes(query);
     const matchesCategory = category === "All" || post.category === category;
     return matchesQuery && matchesCategory;

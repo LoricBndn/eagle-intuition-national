@@ -31,16 +31,30 @@ export default function Course({ items }: { items: CourseItem[] }) {
     setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
   };
 
-const getVisibleItems = (): CourseItem[] => {
-  const visible: CourseItem[] = [];
-  for (let i = 0; i < itemsPerPage; i++) {
-    const index = (currentIndex + i) % items.length;
-    const item = items[index];
-    console.log(`Course icon URL (index ${index}):`, item.icon); // <-- ajout ici
-    visible.push(item);
+  const getVisibleItems = (): CourseItem[] => {
+    if (items.length === 0) return [];
+    const visible: CourseItem[] = [];
+    for (let i = 0; i < itemsPerPage; i++) {
+      const index = (currentIndex + i) % items.length;
+      const item = items[index];
+      console.log(`Course icon URL (index ${index}):`, item.icon);
+      visible.push(item);
+    }
+    return visible;
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
+        <div className="max-w-6xl w-full flex justify-center">
+          <CourseCard
+            icon="/icons/ban.svg" // icône générique ou rien
+            title="Pas encore de cours"
+          />
+        </div>
+      </div>
+    );
   }
-  return visible;
-};
 
   return (
     <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">

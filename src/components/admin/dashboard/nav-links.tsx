@@ -12,11 +12,11 @@ import clsx from 'clsx';
 const links = [
   { name: 'Home', href: '/admin/dashboard', icon: Home },
   {
-    name: 'Formaçao',
+    name: 'Courses',
     href: '/admin/dashboard/courses',
     icon: FileText,
   },
-  { name: 'Noticias', href: '/admin/dashboard/posts', icon: Users },
+  { name: 'Posts', href: '/admin/dashboard/posts', icon: Users },
 ];
 
 export default function NavLinks() {

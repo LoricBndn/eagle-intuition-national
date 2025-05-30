@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma, Category } from '@prisma/client';
+import { PrismaClient, Prisma, Category } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -38,7 +38,11 @@ export async function fetchCourseById(id: string) {
   return await prisma.course.findUnique({ where: { id } });
 }
 
-export async function fetchFilteredCourses(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredCourses(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 6
+) {
   const offset = (currentPage - 1) * itemsPerPage;
 
   try {
@@ -46,35 +50,35 @@ export async function fetchFilteredCourses(query: string, currentPage: number, i
       where: {
         title: {
           contains: query,
-          mode: 'insensitive',
+          mode: "insensitive",
         },
       },
       skip: offset,
       take: itemsPerPage,
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
     return courses;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch filtered courses.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch filtered courses.");
   }
 }
 
-export async function fetchCoursesPages(query: string, itemsPerPage = 10) {
+export async function fetchCoursesPages(query: string, itemsPerPage = 6) {
   const where: Prisma.CourseWhereInput | undefined = query?.trim()
     ? {
-            title: {
-              contains: query,
-              mode: 'insensitive',
-            },
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
       }
     : undefined;
 
   const totalCourses = await prisma.course.count({ where });
-  return Math.ceil(totalCourses / itemsPerPage);
+  return Math.ceil(Number(totalCourses) / itemsPerPage);
 }
 
 // Erasmus Courses
@@ -110,7 +114,11 @@ export async function fetchPostsByCategory(category: Category) {
   });
 }
 
-export async function fetchFilteredPosts(query: string, currentPage: number, itemsPerPage = 9) {
+export async function fetchFilteredPosts(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 9
+) {
   const offset = (currentPage - 1) * itemsPerPage;
 
   try {
@@ -118,19 +126,19 @@ export async function fetchFilteredPosts(query: string, currentPage: number, ite
       where: query
         ? {
             OR: [
-              { title: { contains: query, mode: 'insensitive' } },
-              { content: { contains: query, mode: 'insensitive' } },
+              { title: { contains: query, mode: "insensitive" } },
+              { content: { contains: query, mode: "insensitive" } },
             ],
           }
         : {},
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       skip: offset,
       take: itemsPerPage,
     });
 
     return posts;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch filtered posts.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch filtered posts.");
   }
 }

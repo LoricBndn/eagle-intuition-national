@@ -18,7 +18,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
   const updatePage = (pageNumber: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", pageNumber.toString());
-    router.replace(`${pathname}?${params.toString()}#posts`);
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   const allPages = generatePagination(currentPage, totalPages);
@@ -60,19 +60,17 @@ export default function Pagination({ totalPages }: PaginationProps) {
   );
 }
 
-interface PaginationNumberProps {
-  page: number | "...";
-  onClick: () => void;
-  isActive: boolean;
-  position?: "first" | "last" | "middle" | "single";
-}
-
 function PaginationNumber({
   page,
   onClick,
   isActive,
   position,
-}: PaginationNumberProps) {
+}: {
+  page: number | string;
+  onClick: () => void;
+  position?: 'first' | 'last' | 'middle' | 'single';
+  isActive: boolean;
+}) {
   const className = clsx(
     "flex h-10 w-10 items-center justify-center text-sm border",
     {

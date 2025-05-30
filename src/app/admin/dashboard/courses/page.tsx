@@ -31,9 +31,10 @@ export default async function Page(props: {
         <Search placeholder="Search courses..." />
         <CreateCourse />
       </div>
-      <Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
-        <CourseTable query={query} currentPage={currentPage} />
-      </Suspense>
+<Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
+  <CourseTable query={query} currentPage={currentPage} />
+</Suspense>
+
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Button from "@/components/ui/button";
 import { createCourse, CourseState } from "@/lib/actions";
 import { useActionState } from "react";
-import { BookOpen, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 
 export default function CreateCourseForm() {
   const initialState: CourseState = { message: null, errors: {} };

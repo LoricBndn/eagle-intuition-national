@@ -20,49 +20,6 @@ export async function fetchNewsletterById(id: string) {
   return await prisma.newsletter.findUnique({ where: { id } });
 }
 
-export async function fetchFilteredNewsletters(
-  query: string,
-  currentPage: number,
-  itemsPerPage = 6
-) {
-  const offset = (currentPage - 1) * itemsPerPage;
-
-  try {
-    const newsletters = await prisma.newsletter.findMany({
-      where: {
-        email: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      skip: offset,
-      take: itemsPerPage,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    return newsletters;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch filtered newsletters.");
-  }
-}
-
-export async function fetchNewslettersPages(query: string, itemsPerPage = 6) {
-  const where: Prisma.NewsletterWhereInput | undefined = query?.trim()
-    ? {
-        email: {
-          contains: query,
-          mode: "insensitive",
-        },
-      }
-    : undefined;
-
-  const totalNewletters = await prisma.newsletter.count({ where });
-  return Math.ceil(Number(totalNewletters) / itemsPerPage);
-}
-
 // Videos
 export async function fetchVideos() {
   return await prisma.video.findMany();
@@ -155,6 +112,19 @@ export async function fetchPostsByCategory(category: Category) {
   return await prisma.post.findMany({
     where: { category },
   });
+}
+export async function fetchPostsPages(query: string, itemsPerPage = 6) {
+  const where: Prisma.PostWhereInput | undefined = query?.trim()
+    ? {
+        title: {
+          contains: query,
+          mode: "insensitive",
+        },
+      }
+    : undefined;
+
+  const totalPosts = await prisma.post.count({ where });
+  return Math.ceil(Number(totalPosts) / itemsPerPage);
 }
 
 export async function fetchFilteredPosts(

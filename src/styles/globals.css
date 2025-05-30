@@ -59,3 +59,26 @@ html{
     line-height: 1.7;
   }
 }
+
+.course-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #e5e7eb; /* bg-gray-200 */
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 1rem; /* p-4 */
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05); /* shadow-sm */
+}
+
+.course-skeleton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+}

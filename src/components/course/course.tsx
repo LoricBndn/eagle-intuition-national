@@ -34,11 +34,10 @@ export default function Course({ items }: { items: CourseItem[] }) {
   const getVisibleItems = (): CourseItem[] => {
     if (items.length === 0) return [];
     const visible: CourseItem[] = [];
-    for (let i = 0; i < itemsPerPage; i++) {
+    const count = Math.min(itemsPerPage, items.length);
+    for (let i = 0; i < count; i++) {
       const index = (currentIndex + i) % items.length;
-      const item = items[index];
-      console.log(`Course icon URL (index ${index}):`, item.icon);
-      visible.push(item);
+      visible.push(items[index]);
     }
     return visible;
   };
@@ -48,40 +47,52 @@ export default function Course({ items }: { items: CourseItem[] }) {
       <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
         <div className="max-w-6xl w-full flex justify-center">
           <CourseCard
-            icon="/icons/ban.svg" // icône générique ou rien
-            title="Pas encore de cours"
+            icon="/icons/ban.svg"
+            title="Lista de formações disponíveis: Brevemente"
           />
         </div>
       </div>
     );
   }
 
+  const visibleItems = getVisibleItems();
+  const gridColsClass =
+    visibleItems.length === 1
+      ? "grid-cols-1 justify-center"
+      : visibleItems.length === 2
+      ? "grid-cols-2 justify-center"
+      : "grid-cols-3";
+
+  const showArrows = items.length >= 4;
+
   return (
     <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
       <div className="max-w-6xl w-full flex items-center">
-        <button
-          className="w-8 h-8 rounded-full mr-4 cursor-pointer"
-          onClick={handlePrev}
-          aria-label="Previous"
-        >
-          <ChevronLeft className="w-8 h-8 text-primary" />
-        </button>
+        {showArrows && (
+          <button
+            className="w-8 h-8 rounded-full mr-4 cursor-pointer"
+            onClick={handlePrev}
+            aria-label="Previous"
+          >
+            <ChevronLeft className="w-8 h-8 text-primary" />
+          </button>
+        )}
         <div
-          className={`grid gap-4 w-full transition-transform duration-500 ease-in-out ${
-            itemsPerPage === 1 ? "grid-cols-1" : "grid-cols-3"
-          }`}
+          className={`grid gap-4 w-full transition-transform duration-500 ease-in-out ${gridColsClass}`}
         >
-          {getVisibleItems().map((item, index) => (
+          {visibleItems.map((item, index) => (
             <CourseCard key={index} icon={item.icon} title={item.title} />
           ))}
         </div>
-        <button
-          className="w-8 h-8 rounded-full ml-4 cursor-pointer"
-          onClick={handleNext}
-          aria-label="Next"
-        >
-          <ChevronRight className="w-8 h-8 text-primary" />
-        </button>
+        {showArrows && (
+          <button
+            className="w-8 h-8 rounded-full ml-4 cursor-pointer"
+            onClick={handleNext}
+            aria-label="Next"
+          >
+            <ChevronRight className="w-8 h-8 text-primary" />
+          </button>
+        )}
       </div>
     </div>
   );

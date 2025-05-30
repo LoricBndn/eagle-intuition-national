@@ -10,11 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
-const CourseSchema = z.object({
-  title: z.string().min(1, "Course title is required."),
-  iconUrl: z.string().url("Icon must be a valid URL."),
-});
-
 const PostSchema = z.object({
   title: z.string().min(1, "Post title is required."),
   content: z.string().min(1, "Post content is required."),
@@ -154,13 +149,38 @@ export async function createPost(
   prevState: PostState,
   formData: FormData
 ): Promise<PostState> {
-  const data = {
-    title: parseString(formData.get("title")),
-    content: parseString(formData.get("content")),
-    imagesUrl: parseStringArray(formData.getAll("imagesUrl")),
-  };
+  const title = parseString(formData.get("title"));
+  const content = parseString(formData.get("content"));
+  const files = formData.getAll("images") as File[];
 
-  const validated = PostSchema.safeParse(data);
+  if (!title || !content || files.length === 0) {
+    return {
+      message: "Missing required fields.",
+      errors: {
+        title: !title ? ["Title is required."] : [],
+        content: !content ? ["Content is required."] : [],
+        imagesUrl: files.length === 0 ? ["At least one image is required."] : [],
+      },
+    };
+  }
+
+  const imagePaths: string[] = [];
+
+  for (const file of files) {
+    if (file && file.size > 0) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const filename = `${uuidv4()}-${file.name}`;
+      const uploadPath = path.join(process.cwd(), "public/postsImg", filename);
+      await writeFile(uploadPath, buffer);
+      imagePaths.push(`/postsImg/${filename}`);
+    }
+  }
+
+  const validated = PostSchema.safeParse({
+    title,
+    content,
+    imagesUrl: imagePaths,
+  });
 
   if (!validated.success) {
     return {
@@ -169,13 +189,9 @@ export async function createPost(
     };
   }
 
-  const { title, content, imagesUrl } = validated.data;
-
   await prisma.post.create({
     data: {
-      title,
-      content,
-      imagesUrl,
+      ...validated.data,
       category: "Web",
     },
   });
@@ -184,35 +200,58 @@ export async function createPost(
   redirect("/admin/dashboard/posts");
 }
 
-export async function updatePost(
-  id: string,
-  prevState: PostState,
-  formData: FormData
-): Promise<PostState> {
-  const data = {
-    title: parseString(formData.get("title")),
-    content: parseString(formData.get("content")),
-    imagesUrl: parseStringArray(formData.getAll("imagesUrl")),
-  };
+export async function updatePost(prevState: any, formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = parseString(formData.get("title"));
+  const content = parseString(formData.get("content"));
 
-  const validated = PostSchema.safeParse(data);
+  const files = formData.getAll("images") as File[];
 
-  if (!validated.success) {
+  if (!id || !title || !content) {
     return {
-      errors: validated.error.flatten().fieldErrors,
-      message: "Missing or invalid fields in Post.",
+      message: "Missing required fields.",
+      errors: {
+        title: !title ? ["The title is required."] : [],
+        content: !content ? ["The content is required."] : [],
+        imagesUrl: files.length === 0 ? ["At least one image must be uploaded or retained."] : [],
+      },
     };
   }
 
-  const { title, content, imagesUrl } = validated.data;
+  const existingPost = await prisma.post.findUnique({ where: { id } });
+  if (!existingPost) {
+    return { message: "Post not found.", errors: {} };
+  }
+
+  let newImagePaths: string[] = [];
+
+  for (const file of files) {
+    if (file && file.size > 0) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const filename = `${uuidv4()}-${file.name}`;
+      const uploadPath = path.join(process.cwd(), "public/postsImg", filename);
+      await writeFile(uploadPath, buffer);
+      newImagePaths.push(`/postsImg/${filename}`);
+    }
+  }
+
+  if (newImagePaths.length > 0) {
+    for (const oldPath of existingPost.imagesUrl) {
+      if (oldPath.startsWith("/postsImg/")) {
+        const fullPath = path.join(process.cwd(), "public", oldPath);
+        await unlink(fullPath).catch(() => {});
+      }
+    }
+  } else {
+    newImagePaths = existingPost.imagesUrl;
+  }
 
   await prisma.post.update({
     where: { id },
     data: {
       title,
       content,
-      imagesUrl,
-      category: "Web",
+      imagesUrl: newImagePaths,
     },
   });
 
@@ -221,6 +260,18 @@ export async function updatePost(
 }
 
 export async function deletePost(id: string) {
-  await prisma.post.delete({ where: { id } });
+  const post = await prisma.post.findUnique({ where: { id } });
+
+  if (post) {
+    for (const imagePath of post.imagesUrl) {
+      if (imagePath.startsWith("/postsImg/")) {
+        const fullPath = path.join(process.cwd(), "public", imagePath);
+        await unlink(fullPath).catch(() => {});
+      }
+    }
+
+    await prisma.post.delete({ where: { id } });
+  }
+
   revalidatePath("/admin/dashboard/posts");
 }

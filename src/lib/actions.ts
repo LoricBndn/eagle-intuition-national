@@ -10,12 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
-const PostSchema = z.object({
-  title: z.string().min(1, "Post title is required."),
-  content: z.string().min(1, "Post content is required."),
-  imagesUrl: z
-    .array(z.string().url("Each image must be a valid URL."))
-    .min(1, "At least one image is required."),
 });
 
 export type CourseState = {
@@ -149,19 +143,18 @@ export async function createPost(
   prevState: PostState,
   formData: FormData
 ): Promise<PostState> {
-  const title = parseString(formData.get("title"));
-  const content = parseString(formData.get("content"));
+  const title = parseString(formData.get("title")) as string;
+  const content = parseString(formData.get("content")) as string;
   const files = formData.getAll("images") as File[];
 
-  if (!title || !content || files.length === 0) {
-    return {
-      message: "Missing required fields.",
-      errors: {
-        title: !title ? ["Title is required."] : [],
-        content: !content ? ["Content is required."] : [],
-        imagesUrl: files.length === 0 ? ["At least one image is required."] : [],
-      },
-    };
+  const errors: PostState["errors"] = {};
+
+  if (!title) errors.title = ["Title is required."];
+  if (!content) errors.content = ["Content is required."];
+  if (files.length === 0) errors.imagesUrl = ["At least one image is required."];
+
+  if (Object.keys(errors).length > 0) {
+    return { message: "Missing required fields.", errors };
   }
 
   const imagePaths: string[] = [];
@@ -176,22 +169,11 @@ export async function createPost(
     }
   }
 
-  const validated = PostSchema.safeParse({
-    title,
-    content,
-    imagesUrl: imagePaths,
-  });
-
-  if (!validated.success) {
-    return {
-      errors: validated.error.flatten().fieldErrors,
-      message: "Missing or invalid fields in Post.",
-    };
-  }
-
   await prisma.post.create({
     data: {
-      ...validated.data,
+      title,
+      content,
+      imagesUrl: imagePaths,
       category: "Web",
     },
   });

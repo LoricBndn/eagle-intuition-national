@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import Button from '@/components/ui/button';
-import { updateCourse, CourseState } from '@/lib/actions';
-import { useActionState } from 'react';
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import Button from "@/components/ui/button";
+import { updateCourse, CourseState } from "@/lib/actions";
+import { useActionState } from "react";
 
 export default function EditCourseForm({
   course,
@@ -17,7 +17,7 @@ export default function EditCourseForm({
   };
 }) {
   const initialState: CourseState = { message: null, errors: {} };
-    const [state, formAction] = useActionState(updateCourse, initialState);
+  const [state, formAction] = useActionState(updateCourse, initialState);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,29 +87,27 @@ export default function EditCourseForm({
             ))}
           </div>
 
-          {/* Image Preview */}
+          {/* Image preview */}
           <div className="mt-4">
             <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
-            <div className="border rounded-md p-2 bg-white max-w-sm">
-              {previewUrl ? (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="h-32 w-auto rounded-md border border-gray-300 object-cover"
-                />
-              ) : (
-                <Image
-                  src={course.iconUrl}
-                  alt={course.title}
-                  width={300}
-                  height={200}
-                  className="rounded-md border border-gray-300 object-cover"
-                />
-              )}
-            </div>
+            {previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="h-32 w-auto rounded-md border border-gray-300 object-cover"
+              />
+            ) : (
+              <Image
+                src={course.iconUrl}
+                alt={course.title}
+                width={300}
+                height={200}
+                className="rounded-md border border-gray-300 object-cover"
+              />
+            )}
           </div>
         </div>
-
+        
         {/* Global Error */}
         <div id="form-error" aria-live="polite" aria-atomic="true">
           {state.message && (

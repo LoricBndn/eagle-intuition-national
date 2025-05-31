@@ -6,6 +6,8 @@ import { PrismaClient } from "@prisma/client";
 import { writeFile, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { generateUniqueSlug } from "@/lib/utils";
+
 
 const prisma = new PrismaClient();
 
@@ -167,12 +169,15 @@ export async function createPost(
     }
   }
 
+  const slug = await generateUniqueSlug(title);
+
   await prisma.post.create({
     data: {
       title,
       content,
       imagesUrl: imagePaths,
       category: "Web",
+      slug,
     },
   });
 
@@ -180,11 +185,11 @@ export async function createPost(
   redirect("/admin/dashboard/posts");
 }
 
+
 export async function updatePost(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
   const title = parseString(formData.get("title"));
   const content = parseString(formData.get("content"));
-
   const files = formData.getAll("images") as File[];
 
   if (!id || !title || !content) {
@@ -226,10 +231,13 @@ export async function updatePost(prevState: any, formData: FormData) {
     newImagePaths = existingPost.imagesUrl;
   }
 
+  const slug = await generateUniqueSlug(title);
+
   await prisma.post.update({
     where: { id },
     data: {
       title,
+      slug,
       content,
       imagesUrl: newImagePaths,
     },

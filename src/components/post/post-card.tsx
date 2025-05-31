@@ -5,7 +5,7 @@ import Image from "next/image";
 import Button from "@/components/ui/button";
 
 interface PostCardProps {
-  id: string;
+  slug: string; // ✅ On utilise le slug
   title: string;
   category: string;
   content: string;
@@ -14,7 +14,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({
-  id,
+  slug,
   title,
   category,
   content,
@@ -29,7 +29,7 @@ export default function PostCard({
 
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
-      <Link href={`/noticias/${id}`}>
+      <Link href={`/noticias/${slug}`}>
         <Image
           src={imagesUrl[0]}
           alt={title}
@@ -40,7 +40,7 @@ export default function PostCard({
       </Link>
       <div className="p-5">
         <p className="text-sm font-semibold text-primary mb-1">{category}</p>
-        <Link href={`/noticias/${id}`}>
+        <Link href={`/noticias/${slug}`}>
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 cursor-pointer">
             {title}
           </h5>
@@ -49,7 +49,7 @@ export default function PostCard({
           {content.length > 100 ? content.slice(0, 100) + "..." : content}
         </p>
         <p className="text-xs text-gray-500 mb-3">{formattedDate}</p>
-        <Button text="Read More" link={`/noticias/${id}`} />
+        <Button text="Read More" link={`/noticias/${slug}`} />
       </div>
     </div>
   );

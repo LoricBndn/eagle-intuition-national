@@ -107,6 +107,12 @@ export async function fetchPosts() {
 export async function fetchPostById(id: string) {
   return await prisma.post.findUnique({ where: { id } });
 }
+export async function fetchPostBySlug(slug: string) {
+  return await prisma.post.findUnique({
+    where: { slug },
+  });
+}
+
 
 export async function fetchPostsByCategory(category: Category) {
   return await prisma.post.findMany({

@@ -27,11 +27,6 @@ model Course {
   iconUrl   String   @unique
 }
 
-enum Category {
-  Web
-  Facebook
-}
-
 model Post {
   id        String   @id @default(uuid())
   title     String
@@ -39,6 +34,7 @@ model Post {
   content   String
   createdAt DateTime @default(now())
   imagesUrl String[]
+  slug      String   @unique
 }
 
 model ErasmusCourse {
@@ -63,4 +59,9 @@ model Video {
   title     String
   url       String
   createdAt DateTime @default(now())
+}
+
+enum Category {
+  Web
+  Facebook
 }

@@ -1,3 +1,6 @@
+import {  PrismaClient,  } from "@prisma/client";
+const prisma = new PrismaClient();
+
 export const formatDateToLocal = (
   dateStr: string,
   locale: string = 'en-US',
@@ -35,3 +38,26 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize("NFD") // décompose les lettres accentuées en base + accent
+    .replace(/[\u0300-\u036f]/g, "") // supprime les accents
+    .replace(/[^a-z0-9\s-]/g, "") // supprime caractères non alphanumériques sauf espace et tiret
+    .trim()
+    .replace(/\s+/g, "-"); // remplace espaces par tirets
+}
+
+export async function generateUniqueSlug(title: string): Promise<string> {
+  const baseSlug = generateSlug(title);
+  let slug = baseSlug;
+  let i = 1;
+
+  while (await prisma.post.findUnique({ where: { slug } })) {
+    slug = `${baseSlug}-${i}`;
+    i++;
+  }
+
+  return slug;
+}

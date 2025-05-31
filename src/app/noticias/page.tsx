@@ -1,29 +1,35 @@
-"use client"
-
-import { useSearchParams } from "next/navigation";
-import postsData from "@/data/posts";
+import { fetchFilteredPosts, fetchPostsPages } from "@/lib/data"; // adapte le chemin selon ton projet
 import Posts from "@/components/post/posts";
 import SearchBar from "@/components/ui/search-bar";
 import Pagination from "@/components/ui/pagination";
+import { redirect } from "next/navigation";
 
 const POSTS_PER_PAGE = 9;
 
-export default function Page() {
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const query = searchParams.get("query")?.toLowerCase() || "";
-  const category = searchParams.get("category") || "All";
+interface SearchParams {
+  query?: string;
+  category?: string;
+  page?: string;
+}
 
-  const filteredPosts = postsData.filter((post) => {
-    const matchesQuery = post.title.toLowerCase().includes(query);
-    const matchesCategory = category === "All" || post.category === category;
-    return matchesQuery && matchesCategory;
-  });
+export default async function Page({ searchParams }: { searchParams: SearchParams }) {
+  const query = searchParams.query?.toLowerCase() || "";
+  const category = searchParams.category || "All";
+  const currentPage = Number(searchParams.page) || 1;
 
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = filteredPosts.slice(startIndex, endIndex);
+  if (currentPage < 1) {
+    redirect("/noticias");
+  }
+
+  const allFilteredPosts = await fetchFilteredPosts(query, currentPage, POSTS_PER_PAGE);
+
+  // Si catégorie différente de "All", on filtre encore ici (car ta fonction ne gère pas le champ `category`)
+  const filteredByCategory =
+    category === "All"
+      ? allFilteredPosts
+      : allFilteredPosts.filter((post) => post.category === category);
+
+  const totalPages = await fetchPostsPages(query, POSTS_PER_PAGE);
 
   return (
     <div>
@@ -34,14 +40,14 @@ export default function Page() {
         <h1 className="text-title text-[clamp(2.5rem,calc(2vw+1.5rem),6rem)] font-semibold">
           Resources and insights
         </h1>
-        <h3 className="text-primary text-lg ">
+        <h3 className="text-primary text-lg">
           The latest industry news, interviews, technologies, and resources.
         </h3>
         <SearchBar placeholder="Search articles..." />
       </div>
 
       <div className="default-p-y" id="posts">
-        <Posts posts={currentPosts} />
+        <Posts posts={filteredByCategory} />
         <div className="mt-12 flex w-full justify-center">
           <Pagination totalPages={totalPages} />
         </div>

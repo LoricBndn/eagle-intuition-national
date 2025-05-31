@@ -1,7 +1,7 @@
 import Hero from "@/components/home/hero";
 import SobreNos from "@/components/home/sobre-nos";
 import Course from "@/components/course/course";
-import Post from "@/components/post/post";
+import PostsHome from "@/components/post/postsHome";
 import ContactForm from "@/components/contact/contact-form";
 
 import { fetchCourses } from "@/lib/data"; // adapte selon ton projet
@@ -21,7 +21,7 @@ const courses = coursesFromDb.map(({ iconUrl, ...rest }) => ({
       <Hero />
       <SobreNos />
       <Course items={courses} />
-      <Post />
+      <PostsHome />
       <ContactForm />
     </div>
   );

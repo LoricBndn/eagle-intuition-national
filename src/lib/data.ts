@@ -130,9 +130,10 @@ export async function fetchPostsPages(query: string, itemsPerPage = 6) {
 export async function fetchFilteredPosts(
   query: string,
   currentPage: number,
-  itemsPerPage = 9
+  itemsPerPage = 6  
 ) {
-  const offset = (currentPage - 1) * itemsPerPage;
+  const safePage = typeof currentPage === 'number' && currentPage > 0 ? currentPage : 1;
+  const offset = (safePage - 1) * itemsPerPage;
 
   try {
     const posts = await prisma.post.findMany({

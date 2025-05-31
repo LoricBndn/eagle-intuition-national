@@ -9,6 +9,7 @@ interface Post {
   content: string;
   createdAt: Date;
   imagesUrl: string[];
+  slug: string;
 }
 
 interface PostsProps {

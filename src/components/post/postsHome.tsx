@@ -15,7 +15,9 @@ export default async function PostsHome() {
   return (
     <div className="flex flex-col items-center default-p-y gap-8">
       <Title title="Novidades" />
+      <div className="w-full">
       <Posts posts={latestPosts} limit={3} />
+      </div>
       <Button className="w-full mt-8" text="See more posts" link="/noticias" />
     </div>
   );

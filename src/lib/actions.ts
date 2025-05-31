@@ -198,7 +198,7 @@ export async function updatePost(prevState: any, formData: FormData) {
       errors: {
         title: !title ? ["The title is required."] : [],
         content: !content ? ["The content is required."] : [],
-        imagesUrl: files.length === 0 ? ["At least one image must be uploaded or retained."] : [],
+        imagesUrl: [], // On peut retirer l'erreur ici car on autorise aucune nouvelle image
       },
     };
   }
@@ -208,8 +208,9 @@ export async function updatePost(prevState: any, formData: FormData) {
     return { message: "Post not found.", errors: {} };
   }
 
-  let newImagePaths: string[] = [];
+  const newImagePaths: string[] = [];
 
+  // Upload nouvelles images et récupérer leurs chemins
   for (const file of files) {
     if (file && file.size > 0) {
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -220,26 +221,23 @@ export async function updatePost(prevState: any, formData: FormData) {
     }
   }
 
-  if (newImagePaths.length > 0) {
-    for (const oldPath of existingPost.imagesUrl) {
-      if (oldPath.startsWith("/postsImg/")) {
-        const fullPath = path.join(process.cwd(), "public", oldPath);
-        await unlink(fullPath).catch(() => {});
-      }
-    }
-  } else {
-    newImagePaths = existingPost.imagesUrl;
+  // On conserve les anciennes images + on ajoute les nouvelles
+  const updatedImagePaths = [...existingPost.imagesUrl, ...newImagePaths];
+
+  // Génération du slug si titre changé
+  let slug = existingPost.slug;
+  if (existingPost.title !== title) {
+    slug = await generateUniqueSlug(title);
   }
 
-  const slug = await generateUniqueSlug(title);
-
+  // Mise à jour en base
   await prisma.post.update({
     where: { id },
     data: {
       title,
       slug,
       content,
-      imagesUrl: newImagePaths,
+      imagesUrl: updatedImagePaths,
     },
   });
 

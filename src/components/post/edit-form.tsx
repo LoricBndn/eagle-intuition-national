@@ -50,7 +50,9 @@ export default function EditPostForm({
             aria-describedby="title-error"
           />
           {state.errors?.title?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">{error}</p>
+            <p key={error} className="mt-2 text-sm text-red-500">
+              {error}
+            </p>
           ))}
         </div>
 
@@ -69,7 +71,9 @@ export default function EditPostForm({
             aria-describedby="content-error"
           />
           {state.errors?.content?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">{error}</p>
+            <p key={error} className="mt-2 text-sm text-red-500">
+              {error}
+            </p>
           ))}
         </div>
 
@@ -79,8 +83,7 @@ export default function EditPostForm({
             Upload new images (optional)
           </label>
           <input
-            id="images"
-            name="imagesUrl"
+            name="images" // au lieu de "imagesUrl"
             type="file"
             multiple
             accept="image/*"
@@ -88,7 +91,9 @@ export default function EditPostForm({
             className="block w-full text-sm"
           />
           {state.errors?.images?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">{error}</p>
+            <p key={error} className="mt-2 text-sm text-red-500">
+              {error}
+            </p>
           ))}
 
           {/* Image Previews */}

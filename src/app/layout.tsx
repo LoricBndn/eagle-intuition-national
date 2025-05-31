@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import LayoutContent from '@/components/layout/layout-content';
+import CookieConsentBanner from "@/components/ui/cookieConsentBanner";
 
 export const metadata: Metadata = {
   title: "Eagle Intuition",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="pt">
       <body>
         <LayoutContent>{children}</LayoutContent>
+        <CookieConsentBanner />
       </body>
     </html>
   );

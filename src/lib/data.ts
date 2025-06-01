@@ -162,3 +162,49 @@ export async function fetchFilteredPosts(
     throw new Error("Failed to fetch filtered posts.");
   }
 }
+export async function fetchFilteredNewsletters(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 6
+) {
+  const offset = (currentPage - 1) * itemsPerPage;
+
+  try {
+    const newsletters = await prisma.newsletter.findMany({
+      where: query
+        ? {
+            email: {
+              contains: query,
+              mode: "insensitive",
+            },
+          }
+        : {},
+      skip: offset,
+      take: itemsPerPage,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return newsletters;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch filtered newsletters.");
+  }
+}
+
+export async function fetchNewslettersPages(query: string, itemsPerPage = 6) {
+  const where = query?.trim()
+    ? {
+        email: {
+          contains: query,
+          mode: "insensitive",
+        },
+      }
+    : {};
+
+  const totalNewsletters = await prisma.newsletter.count({ where });
+
+  return Math.ceil(Number(totalNewsletters) / itemsPerPage);
+}
+

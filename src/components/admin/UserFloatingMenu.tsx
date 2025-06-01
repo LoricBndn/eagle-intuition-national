@@ -63,7 +63,7 @@ export default function UserMenuFloating() {
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className="cursor-pointer w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+          className="cursor-pointer w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-orange-500 transition"
           aria-label="Ouvrir menu utilisateur"
         >
           {session?.user?.name?.[0]?.toUpperCase() ?? 'U'}

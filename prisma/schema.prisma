@@ -15,9 +15,10 @@ model User {
 }
 
 model Newsletter {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id        String             @id @default(uuid())
+  email     String             @unique
+  createdAt DateTime           @default(now())
+  category  CategoryNewsletter // nouvelle colonne
 }
 
 model Course {
@@ -64,4 +65,9 @@ model Video {
 enum Category {
   Web
   Facebook
+}
+
+enum CategoryNewsletter {
+  national
+  international
 }

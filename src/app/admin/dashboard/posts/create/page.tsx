@@ -9,7 +9,7 @@ export default async function Page() {
         breadcrumbs={[
           { label: 'Posts', href: '/admin/dashboard/posts' },
           {
-            label: 'Create Course',
+            label: 'Create Post',
             href: '/admin/dashboard/posts/create',
             active: true,
           },

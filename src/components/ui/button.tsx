@@ -8,7 +8,7 @@ interface ButtonProps {
 }
 
 export default function Button({ text, link, type = 'button', className = '' }: ButtonProps) {
-  const baseClass = `${className} text-white bg-primary cursor-pointer py-2 px-6 rounded-md`;
+  const baseClass = `${className} hover:bg-orange-500 text-white bg-primary cursor-pointer py-2 px-6 rounded-md`;
 
   if (link) {
     return (

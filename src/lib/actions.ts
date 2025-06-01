@@ -1,5 +1,6 @@
 "use server";
 
+
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -269,17 +270,23 @@ const NewsletterSchema = z.object({
 
 export async function subscribeToNewsletter(formData: FormData) {
   const email = formData.get('email');
+  const category = formData.get('category'); // on récupère la catégorie
+
   const result = NewsletterSchema.safeParse({ email });
 
   if (!result.success) {
     return { success: false, error: result.error.format().email?._errors[0] || 'Email invalide' };
   }
 
+  if (category !== 'national' && category !== 'international') {
+    return { success: false, error: 'Catégorie invalide' };
+  }
+
   try {
     await prisma.newsletter.upsert({
       where: { email: result.data.email },
       update: {},
-      create: { email: result.data.email },
+      create: { email: result.data.email, category },
     });
 
     revalidatePath('/'); // optionnel, pour rafraîchir la page si besoin
@@ -289,3 +296,20 @@ export async function subscribeToNewsletter(formData: FormData) {
     return { success: false, error: 'Erreur serveur' };
   }
 }
+
+
+export async function deleteNewsletter(id: string) {
+  try {
+    await prisma.newsletter.delete({
+      where: { id },
+    });
+
+    // Revalide la page pour afficher les données à jour
+    revalidatePath('/admin/newsletters'); // change ce chemin selon ta route
+  } catch (error) {
+    console.error("Erreur de suppression :", error);
+    throw new Error('Erreur lors de la suppression de la newsletter');
+  }
+}
+
+

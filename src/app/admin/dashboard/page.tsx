@@ -22,5 +22,6 @@ export default async function DashboardPage() {
         {/* Ton contenu */}
       </div>
     </main>
+
   )
 }

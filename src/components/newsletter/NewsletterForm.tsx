@@ -45,7 +45,7 @@ export default function NewsletterForm({ category }: NewsletterFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-primary hover:bg-orange-500 px-3 py-2 text-sm text-white cursor-pointer disabled:opacity-50"
+        className="rounded-md bg-primary hover:bg-[#e3791e] px-3 py-2 text-sm text-white cursor-pointer disabled:opacity-50"
       >
         {loading ? "Envoi..." : "Subscrever"}
       </button>

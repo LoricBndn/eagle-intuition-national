@@ -111,9 +111,9 @@ export default function Footer() {
                 ))}
                 {title === "Sede" && (
                   <li className="mt-6">
-                    <h4 className="mb-2 text-sm font-semibold text-title">
+                    <p className="mb-2 text-sm font-semibold text-title">
                       Newsletter
-                    </h4>
+                    </p>
                   <NewsletterForm category="national" />
                   </li>
                 )}

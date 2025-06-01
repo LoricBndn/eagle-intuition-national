@@ -14,7 +14,13 @@ import {
   LinkedinIcon,
 } from "lucide-react";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  hn?: keyof JSX.IntrinsicElements;
+}
+
+export default function ContactForm({ hn = "h2" }: ContactFormProps) {
+
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://www.google.com/recaptcha/api.js";
@@ -30,7 +36,7 @@ export default function ContactForm() {
         method="POST"
         className="w-full lg:w-1/2 bg-white border border-black rounded-t-2xl lg:rounded-bl-2xl lg:rounded-tl-2xl lg:rounded-tr-none p-6 md:p-8"
       >
-        <Title className="mb-4" title="Contactar nos" />
+        <Title className="mb-4" title="Contactar nos" hn={hn}/>
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           {/* Nom */}
           <div>

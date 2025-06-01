@@ -25,7 +25,7 @@ export default async function Page() {
 
   return (
     <div className="default-p-x py-10 pt-40">
-      <Title title="Erasmus +" />
+      <Title title="Erasmus +" hn="h1"/>
       <p className="text-base mt-4 mb-12">
         Saiba mais sobre os cursos KA1 e os projectos KA2 oferecidos ao abrigo
         do programa Erasmus+. A página apresenta uma seleção de cursos

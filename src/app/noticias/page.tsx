@@ -40,9 +40,9 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
         <h1 className="text-title text-[clamp(2.5rem,calc(2vw+1.5rem),6rem)] font-semibold">
           Resources and insights
         </h1>
-        <h3 className="text-primary text-lg">
+        <h2 className="text-primary text-lg">
           The latest industry news, interviews, technologies, and resources.
-        </h3>
+        </h2>
         <SearchBar placeholder="Search articles..." />
       </div>
 

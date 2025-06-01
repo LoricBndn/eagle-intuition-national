@@ -31,9 +31,9 @@ export default function ErasmusCard({
       </Link>
       <div className="py-4 flex flex-col gap-2">
         <Link href={link}>
-            <h5 className="mb-2 text-2xl font-bold tracking-tight text-title cursor-pointer">
+            <h3 className="mb-2 text-2xl font-bold tracking-tight text-title cursor-pointer">
               {title}
-            </h5>
+            </h3>
         </Link>
         <p className="mb-3 font-normal text-base">{description}</p>
         <Button text="Read More" link={link} />

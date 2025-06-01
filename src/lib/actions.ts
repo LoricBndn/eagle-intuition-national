@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
@@ -260,4 +261,31 @@ export async function deletePost(id: string) {
   }
 
   revalidatePath("/admin/dashboard/posts");
+}
+
+const NewsletterSchema = z.object({
+  email: z.string().email('Email invalide'),
+});
+
+export async function subscribeToNewsletter(formData: FormData) {
+  const email = formData.get('email');
+  const result = NewsletterSchema.safeParse({ email });
+
+  if (!result.success) {
+    return { success: false, error: result.error.format().email?._errors[0] || 'Email invalide' };
+  }
+
+  try {
+    await prisma.newsletter.upsert({
+      where: { email: result.data.email },
+      update: {},
+      create: { email: result.data.email },
+    });
+
+    revalidatePath('/'); // optionnel, pour rafraîchir la page si besoin
+    return { success: true };
+  } catch (err) {
+    console.error('Erreur newsletter:', err);
+    return { success: false, error: 'Erreur serveur' };
+  }
 }

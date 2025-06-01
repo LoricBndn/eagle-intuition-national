@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import NewsletterForm from "@/components/ui/NewsletterForm";
+
 
 type LinkItem = {
   label: string;
@@ -42,12 +44,8 @@ const LINKS: LinkGroup[] = [
         href: "https://twitter.com/intuitioneagle",
       },
       {
-        label: "Youtube (1)",
+        label: "Youtube",
         href: "https://www.youtube.com/channel/UCfNvmUI9Zi2EjDMDavZqA7A",
-      },
-      {
-        label: "Youtube (2)",
-        href: "https://www.youtube.com/channel/UCP_zOP-MIa5U71xI06KGELA",
       },
     ],
   },
@@ -116,19 +114,7 @@ export default function Footer() {
                     <h4 className="mb-2 text-sm font-semibold text-title">
                       Newsletter
                     </h4>
-                    <form className="flex flex-col gap-2">
-                      <input
-                        type="email"
-                        placeholder="Subscrever"
-                        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                      <button
-                        type="submit"
-                        className="rounded-md bg-primary px-3 py-2 text-sm text-white cursor-pointer"
-                      >
-                        Subscrever
-                      </button>
-                    </form>
+   <NewsletterForm />
                   </li>
                 )}
               </ul>
@@ -139,10 +125,10 @@ export default function Footer() {
           <p className="mb-4 text-center text-base text-sm md:mb-0">
             &copy; {currentYear}{" "}
             <a
-              href="https://material-tailwind.com/"
+              href="https://eagle-intuition.webnode.pt/"
               className="hover:underline"
             >
-              Material Tailwind
+              Eagle Intution
             </a>
             . All Rights Reserved.
           </p>

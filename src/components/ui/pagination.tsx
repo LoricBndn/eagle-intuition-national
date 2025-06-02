@@ -31,7 +31,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
         isDisabled={currentPage <= 1}
       />
 
-      <div className="flex -space-x-px">
+      <div className="cursor-pointer flex -space-x-px">
         {allPages.map((page, index) => {
           let position: "first" | "last" | "middle" | "single" | undefined;
           if (index === 0) position = "first";
@@ -72,7 +72,7 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center text-sm border",
+    "cursor-pointer flex h-10 w-10 items-center justify-center text-sm border",
     {
       "rounded-l-md": position === "first" || position === "single",
       "rounded-r-md": position === "last" || position === "single",
@@ -105,7 +105,7 @@ function PaginationArrow({
   isDisabled,
 }: PaginationArrowProps) {
   const className = clsx(
-    "flex h-10 w-10 items-center justify-center rounded-md border",
+    "cursor-pointer flex h-10 w-10 items-center justify-center rounded-md border",
     {
       "pointer-events-none text-gray-300": isDisabled,
       "hover:bg-[var(--color-secondary)] text-[var(--color-title)] border-gray-300":

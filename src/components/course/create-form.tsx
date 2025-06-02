@@ -109,7 +109,7 @@ export default function CreateCourseForm() {
           link="/admin/dashboard/courses"
           className="bg-gray-100 text-gray-600 hover:bg-gray-200"
         />
-        <Button text="Create Course" type="submit" />
+        <Button text="Criar Formações" type="submit" />
       </div>
     </form>
   );

@@ -30,7 +30,7 @@ export default async function Page({
         <ExportCSVButton />
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search email..." />
+        <Search placeholder="Pesquisar e-mail..." />
       </div>
       <Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
         <NewsletterTable query={query} currentPage={currentPage} />

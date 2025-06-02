@@ -19,8 +19,8 @@ export default function SobreNos() {
       {/* Partie Texte */}
       <div className="w-1/2 max-lg:w-full relative ">
         <Title title="Sobre nós ?" />
-        <p className="text-base mt-4 mb-12">
-          A missão desta empresa é formar para um futuro melhor, jovens e
+        <p className="text-justify text-base mt-4 mb-12">
+          A nossa missão é formar para um futuro melhor, jovens e
           adultos, transmitindo conhecimento, conteúdos distintos e direcionados
           à empregabilidade, atribuindo as melhores competências e certificações
           para que estes iniciem um percurso no mercado de trabalho ou obtenham

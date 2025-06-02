@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import CookieConsent from "react-cookie-consent";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 const CookieConsentBanner = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -52,8 +53,8 @@ const CookieConsentBanner = () => {
       declineButtonStyle={{ backgroundColor: "#f44336", color: "#FFF", fontSize: "14px" }}
       expires={365}
     >
-      This website uses cookies to enhance your experience. By using our website, you consent to the use of cookies. 
-      You can read more in our <a href="/privacy-policy" className="underline">privacy policy</a>.
+     Este site utiliza cookies para melhorar a sua experiência. Ao utilizar o nosso site, concorda com o uso de cookies.
+      Pode ler mais na nossa<Link href="/politica-de-privacidade" className="underline">política de privacidade</Link>.
     </CookieConsent>
   );
 };

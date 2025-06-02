@@ -13,7 +13,7 @@ export default async function PostsHome() {
     .slice(0, 3);
 
   return (
-    <div className="flex flex-col items-center default-p-y gap-8">
+    <div  className="flex flex-col items-center default-p-y gap-8">
       <Title title="Novidades" />
       <div className="w-full">
       <Posts posts={latestPosts} limit={3} />

@@ -18,7 +18,7 @@ const LINKS: LinkGroup[] = [
     title: "Mapa",
     items: [
       { label: "Home", href: "#" },
-      { label: "Formação", href: "#" },
+      { label: "Formação", href: "#formacoes" },
       { label: "Erasmus +", href: "#" },
       { label: "Notícias", href: "#" },
       { label: "Contact", href: "#" },
@@ -96,7 +96,6 @@ export default function Footer() {
                     {href ? (
                       <a
                         href={href}
-                        target="_blank"
                         rel="noopener noreferrer"
                         className="block py-1.5 text-base text-sm hover:underline"
                       >
@@ -124,14 +123,28 @@ export default function Footer() {
         <div className="mt-12 flex w-full flex-col items-center justify-center border-t border-[#E7DAED] py-4 md:flex-row md:justify-between">
           <p className="mb-4 text-center text-base text-sm md:mb-0">
             &copy; {currentYear}{" "}
-            <a
-              href="https://eagle-intuition.webnode.pt/"
+            <Link
+              href="/"
               className="hover:underline"
             >
               Eagle Intution
-            </a>
-            . All Rights Reserved.
+            </Link>
+            . Todos os direitos reservados.
           </p>
+          <div className="flex gap-4">
+            <Link
+            className="mb-4 text-center text-base text-sm md:mb-0"
+              href="/politica-de-privacidade"
+            >
+              Política de Privacidade
+            </Link>
+            <Link
+            className="mb-4 text-center text-base text-sm md:mb-0"
+              href="/mencoes-legais"
+            >
+              Menções Legais
+            </Link>
+          </div>
           <p className="mb-4 text-center text-base text-sm md:mb-0">
             Livro de Reclamações :&nbsp;
             <a

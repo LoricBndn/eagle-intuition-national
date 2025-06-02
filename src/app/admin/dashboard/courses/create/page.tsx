@@ -7,9 +7,9 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Courses', href: '/admin/dashboard/courses' },
+          { label: 'Formações', href: '/admin/dashboard/courses' },
           {
-            label: 'Create Course',
+            label: 'Criar Formações',
             href: '/admin/dashboard/courses/create',
             active: true,
           },

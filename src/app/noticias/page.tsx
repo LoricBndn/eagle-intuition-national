@@ -12,7 +12,11 @@ interface SearchParams {
   page?: string;
 }
 
-export default async function Page({ searchParams }: { searchParams: SearchParams }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const query = searchParams.query?.toLowerCase() || "";
   const category = searchParams.category || "All";
   const currentPage = Number(searchParams.page) || 1;
@@ -21,7 +25,11 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     redirect("/noticias");
   }
 
-  const allFilteredPosts = await fetchFilteredPosts(query, currentPage, POSTS_PER_PAGE);
+  const allFilteredPosts = await fetchFilteredPosts(
+    query,
+    currentPage,
+    POSTS_PER_PAGE
+  );
 
   // Si catégorie différente de "All", on filtre encore ici (car ta fonction ne gère pas le champ `category`)
   const filteredByCategory =
@@ -38,10 +46,10 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
           Notícias
         </span>
         <h1 className="text-title text-[clamp(2.5rem,calc(2vw+1.5rem),6rem)] font-semibold">
-          Resources and insights
+          Recursos e insights
         </h1>
         <h2 className="text-primary text-lg">
-          The latest industry news, interviews, technologies, and resources.
+          As últimas notícias, entrevistas, tecnologias e recursos do setor.{" "}
         </h2>
         <SearchBar placeholder="Search articles..." />
       </div>

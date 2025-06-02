@@ -10,7 +10,7 @@ export default function ExportCSVButton() {
       onClick={handleExport}
       className="cursor-pointer rounded-md border px-4 py-2 hover:bg-gray-100"
     >
-      Exporter en CSV
+      Exportar para CSV
     </button>
   );
 }

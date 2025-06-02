@@ -41,15 +41,15 @@ export default function PostCard({
       <div className="p-5">
         <p className="text-sm font-semibold text-primary mb-1">{category}</p>
         <Link href={`/noticias/${slug}`}>
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 cursor-pointer">
+          <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 cursor-pointer">
             {title}
-          </h5>
+          </h3>
         </Link>
         <p className="mb-3 font-normal text-gray-700">
           {content.length > 100 ? content.slice(0, 100) + "..." : content}
         </p>
         <p className="text-xs text-gray-500 mb-3">{formattedDate}</p>
-        <Button text="Read More" link={`/noticias/${slug}`} />
+        <Button text="Ler mais" link={`/noticias/${slug}`} />
       </div>
     </div>
   );

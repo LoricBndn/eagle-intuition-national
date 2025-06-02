@@ -2,7 +2,7 @@ import Image from "next/image";
 import { UpdatePost, DeletePost } from "@/components/post/buttons";
 import { fetchFilteredPosts } from "@/lib/data";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { pt } from "date-fns/locale";  // <-- Import locale portugaise
 
 export default async function PostTable({
   query,
@@ -24,12 +24,12 @@ export default async function PostTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
               <tr>
-                <th className="px-4 py-5 font-medium sm:pl-6">Title</th>
-                <th className="px-3 py-5 font-medium">Catégory</th>
-                <th className="px-3 py-5 font-medium">Summary</th>
-                <th className="px-3 py-5 font-medium">Main Image</th>
-                <th className="px-3 py-5 font-medium">Date</th>
-                <th className="px-3 py-5 font-medium text-right">Actions</th>
+                <th className="px-4 py-5 font-medium sm:pl-6">Título</th>
+                <th className="px-3 py-5 font-medium">Categoria</th>
+                <th className="px-3 py-5 font-medium">Resumo</th>
+                <th className="px-3 py-5 font-medium">Imagem principal</th>
+                <th className="px-3 py-5 font-medium">Data</th>
+                <th className="px-3 py-5 font-medium text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -50,11 +50,11 @@ export default async function PostTable({
                         className="rounded-md object-cover"
                       />
                     ) : (
-                      <span className="text-gray-400 text-xs">Aucune image</span>
+                      <span className="text-gray-400 text-xs">Nenhuma imagem</span>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {format(new Date(post.createdAt), "dd MMM yyyy", { locale: fr })}
+                    {format(new Date(post.createdAt), "dd MMM yyyy", { locale: pt })}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-right">
                     <div className="flex justify-end gap-2">

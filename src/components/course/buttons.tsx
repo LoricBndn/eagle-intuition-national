@@ -8,7 +8,7 @@ export function CreateCourse() {
       href="/admin/dashboard/courses/create"
       className="flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-secondary focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Course</span>{' '}
+      <span className="hidden md:block">Criar Formações</span>{' '}
       <Plus className="h-5 md:ml-4" />
     </Link>
   );
@@ -31,7 +31,7 @@ export function DeleteCourse({ id }: { id: string }) {
   return (
     <form action={deleteCourseWithId}>
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
+        <span className="sr-only">Eliminar</span>
         <Trash2 className="w-5" />
       </button>
     </form>

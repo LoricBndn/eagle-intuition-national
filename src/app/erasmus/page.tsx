@@ -3,6 +3,7 @@ import ErasmusCard from "@/components/erasmus/erasmus-card";
 import ErasmusCarousel from "@/components/erasmus/erasmus-carousel";
 import erasmus_courses from "@/data/erasmus-courses";
 import erasmus_projects from "@/data/erasmus-projects";
+import { Metadata } from "next";
 
 interface ErasmusCourse {
   id: number;
@@ -18,6 +19,13 @@ interface ErasmusProject {
   src: string;
   alt: string;
 }
+
+export const metadata: Metadata = {
+  title: "Erasmus+ KA1 e KA2: Cursos e Projetos Inovadores - SeuSite",
+  description:
+    "Conheça os cursos KA1 e projetos KA2 do programa Erasmus+, focados em formação inovadora para educadores e colaboração europeia. Saiba mais aqui!",
+};
+
 
 export default async function Page() {
   const courses: ErasmusCourse[] = erasmus_courses;

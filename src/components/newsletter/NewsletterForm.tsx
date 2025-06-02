@@ -49,7 +49,7 @@ export default function NewsletterForm({ category }: NewsletterFormProps) {
       >
         {loading ? "Envoi..." : "Subscrever"}
       </button>
-      {message && <p className="text-sm text-red-600">{message}</p>}
+      {message && <p className="text-sm text-green-600">{message}</p>}
     </form>
   );
 }

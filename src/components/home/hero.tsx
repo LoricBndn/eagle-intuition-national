@@ -6,14 +6,14 @@ export default function Hero() {
     <div className="bg-secondary w-full default-p-x flex justify-between items-center gap-16 -z-20 h-[100vh]">
       <div className="lg:max-w-2xl">
         <p className="text-title text-xl font-medium mt-4">
-          Centro de formação
+          Centro de Formação
         </p>
         <h1 className="grand-title">Eagle Intuition</h1>
         <p className="text-base mt-4 mb-12">
-          Centro de formação certificado pela DGERT, com reconhecimento nacional
+          Centro de Formação certificado pela DGERT, com reconhecimento nacional
           e internacional pela excelência dos seus programas.
         </p>
-        <Button text="Ver as formações" link="/formação" />
+        <Button text="Ver as formações" link="#formacoes" />
       </div>
 
       <div className="max-lg:hidden w-full min-w-[300px] max-w-[600px] relative">

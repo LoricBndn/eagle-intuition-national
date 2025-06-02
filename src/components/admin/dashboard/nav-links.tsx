@@ -13,7 +13,7 @@ import clsx from 'clsx';
 const links = [
   { name: 'Home', href: '/admin/dashboard', icon: Home },
   {
-    name: 'Courses',
+    name: 'Formações',
     href: '/admin/dashboard/courses',
     icon: GraduationCap,
   },

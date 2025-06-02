@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded bg-white p-6 shadow-md"
       >
-        <h1 className="mb-6 text-center text-2xl font-semibold">Connexion Admin</h1>
+        <h1 className="mb-6 text-center text-2xl font-semibold">Administrador de ligação</h1>
 
         {error && (
           <div className="mb-4 rounded bg-red-100 p-3 text-red-700">{error}</div>
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
         />
 
         <label htmlFor="password" className="mb-2 block font-medium">
-          Mot de passe
+          Palavra-passe
         </label>
         <input
           id="password"
@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
           type="submit"
           className="w-full rounded bg-primary py-2 text-white hover:bg-[#e3791e]"
         >
-          Se connecter
+          Se ligar
         </button>
       </form>
     </main>

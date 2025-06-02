@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Title from "@/components/ui/title";
 import Button from "@/components/ui/button";
+
 import {
   MapPin,
   Phone,
@@ -63,7 +64,7 @@ export default function ContactForm({ hn = "h2" }: ContactFormProps) {
               htmlFor="last-name"
               className="block text-sm font-semibold text-title"
             >
-              Nome Próprio
+              Apelido
             </label>
             <div className="mt-2.5">
               <input
@@ -166,7 +167,7 @@ export default function ContactForm({ hn = "h2" }: ContactFormProps) {
           <Button
             className="w-full"
             text="Enviar"
-            link="/formação"
+            link=""
           />
         </div>
       </form>

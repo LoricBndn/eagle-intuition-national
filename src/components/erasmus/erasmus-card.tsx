@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import Button from "@/components/ui/button";
 
 interface ErasmusCardProps {
@@ -11,33 +10,19 @@ interface ErasmusCardProps {
 }
 
 export default function ErasmusCard({
-  image,
   title,
-  description,
   link = "#",
 }: ErasmusCardProps) {
   return (
-    <div className="max-w-full bg-white border border-gray-200 rounded-sm shadow-sm p-4">
-      <Link href={link} passHref>
-          <div className="relative w-full h-48 cursor-pointer rounded-sm overflow-hidden">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              style={{ objectFit: 'cover'}}
-              priority={false}
-            />
-          </div>
-      </Link>
-      <div className="py-4 flex flex-col gap-2">
-        <Link href={link}>
-            <h3 className="mb-2 text-2xl font-bold tracking-tight text-title cursor-pointer">
-              {title}
-            </h3>
-        </Link>
-        <p className="mb-3 font-normal text-base">{description}</p>
-        <Button text="Read More" link={link} />
+    <Link href={link}>
+      <div className="max-w-full bg-white border border-gray-200 rounded-sm shadow-sm p-4">
+        <div className="py-4 flex flex-col gap-2">
+          <h3 className="mb-2 text-2xl font-bold tracking-tight text-title cursor-pointer">
+            {title}
+          </h3>
+          <Button text="Ver mais" link={link} />
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

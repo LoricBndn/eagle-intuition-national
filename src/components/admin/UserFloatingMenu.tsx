@@ -80,7 +80,7 @@ export default function UserMenuFloating() {
                   }}
                   className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
-                  Aller sur le site
+                  Ir para o site
                 </button>
                 <button
                   onClick={() => {
@@ -89,7 +89,7 @@ export default function UserMenuFloating() {
                   }}
                   className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
-                  Déconnexion
+                  Desconexão
                 </button>
               </>
             ) : (
@@ -101,7 +101,7 @@ export default function UserMenuFloating() {
                   }}
                   className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
-                  Aller au dashboard
+                 Ir para o painel
                 </button>
                 <button
                   onClick={() => {
@@ -110,7 +110,7 @@ export default function UserMenuFloating() {
                   }}
                   className="cursor-pointer block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
-                  Déconnexion
+                  Desconexão
                 </button>
               </>
             )}

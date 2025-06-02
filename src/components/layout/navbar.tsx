@@ -17,6 +17,10 @@ export default function Navbar() {
       link: "/",
     },
     {
+      title: "Formações",
+      link: "#formacoes",
+    },
+    {
       title: "Erasmus +",
       link: "/erasmus",
     },
@@ -29,7 +33,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <nav className="w-full h-20 default-p-x bg-white border-b border-[#E7DAED] flex justify-between items-center fixed z-90">
+    <nav className="w-full h-20 default-p-x bg-white border-b border-[#E7DAED] flex justify-between items-center fixed z-40">
       {/* Logo */}
       <Link href={"/"}>
         <Image src="/images/Logo.png" alt="Logo" width={191} height={38} priority />

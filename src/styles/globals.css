@@ -3,8 +3,8 @@
 
 html{
   font-family: "Montserrat", "sans-serif";
+    scroll-behavior: smooth;
 }
-
 @theme {
   --color-primary: #F48221;
   --color-secondary: #FFEDDD;

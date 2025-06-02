@@ -12,7 +12,7 @@ export default async function CoursesTable({
   const courses = await fetchFilteredCourses(query, currentPage);
 
   if (!courses || courses.length === 0) {
-    return <div className="mt-6 text-center text-gray-600">Aucun cours trouvé.</div>;
+    return <div className="mt-6 text-center text-gray-600">Nenhum curso encontrado.</div>;
   }
 
   return (
@@ -44,8 +44,8 @@ export default async function CoursesTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
               <tr>
-                <th className="px-4 py-5 font-medium sm:pl-6">Icon</th>
-                <th className="px-3 py-5 font-medium">Course</th>
+                <th className="px-4 py-5 font-medium sm:pl-6">Ícone</th>
+                <th className="px-3 py-5 font-medium">Formações</th>
                 <th className="px-3 py-5 font-medium" />
               </tr>
             </thead>

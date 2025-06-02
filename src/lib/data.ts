@@ -1,6 +1,10 @@
-import { PrismaClient, Prisma, Category } from "@prisma/client";
+import { PrismaClient, Prisma, CategoryPost, CategoryNewsletter } from "@prisma/client";
+import { generateUniqueSlug, extractImagesFromAttachments } from "@/lib/utils";
 
 const prisma = new PrismaClient();
+
+const FACEBOOK_PAGE_ID = process.env.FACEBOOK_PAGE_ID;
+const FACEBOOK_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
 
 // Users
 export async function fetchUsers() {
@@ -18,6 +22,45 @@ export async function fetchNewsletters() {
 
 export async function fetchNewsletterById(id: string) {
   return await prisma.newsletter.findUnique({ where: { id } });
+}
+
+export async function fetchFilteredNewsletters(query: string, currentPage: number, itemsPerPage = 6) {
+  const offset = (currentPage - 1) * itemsPerPage;
+
+  try {
+    const newsletters = await prisma.newsletter.findMany({
+      where: {
+        email: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      skip: offset,
+      take: itemsPerPage,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return newsletters;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch filtered newsletters.");
+  }
+}
+
+export async function fetchNewslettersPages(query: string, itemsPerPage = 6) {
+  const where: Prisma.NewsletterWhereInput | undefined = query?.trim()
+    ? {
+        email: {
+          contains: query,
+          mode: "insensitive",
+        },
+      }
+    : undefined;
+
+  const totalNewletters = await prisma.newsletter.count({ where });
+  return Math.ceil(Number(totalNewletters) / itemsPerPage);
 }
 
 // Videos
@@ -38,11 +81,7 @@ export async function fetchCourseById(id: string) {
   return await prisma.course.findUnique({ where: { id } });
 }
 
-export async function fetchFilteredCourses(
-  query: string,
-  currentPage: number,
-  itemsPerPage = 6
-) {
+export async function fetchFilteredCourses(query: string, currentPage: number, itemsPerPage = 6) {
   const offset = (currentPage - 1) * itemsPerPage;
 
   try {
@@ -107,18 +146,15 @@ export async function fetchPosts() {
 export async function fetchPostById(id: string) {
   return await prisma.post.findUnique({ where: { id } });
 }
+
 export async function fetchPostBySlug(slug: string) {
-  return await prisma.post.findUnique({
-    where: { slug },
-  });
+  return await prisma.post.findUnique({where: { slug }});
 }
 
-
-export async function fetchPostsByCategory(category: Category) {
-  return await prisma.post.findMany({
-    where: { category },
-  });
+export async function fetchPostsByCategory(category: CategoryPost) {
+  return await prisma.post.findMany({where: { category }});
 }
+
 export async function fetchPostsPages(query: string, itemsPerPage = 6) {
   const where: Prisma.PostWhereInput | undefined = query?.trim()
     ? {
@@ -133,11 +169,7 @@ export async function fetchPostsPages(query: string, itemsPerPage = 6) {
   return Math.ceil(Number(totalPosts) / itemsPerPage);
 }
 
-export async function fetchFilteredPosts(
-  query: string,
-  currentPage: number,
-  itemsPerPage = 6  
-) {
+export async function fetchFilteredPosts(query: string, currentPage: number, itemsPerPage = 6) {
   const safePage = typeof currentPage === 'number' && currentPage > 0 ? currentPage : 1;
   const offset = (safePage - 1) * itemsPerPage;
 
@@ -162,49 +194,50 @@ export async function fetchFilteredPosts(
     throw new Error("Failed to fetch filtered posts.");
   }
 }
-export async function fetchFilteredNewsletters(
-  query: string,
-  currentPage: number,
-  itemsPerPage = 6
-) {
-  const offset = (currentPage - 1) * itemsPerPage;
+
+// --- Facebook Posts ---
+export async function fetchFacebookAndStorePosts() {
+  if (!FACEBOOK_PAGE_ID || !FACEBOOK_ACCESS_TOKEN) {
+    console.error("Missing Facebook credentials.");
+    return;
+  }
 
   try {
-    const newsletters = await prisma.newsletter.findMany({
-      where: query
-        ? {
-            email: {
-              contains: query,
-              mode: "insensitive",
-            },
-          }
-        : {},
-      skip: offset,
-      take: itemsPerPage,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const res = await fetch(
+      `https://graph.facebook.com/v19.0/${FACEBOOK_PAGE_ID}/posts?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,message,created_time,attachments{subattachments}`
+    );
 
-    return newsletters;
+    if (!res.ok) {
+      console.error("Facebook API Error:", await res.text());
+      return;
+    }
+
+    const { data } = await res.json();
+
+    for (const post of data) {
+      const exists = await prisma.post.findUnique({ where: { id: post.id } });
+      if (!exists) {
+        const slug = await generateUniqueSlug(post.message?.substring(0, 50) || "post-facebook");
+        
+        let imagesUrl: string[] = [];
+        if (post.attachments && post.attachments.data) {
+          imagesUrl = extractImagesFromAttachments(post.attachments.data);
+        }
+
+        await prisma.post.create({
+          data: {
+            id: post.id,
+            slug,
+            title: post.message?.substring(0, 15) || "Post Facebook",
+            content: post.message || "",
+            createdAt: new Date(post.created_time),
+            imagesUrl,
+            category: "Facebook"
+          },
+        });
+      }
+    }
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch filtered newsletters.");
+    console.error("Error fetching or storing Facebook posts:", error);
   }
 }
-
-export async function fetchNewslettersPages(query: string, itemsPerPage = 6) {
-  const where = query?.trim()
-    ? {
-        email: {
-          contains: query,
-          mode: "insensitive",
-        },
-      }
-    : {};
-
-  const totalNewsletters = await prisma.newsletter.count({ where });
-
-  return Math.ceil(Number(totalNewsletters) / itemsPerPage);
-}
-

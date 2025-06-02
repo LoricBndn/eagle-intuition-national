@@ -13,6 +13,9 @@ import { generateUniqueSlug } from "@/lib/utils";
 
 const prisma = new PrismaClient();
 
+const NewsletterSchema = z.object({
+  email: z.string().email("A valid email is required."),
+});
 
 export type CourseState = {
   errors?: {
@@ -27,6 +30,13 @@ export type PostState = {
     title?: string[];
     content?: string[];
     imagesUrl?: string[];
+  };
+  message?: string | null;
+};
+
+export type NewsletterState = {
+  errors?: {
+    email?: string[];
   };
   message?: string | null;
 };
@@ -263,10 +273,6 @@ export async function deletePost(id: string) {
 
   revalidatePath("/admin/dashboard/posts");
 }
-
-const NewsletterSchema = z.object({
-  email: z.string().email('Email invalide'),
-});
 
 export async function subscribeToNewsletter(formData: FormData) {
   const email = formData.get('email');

@@ -2,7 +2,7 @@ import Pagination from '@/components/ui/pagination';
 import Search from '@/components/ui/search';
 import { CourseSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
-import {  fetchPostsPages } from '@/lib/data';
+import { fetchPostsPages, fetchFacebookAndStorePosts } from '@/lib/data';
 import { Metadata } from 'next';
 import PostTable from '@/components/post/post-table';
 import { CreatePost } from '@/components/post/buttons';
@@ -17,6 +17,12 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
+  try {
+    await fetchFacebookAndStorePosts();
+  } catch (error) {
+    console.error("Erreur récupération posts Facebook :", error);
+  }
+  
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;

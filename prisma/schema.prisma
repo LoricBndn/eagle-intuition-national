@@ -18,7 +18,7 @@ model Newsletter {
   id        String             @id @default(uuid())
   email     String             @unique
   createdAt DateTime           @default(now())
-  category  CategoryNewsletter // nouvelle colonne
+  category  CategoryNewsletter
 }
 
 model Course {
@@ -29,13 +29,13 @@ model Course {
 }
 
 model Post {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
+  slug      String       @unique
   title     String
-  category  Category
+  category  CategoryPost
   content   String
-  createdAt DateTime @default(now())
+  createdAt DateTime     @default(now())
   imagesUrl String[]
-  slug      String   @unique
 }
 
 model ErasmusCourse {
@@ -62,7 +62,7 @@ model Video {
   createdAt DateTime @default(now())
 }
 
-enum Category {
+enum CategoryPost {
   Web
   Facebook
 }

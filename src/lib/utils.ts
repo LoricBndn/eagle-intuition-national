@@ -61,3 +61,20 @@ export async function generateUniqueSlug(title: string): Promise<string> {
 
   return slug;
 }
+
+export function extractImagesFromAttachments(attachments: any[]): string[] {
+  let images: string[] = [];
+
+  for (const attachment of attachments) {
+    if (attachment.media?.image?.src) {
+      images.push(attachment.media.image.src);
+    }
+
+    // Si cet attachment a des sous-attachments (ex: albums)
+    if (attachment.subattachments?.data) {
+      images = images.concat(extractImagesFromAttachments(attachment.subattachments.data));
+    }
+  }
+
+  return images;
+}

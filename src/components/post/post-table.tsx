@@ -2,7 +2,7 @@ import Image from "next/image";
 import { UpdatePost, DeletePost } from "@/components/post/buttons";
 import { fetchFilteredPosts } from "@/lib/data";
 import { format } from "date-fns";
-import { pt } from "date-fns/locale";  // <-- Import locale portugaise
+import { pt } from "date-fns/locale";
 
 export default async function PostTable({
   query,
@@ -21,6 +21,45 @@ export default async function PostTable({
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+
+          {/* Mobile version */}
+          <div className="md:hidden space-y-4">
+            {posts.map((post) => (
+              <div key={post.id} className="rounded-md bg-white p-4 shadow-sm">
+                <div className="flex items-center mb-2">
+                  {post.imagesUrl?.[0] ? (
+                    <Image
+                      src={post.imagesUrl[0]}
+                      alt="Imagem principal"
+                      width={48}
+                      height={48}
+                      className="rounded-md object-cover mr-3"
+                    />
+                  ) : (
+                    <div className="mr-3 h-12 w-12 rounded bg-gray-200 flex items-center justify-center text-xs text-gray-400">
+                      Nenhuma imagem
+                    </div>
+                  )}
+                  <div className="flex flex-col flex-grow">
+                    <p className="font-semibold text-gray-900 truncate">{post.title}</p>
+                    <p className="text-xs text-gray-500">{post.category}</p>
+                  </div>
+                  <div className="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                    {format(new Date(post.createdAt), "dd MMM yyyy", { locale: pt })}
+                  </div>
+                </div>
+                <p className="mb-3 text-sm text-gray-700 line-clamp-3">
+                  {post.content}
+                </p>
+                <div className="flex justify-end gap-3">
+                  <UpdatePost id={post.id} />
+                  <DeletePost id={post.id} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop version */}
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
               <tr>
@@ -67,8 +106,6 @@ export default async function PostTable({
             </tbody>
           </table>
 
-          {/* Vue mobile si nécessaire */}
-          {/* (optionnel à ajouter si besoin) */}
         </div>
       </div>
     </div>

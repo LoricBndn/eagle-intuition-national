@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "@prisma/client";
+import { CategoryPost, PrismaClient } from "@prisma/client";
 import { writeFile, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -188,8 +188,9 @@ export async function createPost(
       title,
       content,
       imagesUrl: imagePaths,
-      category: "Web",
+      category: CategoryPost.Web,
       slug,
+      url: "",
     },
   });
 
@@ -274,9 +275,11 @@ export async function deletePost(id: string) {
   revalidatePath("/admin/dashboard/posts");
 }
 
+// -------------------- NEWSLETTER --------------------
+
 export async function subscribeToNewsletter(formData: FormData) {
   const email = formData.get('email');
-  const category = formData.get('category'); // on récupère la catégorie
+  const category = formData.get('category');
 
   const result = NewsletterSchema.safeParse({ email });
 
@@ -284,7 +287,7 @@ export async function subscribeToNewsletter(formData: FormData) {
     return { success: false, error: result.error.format().email?._errors[0] || 'Email invalide' };
   }
 
-  if (category !== 'national' && category !== 'international') {
+  if (category !== 'National' && category !== 'International') {
     return { success: false, error: 'Catégorie invalide' };
   }
 
@@ -295,7 +298,7 @@ export async function subscribeToNewsletter(formData: FormData) {
       create: { email: result.data.email, category },
     });
 
-    revalidatePath('/'); // optionnel, pour rafraîchir la page si besoin
+    revalidatePath('/');
     return { success: true };
   } catch (err) {
     console.error('Erreur newsletter:', err);

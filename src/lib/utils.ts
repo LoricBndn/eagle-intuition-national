@@ -1,5 +1,7 @@
 import {  PrismaClient,  } from "@prisma/client";
+
 const prisma = new PrismaClient();
+let generator: any = null;
 
 export const formatDateToLocal = (
   dateStr: string,
@@ -78,3 +80,19 @@ export function extractImagesFromAttachments(attachments: any[]): string[] {
 
   return images;
 }
+
+// export async function generateTitle(content: string): Promise<string> {
+//   if (!generator) {
+//     generator = await pipeline('text2text-generation', 'Xenova/mt5-small');
+//   }
+
+//   const prompt = `crie um título curto: ${content}`;
+//   const output = await generator(prompt, {
+//     max_length: 20,
+//     num_beams: 4,
+//     do_sample: false,
+//     early_stopping: true,
+//   });
+
+//   return output[0]?.generated_text || 'Título automático';
+// }

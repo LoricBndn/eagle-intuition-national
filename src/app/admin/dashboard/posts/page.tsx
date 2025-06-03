@@ -1,14 +1,14 @@
-import Pagination from '@/components/ui/pagination';
-import Search from '@/components/ui/search';
-import { CourseSkeleton } from '@/components/ui/skeletons';
-import { Suspense } from 'react';
-import { fetchPostsPages, fetchFacebookAndStorePosts } from '@/lib/data';
-import { Metadata } from 'next';
-import PostTable from '@/components/post/post-table';
-import { CreatePost } from '@/components/post/buttons';
+import Pagination from "@/components/ui/pagination";
+import Search from "@/components/ui/search";
+import { PostSkeleton } from "@/components/ui/skeletons";
+import { Suspense } from "react";
+import { fetchPostsPages } from "@/lib/data";
+import { Metadata } from "next";
+import PostTable from "@/components/post/post-table";
+import { CreatePost } from "@/components/post/buttons";
 
 export const metadata: Metadata = {
-  title: 'Courses',
+  title: "Posts",
 };
 
 export default async function Page(props: {
@@ -17,14 +17,8 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
-  try {
-    await fetchFacebookAndStorePosts();
-  } catch (error) {
-    console.error("Erreur récupération posts Facebook :", error);
-  }
-  
   const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
+  const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchPostsPages(query);
 
@@ -37,10 +31,9 @@ export default async function Page(props: {
         <Search placeholder="Pesquisar posts..." />
         <CreatePost />
       </div>
-<Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
-  <PostTable query={query} currentPage={currentPage} />
-</Suspense>
-
+      <Suspense key={query + currentPage} fallback={<PostSkeleton />}>
+        <PostTable query={query} currentPage={currentPage} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

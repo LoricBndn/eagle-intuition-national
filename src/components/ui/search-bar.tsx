@@ -3,27 +3,37 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
-import posts from "@/data/posts";
 
 interface SearchBarProps {
   placeholder?: string;
+  initialQuery?: string;
+  initialCategory?: string;
+  categories?: string[];
 }
 
-export default function SearchBar({ placeholder = "Search..." }: SearchBarProps) {
+export default function SearchBar({
+  placeholder = "Search...",
+  initialQuery = "",
+  initialCategory = "All",
+  categories = []
+}: SearchBarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    const uniqueCategories = Array.from(new Set(posts.map((post) => post.category)));
-    setCategories(["All", ...uniqueCategories]);
-  }, []);
+    setSelectedCategory(initialCategory);
+  }, [initialCategory]);
 
-  const handleSearch = useDebouncedCallback((term: string) => {
+  useEffect(() => {
+    setSearchTerm(initialQuery);
+  }, [initialQuery]);
+
+  const updateUrl = (term: string, category: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", "1");
 
@@ -33,27 +43,6 @@ export default function SearchBar({ placeholder = "Search..." }: SearchBarProps)
       params.delete("query");
     }
 
-    if (selectedCategory !== "All") {
-      params.set("category", selectedCategory);
-    } else {
-      params.delete("category");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`);
-  }, 300);
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setIsOpen(false);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", "1");
-
-    const currentQuery = searchParams.get("query");
-    if (currentQuery) {
-      params.set("query", currentQuery);
-    }
-
     if (category !== "All") {
       params.set("category", category);
     } else {
@@ -61,6 +50,16 @@ export default function SearchBar({ placeholder = "Search..." }: SearchBarProps)
     }
 
     router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    updateUrl(term, selectedCategory);
+  }, 300);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setIsOpen(false);
+    updateUrl(searchTerm, category);
   };
 
   return (
@@ -104,8 +103,11 @@ export default function SearchBar({ placeholder = "Search..." }: SearchBarProps)
             id="search-dropdown"
             className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             placeholder={placeholder}
-            defaultValue={searchParams.get("query")?.toString() || ""}
-            onChange={(e) => handleSearch(e.target.value)}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
           />
         </div>
       </div>

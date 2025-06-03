@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import NewsletterForm from "@/components/newsletter/NewsletterForm";
+import NewsletterForm from "@/components/newsletter/newsletter-form";
 
 
 type LinkItem = {
@@ -113,7 +113,7 @@ export default function Footer() {
                     <p className="mb-2 text-sm font-semibold text-title">
                       Newsletter
                     </p>
-                  <NewsletterForm category="national" />
+                  <NewsletterForm category="National" />
                   </li>
                 )}
               </ul>

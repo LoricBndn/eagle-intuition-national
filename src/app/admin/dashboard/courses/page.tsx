@@ -1,7 +1,7 @@
 import Pagination from '@/components/ui/pagination';
 import Search from '@/components/ui/search';
 import CourseTable from '@/components/course/course-table';
-import { CreateCourse} from '@/components/course/buttons';
+import { CreateCourse } from '@/components/course/buttons';
 import { CourseSkeleton } from '@/components/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchCoursesPages } from '@/lib/data';
@@ -31,10 +31,9 @@ export default async function Page(props: {
         <Search placeholder="Pesquisar courses..." />
         <CreateCourse />
       </div>
-<Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
-  <CourseTable query={query} currentPage={currentPage} />
-</Suspense>
-
+      <Suspense key={query + currentPage} fallback={<CourseSkeleton />}>
+        <CourseTable query={query} currentPage={currentPage} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

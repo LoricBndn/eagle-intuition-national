@@ -36,6 +36,7 @@ model Post {
   content   String
   createdAt DateTime     @default(now())
   imagesUrl String[]
+  url       String
 }
 
 model ErasmusCourse {
@@ -68,6 +69,6 @@ enum CategoryPost {
 }
 
 enum CategoryNewsletter {
-  national
-  international
+  National
+  International
 }

@@ -17,10 +17,6 @@ export default function Navbar() {
       link: "/",
     },
     {
-      title: "Formações",
-      link: "#formacoes",
-    },
-    {
       title: "Erasmus +",
       link: "/erasmus",
     },

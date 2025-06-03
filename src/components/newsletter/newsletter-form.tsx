@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { subscribeToNewsletter } from "@/lib/actions"; // l'action server
 
 interface NewsletterFormProps {
-  category: 'national' | 'international';
+  category: 'National' | 'International';
 }
 
 export default function NewsletterForm({ category }: NewsletterFormProps) {

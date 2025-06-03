@@ -1,4 +1,4 @@
-import { fetchFilteredPosts, fetchPostsPages } from "@/lib/data"; // adapte le chemin selon ton projet
+import { fetchFilteredPosts, fetchPostsPages, fetchCategories  } from "@/lib/data";
 import Posts from "@/components/post/posts";
 import SearchBar from "@/components/ui/search-bar";
 import Pagination from "@/components/ui/pagination";
@@ -17,9 +17,10 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
-  const query = searchParams.query?.toLowerCase() || "";
-  const category = searchParams.category || "All";
-  const currentPage = Number(searchParams.page) || 1;
+  const params = await searchParams;
+  const query = params.query?.toLowerCase() || "";
+  const category = params.category || "All";
+  const currentPage = Number(params.page) || 1;
 
   if (currentPage < 1) {
     redirect("/noticias");
@@ -31,13 +32,15 @@ export default async function Page({
     POSTS_PER_PAGE
   );
 
-  // Si catégorie différente de "All", on filtre encore ici (car ta fonction ne gère pas le champ `category`)
   const filteredByCategory =
     category === "All"
       ? allFilteredPosts
       : allFilteredPosts.filter((post) => post.category === category);
 
   const totalPages = await fetchPostsPages(query, POSTS_PER_PAGE);
+
+  const categoriesFromDb = await fetchCategories();
+  const categories = ["All", ...categoriesFromDb];
 
   return (
     <div>
@@ -51,7 +54,14 @@ export default async function Page({
         <h2 className="text-primary text-lg">
           As últimas notícias, entrevistas, tecnologias e recursos do setor.{" "}
         </h2>
-        <SearchBar placeholder="Search articles..." />
+
+        {/* Passer les paramètres actuels au SearchBar */}
+        <SearchBar
+          placeholder="Search articles..."
+          initialQuery={query}
+          initialCategory={category}
+          categories={categories}
+        />
       </div>
 
       <div className="default-p-y" id="posts">

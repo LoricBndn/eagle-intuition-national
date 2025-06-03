@@ -8,7 +8,6 @@ export default function SideNav() {
       <Link
         href="/"
         className="mb-2 flex h-30 items-end justify-start rounded-md p-0 md:h-55 overflow-hidden" 
-        // plus de bg-primary, padding à 0 pour que l'image remplisse
       >
         <div className="w-32 md:w-full h-full rounded-md overflow-hidden relative">
           <EagleIntuitionLogo />

@@ -90,7 +90,7 @@ export default function EditPostForm({
             onChange={handleFileChange}
             className="block w-full text-sm"
           />
-          {state.errors?.images?.map((error) => (
+          {state.errors?.imagesUrl?.map((error) => (
             <p key={error} className="mt-2 text-sm text-red-500">
               {error}
             </p>

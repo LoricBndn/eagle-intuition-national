@@ -1,5 +1,11 @@
-import { PrismaClient, Prisma, CategoryPost, CategoryNewsletter } from "@prisma/client";
+import {
+  PrismaClient,
+  Prisma,
+  CategoryPost,
+  CategoryNewsletter,
+} from "@prisma/client";
 import { generateUniqueSlug, extractImagesFromAttachments } from "@/lib/utils";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +30,11 @@ export async function fetchNewsletterById(id: string) {
   return await prisma.newsletter.findUnique({ where: { id } });
 }
 
-export async function fetchFilteredNewsletters(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredNewsletters(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 6
+) {
   const offset = (currentPage - 1) * itemsPerPage;
 
   try {
@@ -81,7 +91,11 @@ export async function fetchCourseById(id: string) {
   return await prisma.course.findUnique({ where: { id } });
 }
 
-export async function fetchFilteredCourses(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredCourses(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 6
+) {
   const offset = (currentPage - 1) * itemsPerPage;
 
   try {
@@ -148,11 +162,11 @@ export async function fetchPostById(id: string) {
 }
 
 export async function fetchPostBySlug(slug: string) {
-  return await prisma.post.findUnique({where: { slug }});
+  return await prisma.post.findUnique({ where: { slug } });
 }
 
 export async function fetchPostsByCategory(category: CategoryPost) {
-  return await prisma.post.findMany({where: { category }});
+  return await prisma.post.findMany({ where: { category } });
 }
 
 export async function fetchPostsPages(query: string, itemsPerPage = 6) {
@@ -169,8 +183,13 @@ export async function fetchPostsPages(query: string, itemsPerPage = 6) {
   return Math.ceil(Number(totalPosts) / itemsPerPage);
 }
 
-export async function fetchFilteredPosts(query: string, currentPage: number, itemsPerPage = 6) {
-  const safePage = typeof currentPage === 'number' && currentPage > 0 ? currentPage : 1;
+export async function fetchFilteredPosts(
+  query: string,
+  currentPage: number,
+  itemsPerPage = 6
+) {
+  const safePage =
+    typeof currentPage === "number" && currentPage > 0 ? currentPage : 1;
   const offset = (safePage - 1) * itemsPerPage;
 
   try {
@@ -195,47 +214,93 @@ export async function fetchFilteredPosts(query: string, currentPage: number, ite
   }
 }
 
+export async function fetchCategories() {
+  const categories = await prisma.post.findMany({
+    select: { category: true },
+    distinct: ["category"],
+  });
+  return categories.map((c) => c.category);
+}
+
 // --- Facebook Posts ---
-export async function fetchFacebookAndStorePosts() {
+export async function fetchFacebookAndStorePosts(url?: string) {
   if (!FACEBOOK_PAGE_ID || !FACEBOOK_ACCESS_TOKEN) {
     console.error("Missing Facebook credentials.");
     return;
   }
 
+  const seenIds = new Set<string>();
+
+  const apiUrl = url
+    ? url
+    : `https://graph.facebook.com/v23.0/${FACEBOOK_PAGE_ID}/posts?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,message,created_time,attachments,status_type,permalink_url&limit=25`;
+
   try {
-    const res = await fetch(
-      `https://graph.facebook.com/v19.0/${FACEBOOK_PAGE_ID}/posts?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,message,created_time,attachments{subattachments}`
-    );
+    const res = await fetch(apiUrl);
 
     if (!res.ok) {
       console.error("Facebook API Error:", await res.text());
       return;
     }
 
-    const { data } = await res.json();
+    const { data, paging } = await res.json();
 
     for (const post of data) {
+      console.log(post);
+      if (seenIds.has(post.id)) continue;
+      seenIds.add(post.id);
+      if (post.status_type === "mobile_status_update") continue;
+
       const exists = await prisma.post.findUnique({ where: { id: post.id } });
       if (!exists) {
-        const slug = await generateUniqueSlug(post.message?.substring(0, 50) || "post-facebook");
-        
-        let imagesUrl: string[] = [];
-        if (post.attachments && post.attachments.data) {
-          imagesUrl = extractImagesFromAttachments(post.attachments.data);
-        }
+        try {
+          const slug = await generateUniqueSlug(
+            post.message?.substring(0, 15) || "post-facebook"
+          );
 
-        await prisma.post.create({
-          data: {
-            id: post.id,
-            slug,
-            title: post.message?.substring(0, 15) || "Post Facebook",
-            content: post.message || "",
-            createdAt: new Date(post.created_time),
-            imagesUrl,
-            category: "Facebook"
-          },
-        });
+          let imagesUrl: string[] = [];
+          if (post.attachments?.data) {
+            imagesUrl = extractImagesFromAttachments(post.attachments.data);
+          }
+
+          let sharedContent = "";
+          if (post.status_type === "shared_story") {
+            const sharedAttachment = post.attachments.data[0];
+            sharedContent = [
+              sharedAttachment?.title,
+              sharedAttachment?.description,
+              sharedAttachment?.url,
+            ]
+              .filter(Boolean)
+              .join("\n");
+          }
+
+          await prisma.post.create({
+            data: {
+              id: post.id,
+              slug,
+              title:
+                post.message?.substring(0, 10) ||
+                sharedContent.substring(0, 10) ||
+                "Post Facebook",
+              content: post.message || sharedContent || "",
+              createdAt: new Date(post.created_time),
+              imagesUrl,
+              category: CategoryPost.Facebook,
+              url: post.permalink_url,
+            },
+          });
+        } catch (error) {
+          console.error(
+            `Erreur lors de la création du post ${post.id} :`,
+            error
+          );
+        }
       }
+    }
+
+    if (paging?.next) {
+      return fetchFacebookAndStorePosts(paging.next);
     }
   } catch (error) {
     console.error("Error fetching or storing Facebook posts:", error);

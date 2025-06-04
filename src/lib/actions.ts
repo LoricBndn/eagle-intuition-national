@@ -72,11 +72,11 @@ export async function createCourse(prevState: any, formData: FormData) {
 
   const buffer = Buffer.from(await iconFile.arrayBuffer());
   const filename = `${uuidv4()}-${iconFile.name}`;
-  const uploadPath = path.join(process.cwd(), "public/icons", filename);
+  const uploadPath = path.join(process.cwd(), "public/courses/icons", filename);
 
   await writeFile(uploadPath, buffer);
 
-  const imageUrl = `/icons/${filename}`;
+  const imageUrl = `/courses/icons/${filename}`;
 
   await prisma.course.create({
     data: {
@@ -112,13 +112,13 @@ export async function updateCourse(
   if (iconFile && iconFile.size > 0) {
     const buffer = Buffer.from(await iconFile.arrayBuffer());
     const filename = `${uuidv4()}-${iconFile.name}`;
-    const uploadPath = path.join(process.cwd(), "public/icons", filename);
+    const uploadPath = path.join(process.cwd(), "public/courses/icons", filename);
 
     await writeFile(uploadPath, buffer);
-    imageUrl = `/icons/${filename}`;
+    imageUrl = `/courses/icons/${filename}`;
 
     const existingCourse = await prisma.course.findUnique({ where: { id } });
-    if (existingCourse?.iconUrl && existingCourse.iconUrl.startsWith("/icons/")) {
+    if (existingCourse?.iconUrl && existingCourse.iconUrl.startsWith("/courses/icons/")) {
       const oldPath = path.join(process.cwd(), "public", existingCourse.iconUrl);
       await unlink(oldPath).catch(() => {});
     }
@@ -139,7 +139,7 @@ export async function updateCourse(
 export async function deleteCourse(id: string) {
   const course = await prisma.course.findUnique({ where: { id } });
 
-  if (course?.iconUrl && course.iconUrl.startsWith("/icons/")) {
+  if (course?.iconUrl && course.iconUrl.startsWith("/courses/icons/")) {
     const imagePath = path.join(process.cwd(), "public", course.iconUrl);
     await unlink(imagePath).catch(() => {});
   }
@@ -149,7 +149,7 @@ export async function deleteCourse(id: string) {
   revalidatePath("/admin/dashboard/courses");
 }
 
-// -------------------- POSTS --------------------
+// -------------------- POST --------------------
 
 export async function createPost(
   prevState: PostState,
@@ -175,9 +175,9 @@ export async function createPost(
     if (file && file.size > 0) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filename = `${uuidv4()}-${file.name}`;
-      const uploadPath = path.join(process.cwd(), "public/postsImg", filename);
+      const uploadPath = path.join(process.cwd(), "public/posts/images", filename);
       await writeFile(uploadPath, buffer);
-      imagePaths.push(`/postsImg/${filename}`);
+      imagePaths.push(`/posts/images/${filename}`);
     }
   }
 
@@ -228,9 +228,9 @@ export async function updatePost(prevState: any, formData: FormData) {
     if (file && file.size > 0) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filename = `${uuidv4()}-${file.name}`;
-      const uploadPath = path.join(process.cwd(), "public/postsImg", filename);
+      const uploadPath = path.join(process.cwd(), "public/posts/images", filename);
       await writeFile(uploadPath, buffer);
-      newImagePaths.push(`/postsImg/${filename}`);
+      newImagePaths.push(`/posts/images/${filename}`);
     }
   }
 
@@ -263,7 +263,7 @@ export async function deletePost(id: string) {
 
   if (post) {
     for (const imagePath of post.imagesUrl) {
-      if (imagePath.startsWith("/postsImg/")) {
+      if (imagePath.startsWith("/posts/images/")) {
         const fullPath = path.join(process.cwd(), "public", imagePath);
         await unlink(fullPath).catch(() => {});
       }
@@ -313,12 +313,250 @@ export async function deleteNewsletter(id: string) {
       where: { id },
     });
 
-    // Revalide la page pour afficher les données à jour
-    revalidatePath('/admin/newsletters'); // change ce chemin selon ta route
+    revalidatePath('/admin/newsletters');
   } catch (error) {
     console.error("Erreur de suppression :", error);
     throw new Error('Erreur lors de la suppression de la newsletter');
   }
 }
 
+// -------------------- ERASMUS COURSE --------------------
 
+export async function createErasmusCourse(prevState: any, formData: FormData) {
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const content = formData.get("content") as string;
+  const imageFile = formData.get("image") as File;
+
+  if (!title || !description || !content || !imageFile) {
+    return {
+      message: "All fields are required.",
+      errors: {
+        title: ["The title is required."],
+        description: ["The description is required."],
+        content: ["The content is required."],
+        imageUrl: ["An image must be uploaded."],
+      },
+    };
+  }
+
+  const buffer = Buffer.from(await imageFile.arrayBuffer());
+  const filename = `${uuidv4()}-${imageFile.name}`;
+  const uploadPath = path.join(process.cwd(), "public/erasmus/courses/images", filename);
+  await writeFile(uploadPath, buffer);
+
+  const imageUrl = `/erasmus/courses/images/${filename}`;
+
+  await prisma.erasmusCourse.create({
+    data: { title, description, content, imageUrl },
+  });
+
+  revalidatePath("/admin/dashboard/erasmus-courses");
+  redirect("/admin/dashboard/erasmus-courses");
+}
+
+export async function updateErasmusCourse(prevState: any, formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = parseString(formData.get("title"));
+  const description = parseString(formData.get("description"));
+  const content = parseString(formData.get("content"));
+  const imageFile = formData.get("image") as File | null;
+
+  if (!id || !title || !description || !content) {
+    return {
+      message: "Missing required fields.",
+      errors: {
+        title: ["Required."],
+        description: ["Required."],
+        content: ["Required."],
+        imageUrl: imageFile ? [] : ["An image must be uploaded or retained."],
+      },
+    };
+  }
+
+  let imageUrl: string | null = null;
+
+  if (imageFile && imageFile.size > 0) {
+    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    const filename = `${uuidv4()}-${imageFile.name}`;
+    const uploadPath = path.join(process.cwd(), "public/erasmus/courses/images", filename);
+    await writeFile(uploadPath, buffer);
+    imageUrl = `/erasmus/courses/images/${filename}`;
+
+    const existing = await prisma.erasmusCourse.findUnique({ where: { id } });
+    if (existing?.imageUrl?.startsWith("/erasmus/courses/images/")) {
+      const oldPath = path.join(process.cwd(), "public", existing.imageUrl);
+      await unlink(oldPath).catch(() => {});
+    }
+  }
+
+  await prisma.erasmusCourse.update({
+    where: { id },
+    data: {
+      title,
+      description,
+      content,
+      ...(imageUrl && { imageUrl }),
+    },
+  });
+
+  revalidatePath("/admin/dashboard/erasmus-courses");
+  redirect("/admin/dashboard/erasmus-courses");
+}
+
+export async function deleteErasmusCourse(id: string) {
+  const course = await prisma.erasmusCourse.findUnique({ where: { id } });
+  if (course?.imageUrl?.startsWith("/erasmus/courses/images/")) {
+    const imagePath = path.join(process.cwd(), "public", course.imageUrl);
+    await unlink(imagePath).catch(() => {});
+  }
+
+  await prisma.erasmusCourse.delete({ where: { id } });
+
+  revalidatePath("/admin/dashboard/erasmus-courses");
+}
+
+// -------------------- ERASMUS PROJECT --------------------
+
+export async function createErasmusProject(prevState: any, formData: FormData) {
+  const title = formData.get("title") as string;
+  const url = formData.get("url") as string;
+  const imageFile = formData.get("image") as File;
+
+  if (!title || !url || !imageFile) {
+    return {
+      message: "All fields are required.",
+      errors: {
+        title: ["Required."],
+        url: ["Required."],
+        imageUrl: ["An image must be uploaded."],
+      },
+    };
+  }
+
+  const buffer = Buffer.from(await imageFile.arrayBuffer());
+  const filename = `${uuidv4()}-${imageFile.name}`;
+  const uploadPath = path.join(process.cwd(), "public/erasmus/projects/images", filename);
+  await writeFile(uploadPath, buffer);
+
+  const imageUrl = `/erasmus/projects/images/${filename}`;
+
+  await prisma.erasmusProject.create({
+    data: { title, url, imageUrl },
+  });
+
+  revalidatePath("/admin/dashboard/erasmus-projects");
+  redirect("/admin/dashboard/erasmus-projects");
+}
+
+export async function updateErasmusProject(prevState: any, formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = parseString(formData.get("title"));
+  const url = parseString(formData.get("url"));
+  const imageFile = formData.get("image") as File | null;
+
+  if (!id || !title || !url) {
+    return {
+      message: "Missing required fields.",
+      errors: {
+        title: ["Required."],
+        url: ["Required."],
+        imageUrl: imageFile ? [] : ["An image must be uploaded or retained."],
+      },
+    };
+  }
+
+  let imageUrl: string | null = null;
+
+  if (imageFile && imageFile.size > 0) {
+    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    const filename = `${uuidv4()}-${imageFile.name}`;
+    const uploadPath = path.join(process.cwd(), "public/erasmus/projects/images", filename);
+    await writeFile(uploadPath, buffer);
+    imageUrl = `/erasmus/projects/images/${filename}`;
+
+    const existing = await prisma.erasmusProject.findUnique({ where: { id } });
+    if (existing?.imageUrl?.startsWith("/erasmus/projects/images/")) {
+      const oldPath = path.join(process.cwd(), "public", existing.imageUrl);
+      await unlink(oldPath).catch(() => {});
+    }
+  }
+
+  await prisma.erasmusProject.update({
+    where: { id },
+    data: {
+      title,
+      url,
+      ...(imageUrl && { imageUrl }),
+    },
+  });
+
+  revalidatePath("/admin/dashboard/erasmus-projects");
+  redirect("/admin/dashboard/erasmus-projects");
+}
+
+export async function deleteErasmusProject(id: string) {
+  const project = await prisma.erasmusProject.findUnique({ where: { id } });
+  if (project?.imageUrl?.startsWith("/erasmus/projects/images/")) {
+    const imagePath = path.join(process.cwd(), "public", project.imageUrl);
+    await unlink(imagePath).catch(() => {});
+  }
+
+  await prisma.erasmusProject.delete({ where: { id } });
+
+  revalidatePath("/admin/dashboard/erasmus-projects");
+}
+
+// -------------------- VIDEO --------------------
+
+export async function createVideo(prevState: any, formData: FormData) {
+  const title = formData.get("title") as string;
+  const url = formData.get("url") as string;
+
+  if (!title || !url) {
+    return {
+      message: "All fields are required.",
+      errors: {
+        title: ["Required."],
+        url: ["Required."],
+      },
+    };
+  }
+
+  await prisma.video.create({
+    data: { title, url },
+  });
+
+  revalidatePath("/admin/dashboard/videos");
+  redirect("/admin/dashboard/videos");
+}
+
+export async function updateVideo(prevState: any, formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = parseString(formData.get("title"));
+  const url = parseString(formData.get("url"));
+
+  if (!id || !title || !url) {
+    return {
+      message: "Missing required fields.",
+      errors: {
+        title: ["Required."],
+        url: ["Required."],
+      },
+    };
+  }
+
+  await prisma.video.update({
+    where: { id },
+    data: { title, url },
+  });
+
+  revalidatePath("/admin/dashboard/videos");
+  redirect("/admin/dashboard/videos");
+}
+
+export async function deleteVideo(id: string) {
+  await prisma.video.delete({ where: { id } });
+
+  revalidatePath("/admin/dashboard/videos");
+}

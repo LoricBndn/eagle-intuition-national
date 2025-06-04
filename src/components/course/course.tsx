@@ -47,7 +47,7 @@ export default function Course({ items }: { items: CourseItem[] }) {
       <div id="formacoes" className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
         <div className="max-w-6xl w-full flex justify-center">
           <CourseCard
-            icon="/icons/ban.svg"
+            icon="/courses/icons/ban.svg"
             title="Lista de formações disponíveis: Brevemente"
           />
         </div>

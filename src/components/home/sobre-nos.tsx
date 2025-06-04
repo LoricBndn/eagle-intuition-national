@@ -5,10 +5,10 @@ import Button from "@/components/ui/button";
 export default function SobreNos() {
   return (
     <div className="bg-white default-p-y w-full default-p-x flex justify-between items-center gap-8 lg:gap-16 max-lg:flex-col">
-      {/* Partie Image */}
+      {/* Image Section */}
       <div className="w-1/2 max-lg:w-full relative">
         <Image
-          src="/images/sobrenos_imge.png"
+          src="/images/sobrenos.png"
           alt="Sobre Nos Image"
           width={1200}
           height={675}
@@ -16,7 +16,7 @@ export default function SobreNos() {
         />
       </div>
 
-      {/* Partie Texte */}
+      {/* Text Section */}
       <div className="w-1/2 max-lg:w-full relative ">
         <Title title="Sobre nós ?" />
         <p className="text-justify text-base mt-4 mb-12">

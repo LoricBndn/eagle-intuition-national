@@ -7,6 +7,7 @@ import {
   Mails,
   BookOpen,
   Folder,
+  Handshake,
   Video,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -15,15 +16,12 @@ import clsx from 'clsx';
 
 const links = [
   { name: 'Home', href: '/admin/dashboard', icon: Home },
-  {
-    name: 'Formações',
-    href: '/admin/dashboard/courses',
-    icon: GraduationCap,
-  },
+  { name: 'Formações', href: '/admin/dashboard/courses', icon: GraduationCap },
   { name: 'Posts', href: '/admin/dashboard/posts', icon: Newspaper },
   { name: 'Newsletters', href: '/admin/dashboard/newsletters', icon: Mails },
   { name: 'Erasmus Courses', href: '/admin/dashboard/erasmus-courses', icon: BookOpen },
   { name: 'Erasmus Projects', href: '/admin/dashboard/erasmus-projects', icon: Folder },
+  { name: 'Partner', href: '/admin/dashboard/partner', icon: Handshake },
   { name: 'Videos', href: '/admin/dashboard/videos', icon: Video },
 ];
 

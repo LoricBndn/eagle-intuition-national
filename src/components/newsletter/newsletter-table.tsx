@@ -10,6 +10,10 @@ export default async function NewsletterTable({
 }) {
   const newsletters = await fetchFilteredNewsletters(query, currentPage);
 
+  if (!newsletters || newsletters.length === 0) {
+    return <div className="mt-6 text-center text-gray-600">Não foi encontrado qualquer correio eletrónico.</div>;
+  }
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

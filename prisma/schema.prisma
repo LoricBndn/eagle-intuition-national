@@ -14,58 +14,69 @@ model User {
   password String
 }
 
-model Newsletter {
-  id        String             @id @default(uuid())
-  email     String             @unique
-  createdAt DateTime           @default(now())
-  category  CategoryNewsletter
-}
-
 model Course {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
   createdAt DateTime @default(now())
   iconUrl   String   @unique
 }
 
 model Post {
-  id        String       @id @default(uuid())
+  id        String       @id @default(cuid())
   slug      String       @unique
   title     String
   category  CategoryPost
   content   String
+  url       String       @unique
   createdAt DateTime     @default(now())
   imagesUrl String[]
-  url       String
+}
+
+model Newsletter {
+  id        String             @id @default(cuid())
+  email     String             @unique
+  category  CategoryNewsletter
+  createdAt DateTime           @default(now())
 }
 
 model ErasmusCourse {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   title       String
   description String
-  content     String
+  pdf         String   @unique
+  url         String   @unique
   createdAt   DateTime @default(now())
   imageUrl    String   @unique
 }
 
 model ErasmusProject {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
-  url       String
+  url       String   @unique
+  createdAt DateTime @default(now())
+  imageUrl  String   @unique
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  title     String
+  url       String   @unique
   createdAt DateTime @default(now())
   imageUrl  String   @unique
 }
 
 model Video {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   title     String
-  url       String
+  url       String   @unique
   createdAt DateTime @default(now())
+  imageUrl  String   @unique
 }
 
 enum CategoryPost {
   Web
-  Facebook
+  National
+  International
 }
 
 enum CategoryNewsletter {

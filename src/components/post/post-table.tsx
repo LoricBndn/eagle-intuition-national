@@ -14,7 +14,7 @@ export default async function PostTable({
   const posts = await fetchFilteredPosts(query, currentPage);
 
   if (!posts || posts.length === 0) {
-    return <div className="mt-6 text-center text-gray-600">Aucun post trouvé.</div>;
+    return <div className="mt-6 text-center text-gray-600">Não foram encontradas mensagens.</div>;
   }
 
   return (

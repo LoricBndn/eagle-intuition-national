@@ -1,5 +1,5 @@
 import Form from '@/components/course/create-form';
-import Breadcrumbs from '@/components/admin/breadcrumbs';
+import Breadcrumbs from '@/components/admin/dashboard/breadcrumbs';
  
 export default async function Page() {
  

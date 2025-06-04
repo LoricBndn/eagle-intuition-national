@@ -1,5 +1,5 @@
 import Form from '@/components/course/edit-form';
-import Breadcrumbs from '@/components/admin/breadcrumbs';
+import Breadcrumbs from '@/components/admin/dashboard/breadcrumbs';
 import { fetchCourseById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 

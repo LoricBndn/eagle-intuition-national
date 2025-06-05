@@ -238,8 +238,7 @@ export async function updatePost(prevState: any, formData: FormData) {
       message: "Missing required fields.",
       errors: {
         title: !title ? ["The title is required."] : [],
-        content: !content ? ["The content is required."] : [],
-        imagesUrl: [], // On peut retirer l'erreur ici car on autorise aucune nouvelle image
+        content: !content ? ["The content is required."] : []
       },
     };
   }
@@ -410,9 +409,10 @@ export async function createErasmusCourse(
 }
 
 export async function updateErasmusCourse(
-  id: string,
+  prevState: ErasmusCourseState,
   formData: FormData
 ): Promise<ErasmusCourseState> {
+  const id = formData.get('id') as string;
   const title = formData.get('title') as string;
   const description = formData.get('description') as string;
   const pdfFile = formData.get('pdf') as File | null;
@@ -422,8 +422,6 @@ export async function updateErasmusCourse(
 
   if (!title) errors.title = ['The title is required.'];
   if (!description) errors.description = ['The description is required.'];
-  if (imageFile && imageFile.size === 0) errors.imageUrl = ['Uploaded image is empty.'];
-  if (pdfFile && !pdfFile.name.endsWith('.pdf')) errors.pdf = ['Only PDF files are accepted.'];
 
   if (Object.keys(errors).length > 0) {
     return {
@@ -439,7 +437,7 @@ export async function updateErasmusCourse(
   }
 
   let imageUrl = existingCourse.imageUrl;
-  if (imageFile && imageFile.size > 0) {
+  if (imageFile instanceof File && imageFile.size > 0) {
     // Supprimer ancienne image
     const oldImagePath = path.join(process.cwd(), 'public', existingCourse.imageUrl);
     await unlink(oldImagePath).catch(() => {});
@@ -453,7 +451,7 @@ export async function updateErasmusCourse(
   }
 
   let pdfUrl = existingCourse.pdf;
-  if (pdfFile && pdfFile.size > 0) {
+  if (pdfFile instanceof File && pdfFile.size > 0) {
     // Supprimer ancien pdf
     if (existingCourse.pdf) {
       const oldPdfPath = path.join(process.cwd(), 'public', existingCourse.pdf);

@@ -2,13 +2,25 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/button";
-import { createErasmusCourse, ErasmusCourseState } from "@/lib/actions";
+import { updateErasmusCourse, ErasmusCourseState } from "@/lib/actions";
 import { useActionState } from "react";
 import { Edit } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-export default function CreateErasmusCourseForm() {
+export default function EditErasmusCourseForm({
+  course,
+}: {
+  course: {
+    id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    pdf: string;
+  };
+}) {
   const initialState: ErasmusCourseState = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createErasmusCourse, initialState);
+  const [state, formAction] = useActionState(updateErasmusCourse, initialState);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +36,8 @@ export default function CreateErasmusCourseForm() {
 
   return (
     <form action={formAction}>
+      <input type="hidden" name="id" value={course.id} />
+
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Title */}
         <div className="mb-4">
@@ -34,7 +48,7 @@ export default function CreateErasmusCourseForm() {
               id="title"
               name="title"
               type="text"
-              placeholder="Erasmus Course Title"
+              defaultValue={course.title}
               className="block w-full rounded-md border border-gray-200 py-2 pl-9 pr-3 text-sm"
               aria-describedby="title-error"
             />
@@ -52,8 +66,8 @@ export default function CreateErasmusCourseForm() {
           <textarea
             id="description"
             name="description"
+            defaultValue={course.description}
             rows={4}
-            placeholder="Course description..."
             className="w-full rounded-md border border-gray-200 p-2 text-sm"
             aria-describedby="description-error"
           />
@@ -66,7 +80,7 @@ export default function CreateErasmusCourseForm() {
 
         {/* PDF Upload */}
         <div className="mb-4">
-          <label htmlFor="pdf" className="mb-2 block text-sm font-medium">Upload PDF</label>
+          <label htmlFor="pdf" className="mb-2 block text-sm font-medium">Upload New PDF</label>
           <input
             id="pdf"
             name="pdf"
@@ -80,6 +94,11 @@ export default function CreateErasmusCourseForm() {
               <p className="mt-2 text-sm text-red-500" key={error}>{error}</p>
             ))}
           </div>
+          {course.pdf && (
+            <p className="mt-2 text-sm text-blue-600 underline">
+              <a href={course.pdf} target="_blank" rel="noopener noreferrer">Current PDF</a>
+            </p>
+          )}
         </div>
 
         {/* Image Upload */}
@@ -100,16 +119,24 @@ export default function CreateErasmusCourseForm() {
             ))}
           </div>
 
-          {previewUrl && (
-            <div className="mt-4">
-              <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
+          <div className="mt-4">
+            <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
+            {previewUrl ? (
               <img
                 src={previewUrl}
-                alt="Image preview"
+                alt="Preview"
                 className="h-32 w-auto rounded-md border border-gray-300 object-cover"
               />
-            </div>
-          )}
+            ) : (
+              <Image
+                src={course.imageUrl}
+                alt={course.title}
+                width={300}
+                height={200}
+                className="rounded-md border border-gray-300 object-cover"
+              />
+            )}
+          </div>
         </div>
 
         {/* Global Error */}
@@ -120,12 +147,13 @@ export default function CreateErasmusCourseForm() {
 
       {/* Buttons */}
       <div className="mt-6 flex justify-end gap-4">
-        <Button
-          text="Cancel"
-          link="/admin/dashboard/erasmus-courses"
-          className="bg-gray-100 text-gray-600 hover:bg-gray-200"
-        />
-        <Button text="Criar Erasmus Formação" type="submit" />
+        <Link
+          href="/admin/dashboard/erasmus-courses"
+          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+        >
+          Cancel
+        </Link>
+        <Button text="Save Changes" type="submit" />
       </div>
     </form>
   );

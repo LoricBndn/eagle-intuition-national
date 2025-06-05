@@ -13,7 +13,7 @@ export default async function ErasmusProjectTable({
   const projects = await fetchFilteredErasmusProjects(query, currentPage);
 
   if (!projects || projects.length === 0) {
-    return <div className="mt-6 text-center text-gray-600">Nenhum projeto encontrado.</div>;
+    return <div className="mt-6 text-center text-gray-600">Nenhum parceiro encontrado.</div>;
   }
 
   return (

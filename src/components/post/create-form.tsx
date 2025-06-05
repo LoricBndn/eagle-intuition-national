@@ -38,7 +38,7 @@ export default function CreatePostForm() {
     <form
       action={formAction}
       encType="multipart/form-data"
-      onSubmit={(e) => {
+      onSubmit={() => {
         const dataTransfer = new DataTransfer();
         images.forEach((file) => dataTransfer.items.add(file));
         if (fileInputRef.current) fileInputRef.current.files = dataTransfer.files;

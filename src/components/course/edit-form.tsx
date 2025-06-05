@@ -91,9 +91,12 @@ export default function EditCourseForm({
           <div className="mt-4">
             <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
             {previewUrl ? (
-              <img
+              <Image
                 src={previewUrl}
                 alt="Preview"
+                width={300}
+                height={200}
+                unoptimized // important ici car c'est une Data URL
                 className="h-32 w-auto rounded-md border border-gray-300 object-cover"
               />
             ) : (

@@ -76,12 +76,6 @@ function parseString(value: FormDataEntryValue | null): string | null {
   return null;
 }
 
-function parseStringArray(values: FormDataEntryValue[] | null): string[] {
-  return (values ?? []).filter(
-    (val): val is string => typeof val === "string" && val.trim() !== ""
-  );
-}
-
 // -------------------- COURSE --------------------
 
 export async function createCourse(prevState: any, formData: FormData) {

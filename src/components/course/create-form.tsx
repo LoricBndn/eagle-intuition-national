@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import Button from "@/components/ui/button";
 import { createCourse, CourseState } from "@/lib/actions";
@@ -85,10 +86,13 @@ export default function CreateCourseForm() {
           {previewUrl && (
             <div className="mt-4">
               <p className="mb-2 text-sm font-medium text-gray-700">Preview:</p>
-              <img
+              <Image
                 src={previewUrl}
                 alt="Selected preview"
+                width={128}
+                height={128}
                 className="h-32 w-auto rounded-md border border-gray-300 object-cover"
+                unoptimized
               />
             </div>
           )}

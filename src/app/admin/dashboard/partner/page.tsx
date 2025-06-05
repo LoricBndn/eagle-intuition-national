@@ -5,7 +5,7 @@ import { fetchPartnersPages } from "@/lib/data";
 import Search from "@/components/ui/search";
 import { CreatePartner } from "@/components/partner/buttons";
 import { PartnerSkeleton } from "@/components/ui/skeletons";
-import PartnerTable from "@/components/erasmus/erasmus-project-table";
+import PartnerTable from "@/components/partner/partner-table";
 import Pagination from "@/components/ui/pagination";
 
 export const metadata: Metadata = {

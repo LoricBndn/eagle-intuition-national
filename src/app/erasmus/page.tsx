@@ -1,23 +1,25 @@
 import Title from "@/components/ui/title";
 import ErasmusCard from "@/components/erasmus/erasmus-card";
 import ErasmusCarousel from "@/components/erasmus/erasmus-carousel";
-import erasmus_courses from "@/data/erasmus-courses";
-import erasmus_projects from "@/data/erasmus-projects";
+import { fetchErasmusCourses, fetchErasmusProjects } from "@/lib/data";
 import { Metadata } from "next";
 
 interface ErasmusCourse {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  image: string;
-  link: string;
+  pdf: string;
+  url: string;
+  createdAt: Date;
+  imageUrl: string;
 }
 
 interface ErasmusProject {
-  id: number;
-  href: string;
-  src: string;
-  alt: string;
+  id: string;
+  title: string;
+  url: string;
+  createdAt: Date;
+  imageUrl: string;
 }
 
 export const metadata: Metadata = {
@@ -28,8 +30,8 @@ export const metadata: Metadata = {
 
 
 export default async function Page() {
-  const courses: ErasmusCourse[] = erasmus_courses;
-  const projects: ErasmusProject[] = erasmus_projects;
+  const courses: ErasmusCourse[] = await fetchErasmusCourses();
+  const projects: ErasmusProject[] = await fetchErasmusProjects();
 
   return (
     <div className="default-p-x py-10 pt-40">
@@ -47,8 +49,8 @@ export default async function Page() {
         ERASMUS+ Ka1 Courses
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-16">
-        {courses.map((post, index) => (
-          <ErasmusCard key={index} {...post} />
+        {courses.map((post) => (
+          <ErasmusCard key={post.id} {...post} />
         ))}
       </div>
 

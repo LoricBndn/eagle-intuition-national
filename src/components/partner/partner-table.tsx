@@ -26,7 +26,7 @@ export default async function PartnerTable({
             {partners.map((partner) => (
               <div key={partner.id} className="mb-2 w-full rounded-md bg-white p-4">
                 <div className="space-y-3">
-                  <p className="text-lg font-medium">{partner.title}</p>
+                  <p className="text-lg font-medium">{partner.name}</p>
                   <Link
                     href={partner.url}
                     target="_blank"
@@ -38,7 +38,7 @@ export default async function PartnerTable({
                   <div className="relative h-36 w-full overflow-hidden rounded-md">
                     <Image
                       src={partner.imageUrl}
-                      alt={partner.title}
+                      alt={partner.name}
                       fill
                       className="object-cover"
                     />
@@ -60,7 +60,7 @@ export default async function PartnerTable({
             <thead className="text-left text-sm font-normal">
               <tr>
                 <th className="px-4 py-5 font-medium sm:pl-6">Imagem</th>
-                <th className="px-3 py-5 font-medium">Título</th>
+                <th className="px-3 py-5 font-medium">Nome</th>
                 <th className="px-3 py-5 font-medium">URL</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
                 <th className="px-3 py-5 font-medium" />
@@ -72,13 +72,13 @@ export default async function PartnerTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <Image
                       src={partner.imageUrl}
-                      alt={partner.title}
+                      alt={partner.name}
                       width={80}
                       height={80}
                       className="rounded-md object-cover"
                     />
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">{partner.title}</td>
+                  <td className="whitespace-nowrap px-3 py-3">{partner.name}</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <Link
                       href={partner.url}

@@ -21,7 +21,7 @@ const links = [
   { name: 'Newsletters', href: '/admin/dashboard/newsletters', icon: Mails },
   { name: 'Erasmus Courses', href: '/admin/dashboard/erasmus-courses', icon: BookOpen },
   { name: 'Erasmus Projects', href: '/admin/dashboard/erasmus-projects', icon: Folder },
-  { name: 'Partner', href: '/admin/dashboard/partner', icon: Handshake },
+  { name: 'Partners', href: '/admin/dashboard/partners', icon: Handshake },
   { name: 'Videos', href: '/admin/dashboard/videos', icon: Video },
 ];
 

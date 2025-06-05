@@ -65,7 +65,7 @@ export default async function ErasmusCourseTable({
                 <th className="px-3 py-5 font-medium">PDF</th>
                 <th className="px-3 py-5 font-medium">Site</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white">

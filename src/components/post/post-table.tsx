@@ -68,7 +68,7 @@ export default async function PostTable({
                 <th className="px-3 py-5 font-medium">Resumo</th>
                 <th className="px-3 py-5 font-medium">Imagem principal</th>
                 <th className="px-3 py-5 font-medium">Data</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white">

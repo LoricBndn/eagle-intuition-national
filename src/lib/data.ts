@@ -469,7 +469,7 @@ export async function fetchFilteredPartners(
 
   return await prisma.partner.findMany({
     where: {
-      title: {
+      name: {
         contains: query,
         mode: "insensitive",
       },
@@ -485,7 +485,7 @@ export async function fetchFilteredPartners(
 export async function fetchPartnersPages(query: string, itemsPerPage = 6) {
   const where: Prisma.PartnerWhereInput | undefined = query?.trim()
     ? {
-        title: {
+        name: {
           contains: query,
           mode: "insensitive",
         },

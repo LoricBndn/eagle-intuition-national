@@ -26,7 +26,7 @@ export function CourseSkeleton() {
             <thead className="text-left text-sm font-normal">
               <tr>
                 <th className="px-4 py-5 font-medium sm:pl-6">Ícone</th>
-                <th className="px-3 py-5 font-medium">Formações</th>
+                <th className="px-3 py-5 font-medium">Form</th>
                 <th className="px-3 py-5 font-medium" />
               </tr>
             </thead>
@@ -89,7 +89,7 @@ export function PostSkeleton() {
                 <th className="px-3 py-5 font-medium">Resumo</th>
                 <th className="px-3 py-5 font-medium">Imagem principal</th>
                 <th className="px-3 py-5 font-medium">Data</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
@@ -159,7 +159,7 @@ export function NewsletterSkeleton() {
                 <th className="px-4 py-5 font-medium sm:pl-6">Email :</th>
                 <th className="px-3 py-5 font-medium">Criado na</th>
                 <th className="px-3 py-5 font-medium">Categoria</th>
-                <th className="px-3 py-5 font-medium">Ação</th>
+                <th className="px-3 py-5 font-medium"></th>
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
@@ -223,7 +223,7 @@ export function ErasmusCourseSkeleton() {
                 <th className="px-3 py-5 font-medium">PDF</th>
                 <th className="px-3 py-5 font-medium">Site</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
@@ -296,7 +296,7 @@ export function ErasmusProjectSkeleton() {
                 <th className="px-3 py-5 font-medium">Título</th>
                 <th className="px-3 py-5 font-medium">URL</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
@@ -360,10 +360,10 @@ export function PartnerSkeleton() {
             <thead className="text-left text-sm font-normal">
               <tr>
                 <th className="px-4 py-5 font-medium sm:pl-6">Imagem</th>
-                <th className="px-3 py-5 font-medium">Título</th>
+                <th className="px-3 py-5 font-medium">Nome</th>
                 <th className="px-3 py-5 font-medium">URL</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
-                <th className="px-3 py-5 font-medium text-right">Ações</th>
+                <th className="px-3 py-5 font-medium text-right"></th>
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">

@@ -59,7 +59,7 @@ model ErasmusProject {
 
 model Partner {
   id        String   @id @default(cuid())
-  title     String
+  name      String
   url       String   @unique
   createdAt DateTime @default(now())
   imageUrl  String   @unique

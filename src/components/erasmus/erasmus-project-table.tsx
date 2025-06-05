@@ -63,7 +63,7 @@ export default async function ErasmusProjectTable({
                 <th className="px-3 py-5 font-medium">Título</th>
                 <th className="px-3 py-5 font-medium">URL</th>
                 <th className="px-3 py-5 font-medium">Criado em</th>
-                <th className="px-3 py-5 font-medium" />
+                <th className="px-3 py-5 font-medium"></th>
               </tr>
             </thead>
             <tbody className="bg-white">

@@ -49,7 +49,7 @@ export default async function NewsletterTable({
                 <th className="px-4 py-5 font-medium sm:pl-6">Email :</th>
                 <th className="px-3 py-5 font-medium">Criado na</th>
                 <th className="px-3 py-5 font-medium">Categoria</th>
-                <th className="px-3 py-5 font-medium">Ação</th>
+                <th className="px-3 py-5 font-medium"></th>
               </tr>
             </thead>
             <tbody className="bg-white">

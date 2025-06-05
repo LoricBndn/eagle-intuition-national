@@ -62,7 +62,7 @@ export type ErasmusProjectState = {
 
 export type PartnerState = {
   errors?: {
-    title?: string[];
+    name?: string[];
     url?: string[];
     imageUrl?: string[];
   };
@@ -602,15 +602,15 @@ export async function deleteErasmusProject(id: string) {
 // -------------------- PARTNER --------------------
 
 export async function createPartner(prevState: any, formData: FormData) {
-  const title = formData.get("title") as string;
+  const name = formData.get("name") as string;
   const url = formData.get("url") as string;
   const imageFile = formData.get("image") as File;
 
-  if (!title || !url || !imageFile) {
+  if (!name || !url || !imageFile) {
     return {
       message: "All fields are required.",
       errors: {
-        title: ["Required."],
+        name: ["Required."],
         url: ["Required."],
         imageUrl: ["An image must be uploaded."],
       },
@@ -625,7 +625,7 @@ export async function createPartner(prevState: any, formData: FormData) {
   const imageUrl = `/partners/images/${filename}`;
 
   await prisma.partner.create({
-    data: { title, url, imageUrl },
+    data: { name, url, imageUrl },
   });
 
   revalidatePath("/admin/dashboard/partners");
@@ -634,15 +634,15 @@ export async function createPartner(prevState: any, formData: FormData) {
 
 export async function updatePartner(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
-  const title = parseString(formData.get("title"));
+  const name = parseString(formData.get("name"));
   const url = parseString(formData.get("url"));
   const imageFile = formData.get("image") as File | null;
 
-  if (!id || !title || !url) {
+  if (!id || !name || !url) {
     return {
       message: "Missing required fields.",
       errors: {
-        title: ["Required."],
+        name: ["Required."],
         url: ["Required."],
         imageUrl: imageFile ? [] : ["An image must be uploaded or retained."],
       },
@@ -668,7 +668,7 @@ export async function updatePartner(prevState: any, formData: FormData) {
   await prisma.partner.update({
     where: { id },
     data: {
-      title,
+      name,
       url,
       ...(imageUrl && { imageUrl }),
     },

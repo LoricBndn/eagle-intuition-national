@@ -1,4 +1,4 @@
-import Form from '@/components/erasmus/project-create-form';
+import Form from '@/components/partner/create-form';
 import Breadcrumbs from '@/components/admin/dashboard/breadcrumbs';
  
 export default async function Page() {
@@ -7,10 +7,10 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Erasmus Projects', href: '/admin/dashboard/erasmus-projects' },
+          { label: 'Partners', href: '/admin/dashboard/partners' },
           {
-            label: 'Criar Erasmus Project',
-            href: '/admin/dashboard/erasmus-projects/create',
+            label: 'Criar Erasmus Partner',
+            href: '/admin/dashboard/partners/create',
             active: true,
           },
         ]}

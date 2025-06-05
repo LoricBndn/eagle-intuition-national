@@ -46,7 +46,7 @@ export default async function CoursesTable({
               <tr>
                 <th className="px-4 py-5 font-medium sm:pl-6">Ícone</th>
                 <th className="px-3 py-5 font-medium">Formações</th>
-                <th className="px-3 py-5 font-medium" />
+                <th className="px-3 py-5 font-medium"></th>
               </tr>
             </thead>
             <tbody className="bg-white">

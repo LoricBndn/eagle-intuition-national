@@ -2,6 +2,7 @@
 
 import '../styles/globals.css'
 import LayoutClient from './layout.client'
+import Script from 'next/script'
 
 export const metadata = {
   title: 'Eagle Intuition',
@@ -13,6 +14,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt">
       <body>
         <LayoutClient>{children}</LayoutClient>
+
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-CLXCBLT3P5`}
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-CLXCBLT3P5', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   )

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { UpdateErasmusCourse, DeleteErasmusCourse } from "@/components/erasmus/buttons";
 import { fetchFilteredErasmusCourses } from "@/lib/data";
 

@@ -1,6 +1,6 @@
 import { fetchPostBySlug } from "@/lib/data";
 import ZoomableImage from "@/components/ui/zoomImage";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 interface PostPageProps {
   params: {
@@ -9,9 +9,7 @@ interface PostPageProps {
 }
 
 export async function generateMetadata(
-  { params }: PostPageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+  { params }: PostPageProps): Promise<Metadata> {
   const post = await fetchPostBySlug(params.slug);
 
   if (!post) {

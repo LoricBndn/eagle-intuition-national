@@ -1,4 +1,4 @@
-import {  PrismaClient,  } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 let generator: any = null;
@@ -44,11 +44,11 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 export function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .normalize("NFD") // décompose les lettres accentuées en base + accent
-    .replace(/[\u0300-\u036f]/g, "") // supprime les accents
-    .replace(/[^a-z0-9\s-]/g, "") // supprime caractères non alphanumériques sauf espace et tiret
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
     .trim()
-    .replace(/\s+/g, "-"); // remplace espaces par tirets
+    .replace(/\s+/g, "-");
 }
 
 export async function generateUniqueSlug(title: string): Promise<string> {
@@ -72,7 +72,6 @@ export function extractImagesFromAttachments(attachments: any[]): string[] {
       images.push(attachment.media.image.src);
     }
 
-    // Si cet attachment a des sous-attachments (ex: albums)
     if (attachment.subattachments?.data) {
       images = images.concat(extractImagesFromAttachments(attachment.subattachments.data));
     }
@@ -80,19 +79,3 @@ export function extractImagesFromAttachments(attachments: any[]): string[] {
 
   return images;
 }
-
-// export async function generateTitle(content: string): Promise<string> {
-//   if (!generator) {
-//     generator = await pipeline('text2text-generation', 'Xenova/mt5-small');
-//   }
-
-//   const prompt = `crie um título curto: ${content}`;
-//   const output = await generator(prompt, {
-//     max_length: 20,
-//     num_beams: 4,
-//     do_sample: false,
-//     early_stopping: true,
-//   });
-
-//   return output[0]?.generated_text || 'Título automático';
-// }

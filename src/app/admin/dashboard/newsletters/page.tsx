@@ -3,9 +3,9 @@ import Search from "@/components/ui/search";
 import NewsletterTable from "@/components/newsletter/newsletter-table";
 import { NewsletterSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
-import { fetchNewslettersPages } from "@/lib/data";
+import { fetchNewsletters, fetchNewslettersPages } from "@/lib/data";
 import { Metadata } from "next";
-import ExportCSVButton from "@/components/newsletter/export-button";
+import ExportCSVButton from "@/components/newsletter/export-csv-button";
 
 export const metadata: Metadata = {
   title: "Newsletters",
@@ -19,6 +19,8 @@ export default async function Page({
     page?: string;
   };
 }) {
+  const newsletters = await fetchNewsletters();
+
   const params = await searchParams;
   const query = params ?.query || "";
   const currentPage = Number(params?.page) || 1;
@@ -28,10 +30,10 @@ export default async function Page({
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Newsletters</h1>
-        <ExportCSVButton />
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Pesquisar e-mail..." />
+        <ExportCSVButton data={newsletters} />
       </div>
       <Suspense key={query + currentPage} fallback={<NewsletterSkeleton />}>
         <NewsletterTable query={query} currentPage={currentPage} />

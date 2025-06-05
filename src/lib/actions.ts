@@ -695,19 +695,21 @@ export async function deletePartner(id: string) {
 export async function createVideo(prevState: any, formData: FormData) {
   const title = formData.get("title") as string;
   const url = formData.get("url") as string;
+  const imageUrl = formData.get("imageUrl") as string;
 
-  if (!title || !url) {
+  if (!title || !url || !imageUrl) {
     return {
       message: "All fields are required.",
       errors: {
-        title: ["Required."],
-        url: ["Required."],
+        title: !title ? ["Required."] : [],
+        url: !url ? ["Required."] : [],
+        imageUrl: !imageUrl ? ["Required."] : [],
       },
     };
   }
 
   await prisma.video.create({
-    data: { title, url },
+    data: { title, url, imageUrl },
   });
 
   revalidatePath("/admin/dashboard/videos");

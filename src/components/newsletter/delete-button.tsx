@@ -13,7 +13,7 @@ export function DeleteNewsletter({ id }: { id: string }) {
   };
 
   return (
-    <form action={deleteWithId} method="post" onSubmit={handleSubmit}>
+    <form action={deleteWithId} onSubmit={handleSubmit}>
       <button
         type="submit"
         className="cursor-pointer rounded-md border p-2 hover:bg-gray-100"

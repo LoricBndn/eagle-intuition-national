@@ -14,6 +14,8 @@ import {
   LinkedinIcon,
 } from "lucide-react";
 
+import emailjs from "@emailjs/browser";
+
 interface ContactFormProps {
   hn?: keyof JSX.IntrinsicElements;
 }
@@ -34,26 +36,25 @@ export default function ContactForm({ hn = "h2" }: ContactFormProps) {
     e.preventDefault();
     if (!formRef.current) return;
 
-    const formData = new FormData(formRef.current);
     setSubmitting(true);
 
     try {
-      const response = await fetch("https://formspree.io/f/mnndlryk", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-        },
-      });
+      // Remplace 'YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', 'YOUR_PUBLIC_KEY' par tes infos EmailJS
+      const result = await emailjs.sendForm(
+        "service_j4ln1b9",
+        "template_rgzrdw8",
+        formRef.current,
+        "Sxp9DKEF4Qf8sh9og"
+      );
 
-      if (response.ok) {
+      if (result.status === 200) {
         formRef.current.reset();
-        alert("Message sent successfully!");
+        alert("Mensagem enviada com sucesso!");
       } else {
-        alert("Failed to send message. Please try again.");
+        alert("Falha ao enviar a mensagem. Por favor, tente novamente.");
       }
     } catch (error) {
-      alert("An error occurred while sending the message.");
+      alert("Ocorreu um erro ao enviar a mensagem.");
     } finally {
       setSubmitting(false);
     }
@@ -66,49 +67,125 @@ export default function ContactForm({ hn = "h2" }: ContactFormProps) {
         onSubmit={handleSubmit}
         className="w-full lg:w-1/2 bg-white border border-black rounded-t-2xl lg:rounded-bl-2xl lg:rounded-tl-2xl lg:rounded-tr-none p-6 md:p-8"
       >
-        <Title className="mb-4" title="Contact Us" hn={hn} />
+        <Title className="mb-4" title="Contacte-nos" hn={hn} />
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
-            <label htmlFor="first-name" className="block text-sm font-semibold text-title">First Name</label>
-            <input type="text" name="first-name" id="first-name" autoComplete="given-name" required className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" />
+            <label
+              htmlFor="first-name"
+              className="block text-sm font-semibold text-title"
+            >
+              Primeiro Nome
+            </label>
+            <input
+              type="text"
+              name="firstname"
+              id="first-name"
+              autoComplete="given-name"
+              required
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+            />
           </div>
 
           <div>
-            <label htmlFor="last-name" className="block text-sm font-semibold text-title">Last Name</label>
-            <input type="text" name="last-name" id="last-name" autoComplete="family-name" required className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" />
+            <label
+              htmlFor="last-name"
+              className="block text-sm font-semibold text-title"
+            >
+              Sobrenome
+            </label>
+            <input
+              type="text"
+              name="name"
+              id="last-name"
+              autoComplete="family-name"
+              required
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+            />
           </div>
 
           <div className="sm:col-span-2">
-            <label htmlFor="email" className="block text-sm font-semibold text-title">Email</label>
-            <input type="email" name="email" id="email" autoComplete="email" required className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" />
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold text-title"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              autoComplete="email"
+              required
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+            />
           </div>
 
           <div className="sm:col-span-2">
-            <label htmlFor="phone-number" className="block text-sm font-semibold text-title">Phone</label>
-            <input type="text" name="phone-number" id="phone-number" className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" placeholder="123-456-7890" />
+            <label
+              htmlFor="phone-number"
+              className="block text-sm font-semibold text-title"
+            >
+              Telefone
+            </label>
+            <input
+              type="text"
+              name="phone"
+              id="phone-number"
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+              placeholder="123-456-7890"
+            />
           </div>
 
           <div className="sm:col-span-2">
-            <label htmlFor="subject" className="block text-sm font-semibold text-title">Subject</label>
-            <input type="text" name="subject" id="subject" className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" />
+            <label
+              htmlFor="subject"
+              className="block text-sm font-semibold text-title"
+            >
+              Assunto
+            </label>
+            <input
+              type="text"
+              name="subject"
+              id="subject"
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+            />
           </div>
 
           <div className="sm:col-span-2">
-            <label htmlFor="message" className="block text-sm font-semibold text-title">Message</label>
-            <textarea name="message" id="message" rows={4} required className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary" />
+            <label
+              htmlFor="message"
+              className="block text-sm font-semibold text-title"
+            >
+              Mensagem
+            </label>
+            <textarea
+              name="message"
+              id="message"
+              rows={4}
+              required
+              className="mt-2.5 block w-full rounded-md bg-white px-3.5 py-2 text-title outline outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-primary"
+            />
           </div>
         </div>
 
         <div className="mt-6">
-          <div className="g-recaptcha" data-sitekey="6LfuriArAAAAAEFq0dgjsBOybO-EmDyhx4TsCAKN" />
+          <div
+            className="g-recaptcha"
+            data-sitekey="6LfuriArAAAAAEFq0dgjsBOybO-EmDyhx4TsCAKN"
+          />
         </div>
 
         <div className="mt-4">
-          <button type="submit" disabled={submitting} className="cursor-pointer w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/80 transition">
-            {submitting ? "Sending..." : "Send"}
+          <button
+            type="submit"
+            disabled={submitting}
+            className="cursor-pointer w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/80 transition"
+          >
+            {submitting ? "Enviando..." : "Enviar"}
           </button>
         </div>
       </form>
+
 
       <div className="w-full lg:w-1/2 bg-primary border border-black rounded-b-2xl lg:rounded-br-2xl lg:rounded-tr-2xl lg:rounded-bl-none p-4 md:p-16 flex flex-col gap-8 text-white">
         <iframe

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Button from "@/components/ui/button";
 
 interface PostCardProps {
-  slug: string; // ✅ On utilise le slug
+  slug: string;
   title: string;
   category: string;
   content: string;

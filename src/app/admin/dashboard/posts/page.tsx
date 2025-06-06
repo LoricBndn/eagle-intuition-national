@@ -2,7 +2,7 @@ import Pagination from "@/components/ui/pagination";
 import Search from "@/components/ui/search";
 import { PostSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
-import { fetchPostsPages } from "@/lib/data";
+import { fetchPostsPagesNationalWeb, fetchFacebookAndStorePosts } from "@/lib/data";
 import { Metadata } from "next";
 import PostTable from "@/components/post/post-table";
 import { CreatePost } from "@/components/post/buttons";
@@ -20,7 +20,7 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchPostsPages(query);
+  const totalPages = await fetchPostsPagesNationalWeb(query);
 
   return (
     <div className="w-full">

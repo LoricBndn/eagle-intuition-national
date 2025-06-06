@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { UpdatePost, DeletePost } from "@/components/post/buttons";
-import { fetchFilteredPosts } from "@/lib/data";
+import { fetchFilteredPostsNationalWeb } from "@/lib/data";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 
@@ -11,7 +11,7 @@ export default async function PostTable({
   query: string;
   currentPage: number;
 }) {
-  const posts = await fetchFilteredPosts(query, currentPage);
+  const posts = await fetchFilteredPostsNationalWeb(query, currentPage);
 
   if (!posts || posts.length === 0) {
     return <div className="mt-6 text-center text-gray-600">Não foram encontradas mensagens.</div>;

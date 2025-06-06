@@ -1,4 +1,4 @@
-import { fetchFilteredPosts, fetchPostsPages, fetchCategories  } from "@/lib/data";
+import { fetchPostsPagesNationalWeb, fetchFilteredPostsNationalWeb  } from "@/lib/data";
 import Posts from "@/components/post/posts";
 import SearchBar from "@/components/ui/search-bar";
 import Pagination from "@/components/ui/pagination";
@@ -19,28 +19,27 @@ export default async function Page({
 }) {
   const params = await searchParams;
   const query = params.query?.toLowerCase() || "";
-  const category = params.category || "All";
+  const category = params.category || "Todos";
   const currentPage = Number(params.page) || 1;
 
   if (currentPage < 1) {
     redirect("/noticias");
   }
 
-  const allFilteredPosts = await fetchFilteredPosts(
+  const allFilteredPosts = await fetchFilteredPostsNationalWeb(
     query,
     currentPage,
     POSTS_PER_PAGE
   );
 
   const filteredByCategory =
-    category === "All"
+    category === "Todos"
       ? allFilteredPosts
       : allFilteredPosts.filter((post) => post.category === category);
 
-  const totalPages = await fetchPostsPages(query, POSTS_PER_PAGE);
+  const totalPages = await fetchPostsPagesNationalWeb(query, POSTS_PER_PAGE);
 
-  const categoriesFromDb = await fetchCategories();
-  const categories = ["All", ...categoriesFromDb];
+  const categories = ["Todos", "Web", "National"];
 
   return (
     <div>
@@ -55,9 +54,8 @@ export default async function Page({
           As últimas notícias, entrevistas, tecnologias e recursos do setor.{" "}
         </h2>
 
-        {/* Passer les paramètres actuels au SearchBar */}
         <SearchBar
-          placeholder="Search articles..."
+          placeholder="Procurar notícias..."
           initialQuery={query}
           initialCategory={category}
           categories={categories}

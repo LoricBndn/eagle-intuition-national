@@ -4,7 +4,7 @@ import {
   CategoryPost,
   CategoryNewsletter,
 } from "@prisma/client";
-import { generateUniqueSlug, extractImagesFromAttachments } from "@/lib/utils";
+import { extractImagesFromAttachments } from "@/lib/utils";
 
 const prisma = new PrismaClient();
 
@@ -122,7 +122,7 @@ export async function fetchPostsByCategory(category: CategoryPost) {
 export async function fetchPostsPages(query: string, itemsPerPage = 6) {
   const where: Prisma.PostWhereInput | undefined = query?.trim()
     ? {
-        title: {
+        content: {
           contains: query,
           mode: "insensitive",
         },
@@ -207,7 +207,6 @@ export async function fetchFilteredPosts(
       where: query
         ? {
             OR: [
-              { title: { contains: query, mode: "insensitive" } },
               { content: { contains: query, mode: "insensitive" } },
             ],
           }
@@ -232,7 +231,6 @@ export async function fetchFilteredPostsNational(query: string, currentPage: num
       category: CategoryPost.National,
       ...(query?.trim() && {
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
           { content: { contains: query, mode: "insensitive" } },
         ],
       }),
@@ -251,7 +249,6 @@ export async function fetchFilteredPostsInternational(query: string, currentPage
       category: CategoryPost.International,
       ...(query?.trim() && {
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
           { content: { contains: query, mode: "insensitive" } },
         ],
       }),
@@ -270,7 +267,6 @@ export async function fetchFilteredPostsNationalWeb(query: string, currentPage: 
       category: { in: [CategoryPost.National, CategoryPost.Web] },
       ...(query?.trim() && {
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
           { content: { contains: query, mode: "insensitive" } },
         ],
       }),
@@ -289,7 +285,6 @@ export async function fetchFilteredPostsInternationalWeb(query: string, currentP
       category: { in: [CategoryPost.International, CategoryPost.Web] },
       ...(query?.trim() && {
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
           { content: { contains: query, mode: "insensitive" } },
         ],
       }),
@@ -584,9 +579,7 @@ export async function fetchFacebookAndStorePosts(url?: string) {
       const exists = await prisma.post.findUnique({ where: { id: post.id } });
       if (!exists) {
         try {
-          const slug = await generateUniqueSlug(
-            post.message?.substring(0, 15) || "post-facebook"
-          );
+          const slug = `fb-${post.id}`;
 
           let imagesUrl: string[] = [];
           if (post.attachments?.data) {
@@ -609,10 +602,6 @@ export async function fetchFacebookAndStorePosts(url?: string) {
             data: {
               id: post.id,
               slug,
-              title:
-                post.message?.substring(0, 10) ||
-                sharedContent.substring(0, 10) ||
-                "Post Facebook",
               content: post.message || sharedContent || "",
               createdAt: new Date(post.created_time),
               imagesUrl,

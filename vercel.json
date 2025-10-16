@@ -1,12 +1,4 @@
 {
-  "functions": {
-    "api/facebook/posts": {
-      "runtime": "vercel/edge@1.0.0"
-    },
-    "api/facebook/token": {
-      "runtime": "vercel/edge@1.0.0"
-    }
-  },
   "crons": [
     {
       "path": "/api/facebook/posts",

@@ -72,6 +72,24 @@ function parseString(value: FormDataEntryValue | null): string | null {
   return null;
 }
 
+async function uploadToApi(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/images/upload`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Upload failed: ${text}`);
+  }
+
+  const data = await res.json();
+  return data.url;
+}
+
 // -------------------- COURSE --------------------
 
 export async function createCourse(prevState: any, formData: FormData) {
@@ -169,15 +187,11 @@ export async function deleteCourse(id: string) {
 
 // -------------------- POST --------------------
 
-export async function createPost(
-  prevState: PostState,
-  formData: FormData
-): Promise<PostState> {
+export async function createPost(prevState: PostState, formData: FormData): Promise<PostState> {
   const content = parseString(formData.get("content")) as string;
   const files = formData.getAll("images") as File[];
 
   const errors: PostState["errors"] = {};
-
   if (!content) errors.content = ["Content is required."];
   if (files.length === 0) errors.imagesUrl = ["At least one image is required."];
 
@@ -185,24 +199,16 @@ export async function createPost(
     return { message: "Missing required fields.", errors };
   }
 
-  const imagePaths: string[] = [];
-
-  for (const file of files) {
-    if (file && file.size > 0) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filename = `${uuidv4()}-${file.name}`;
-      const uploadPath = path.join(process.cwd(), "public/posts/images", filename);
-      await writeFile(uploadPath, buffer);
-      imagePaths.push(`/posts/images/${filename}`);
-    }
-  }
+  const imageUrls = await Promise.all(
+    files.filter(file => file && file.size > 0).map(file => uploadToApi(file))
+  );
 
   const slug = uuidv4();
 
   await prisma.post.create({
     data: {
       content,
-      imagesUrl: imagePaths,
+      imagesUrl: imageUrls,
       category: CategoryPost.Web,
       slug,
       url: "",
@@ -213,7 +219,6 @@ export async function createPost(
   redirect("/admin/dashboard/posts");
 }
 
-
 export async function updatePost(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
   const content = parseString(formData.get("content"));
@@ -222,40 +227,22 @@ export async function updatePost(prevState: any, formData: FormData) {
   if (!id || !content) {
     return {
       message: "Missing required fields.",
-      errors: {
-        content: !content ? ["The content is required."] : []
-      },
+      errors: { content: !content ? ["The content is required."] : [] },
     };
   }
 
   const existingPost = await prisma.post.findUnique({ where: { id } });
-  if (!existingPost) {
-    return { message: "Post not found.", errors: {} };
-  }
+  if (!existingPost) return { message: "Post not found.", errors: {} };
 
-  const newImagePaths: string[] = [];
+  const newImageUrls = await Promise.all(
+    files.filter(file => file && file.size > 0).map(file => uploadToApi(file))
+  );
 
-  // Upload nouvelles images et récupérer leurs chemins
-  for (const file of files) {
-    if (file && file.size > 0) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filename = `${uuidv4()}-${file.name}`;
-      const uploadPath = path.join(process.cwd(), "public/posts/images", filename);
-      await writeFile(uploadPath, buffer);
-      newImagePaths.push(`/posts/images/${filename}`);
-    }
-  }
+  const updatedImageUrls = [...existingPost.imagesUrl, ...newImageUrls];
 
-  // On conserve les anciennes images + on ajoute les nouvelles
-  const updatedImagePaths = [...existingPost.imagesUrl, ...newImagePaths];
-
-  // Mise à jour en base
   await prisma.post.update({
     where: { id },
-    data: {
-      content,
-      imagesUrl: updatedImagePaths,
-    },
+    data: { content, imagesUrl: updatedImageUrls },
   });
 
   revalidatePath("/admin/dashboard/posts");
@@ -266,10 +253,14 @@ export async function deletePost(id: string) {
   const post = await prisma.post.findUnique({ where: { id } });
 
   if (post) {
-    for (const imagePath of post.imagesUrl) {
-      if (imagePath.startsWith("/posts/images/")) {
-        const fullPath = path.join(process.cwd(), "public", imagePath);
-        await unlink(fullPath).catch(() => {});
+    for (const url of post.imagesUrl) {
+      const publicId = url.split("/").pop()?.split(".")[0];
+      if (publicId) {
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/images/delete`, {
+          method: "POST",
+          body: JSON.stringify({ publicId }),
+          headers: { "Content-Type": "application/json" },
+        });
       }
     }
 

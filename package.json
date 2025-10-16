@@ -15,6 +15,7 @@
     "@prisma/client": "^6.17.1",
     "@uploadthing/react": "^7.3.1",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "fetch": "^1.1.0",
@@ -46,6 +47,6 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }

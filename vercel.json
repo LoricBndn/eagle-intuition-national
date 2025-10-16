@@ -1,9 +1,9 @@
 {
   "functions": {
-    "api/facebook/posts/route.ts": {
+    "api/facebook/posts": {
       "runtime": "vercel/edge@1.0.0"
     },
-    "api/facebook/token/route.ts": {
+    "api/facebook/token": {
       "runtime": "vercel/edge@1.0.0"
     }
   },

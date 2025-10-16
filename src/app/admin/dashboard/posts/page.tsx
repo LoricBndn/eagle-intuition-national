@@ -2,7 +2,7 @@ import Pagination from "@/components/ui/pagination";
 import Search from "@/components/ui/search";
 import { PostSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
-import { fetchPostsPagesNationalWeb, fetchFacebookAndStorePosts } from "@/lib/data";
+import { fetchPostsPagesNationalWeb } from "@/lib/data";
 import { Metadata } from "next";
 import PostTable from "@/components/post/post-table";
 import { CreatePost } from "@/components/post/buttons";

@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "api/facebook/posts/route.ts": {
+      "runtime": "edge"
+    },
+    "api/facebook/token/route.ts": {
+      "runtime": "edge"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/facebook/posts",
+      "schedule": "0 9 * * *" 
+    },
+    {
+      "path": "/api/facebook/token",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

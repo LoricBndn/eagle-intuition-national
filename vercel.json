@@ -1,16 +1,16 @@
 {
   "functions": {
     "api/facebook/posts/route.ts": {
-      "runtime": "edge"
+      "runtime": "vercel/edge@1.0.0"
     },
     "api/facebook/token/route.ts": {
-      "runtime": "edge"
+      "runtime": "vercel/edge@1.0.0"
     }
   },
   "crons": [
     {
       "path": "/api/facebook/posts",
-      "schedule": "0 9 * * *" 
+      "schedule": "0 9 * * *"
     },
     {
       "path": "/api/facebook/token",

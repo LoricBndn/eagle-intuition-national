@@ -41,7 +41,6 @@ export default async function PostTable({
                     </div>
                   )}
                   <div className="flex flex-col flex-grow">
-                    <p className="font-semibold text-gray-900 truncate">{post.title}</p>
                     <p className="text-xs text-gray-500">{post.category}</p>
                   </div>
                   <div className="text-xs text-gray-400 ml-2 whitespace-nowrap">
@@ -63,7 +62,6 @@ export default async function PostTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="text-left text-sm font-normal">
               <tr>
-                <th className="px-4 py-5 font-medium sm:pl-6">Título</th>
                 <th className="px-3 py-5 font-medium">Categoria</th>
                 <th className="px-3 py-5 font-medium">Resumo</th>
                 <th className="px-3 py-5 font-medium">Imagem principal</th>
@@ -74,7 +72,6 @@ export default async function PostTable({
             <tbody className="bg-white">
               {posts.map((post) => (
                 <tr key={post.id} className="border-b py-3 text-sm last-of-type:border-none">
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">{post.title}</td>
                   <td className="whitespace-nowrap px-3 py-3">{post.category}</td>
                   <td className="whitespace-nowrap px-3 py-3 max-w-[200px] truncate text-gray-700">
                     {post.content.slice(0, 100)}{post.content.length > 100 && "..."}

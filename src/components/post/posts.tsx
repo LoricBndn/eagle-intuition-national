@@ -4,7 +4,6 @@ import PostCard from "@/components/post/post-card";
 
 interface Post {
   id: string;
-  title: string;
   category: string;
   content: string;
   createdAt: Date;

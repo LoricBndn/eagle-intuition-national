@@ -24,7 +24,6 @@ model Course {
 model Post {
   id        String       @id @default(cuid())
   slug      String       @unique
-  title     String
   category  CategoryPost
   content   String
   url       String       @unique

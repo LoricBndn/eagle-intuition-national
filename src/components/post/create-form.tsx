@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { createPost, PostState } from "@/lib/actions";
 import Button from "@/components/ui/button";
-import { Edit, ImageIcon, Trash2 } from "lucide-react";
+import { ImageIcon, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import Image from "next/image";
 
@@ -45,28 +45,6 @@ export default function CreatePostForm() {
       }}
     >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Title */}
-        <div className="mb-4">
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Post Title
-          </label>
-          <div className="relative">
-            <Edit className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              id="title"
-              name="title"
-              type="text"
-              placeholder="Post title"
-              className="block w-full rounded-md border border-gray-200 py-2 pl-9 pr-3 text-sm outline-2 placeholder:text-gray-500"
-              aria-describedby="title-error"
-              required
-            />
-          </div>
-          {state.errors?.title?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">{error}</p>
-          ))}
-        </div>
-
         {/* Content */}
         <div className="mb-4">
           <label htmlFor="content" className="mb-2 block text-sm font-medium">

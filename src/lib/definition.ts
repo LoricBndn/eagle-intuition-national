@@ -20,7 +20,6 @@ export type Course = {
 
 export type Post = {
   id: string;
-  title: string;
   category: 'Web' | 'Facebook';
   content: string;
   createdAt: string;

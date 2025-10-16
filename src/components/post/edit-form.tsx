@@ -12,7 +12,6 @@ export default function EditPostForm({
 }: {
   post: {
     id: string;
-    title: string;
     content: string;
     imagesUrl: string[];
   };
@@ -35,27 +34,6 @@ export default function EditPostForm({
       <input type="hidden" name="id" value={post.id} />
 
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Title */}
-        <div className="mb-4">
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Post Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            defaultValue={post.title}
-            placeholder="Enter post title"
-            className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-            aria-describedby="title-error"
-          />
-          {state.errors?.title?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">
-              {error}
-            </p>
-          ))}
-        </div>
-
         {/* Content */}
         <div className="mb-4">
           <label htmlFor="content" className="mb-2 block text-sm font-medium">
@@ -83,19 +61,13 @@ export default function EditPostForm({
             Upload new images (optional)
           </label>
           <input
-            name="images" // au lieu de "imagesUrl"
+            name="images"
             type="file"
             multiple
             accept="image/*"
             onChange={handleFileChange}
             className="block w-full text-sm"
           />
-          {state.errors?.imagesUrl?.map((error) => (
-            <p key={error} className="mt-2 text-sm text-red-500">
-              {error}
-            </p>
-          ))}
-
           {/* Image Previews */}
           {previews.length > 0 && (
             <div className="mt-4 grid grid-cols-2 gap-4">

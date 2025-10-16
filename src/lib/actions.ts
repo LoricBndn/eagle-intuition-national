@@ -1,6 +1,5 @@
 "use server";
 
-
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -8,8 +7,6 @@ import { CategoryPost, PrismaClient } from "@prisma/client";
 import { writeFile, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { generateUniqueSlug } from "@/lib/utils";
-
 
 const prisma = new PrismaClient();
 
@@ -27,7 +24,6 @@ export type CourseState = {
 
 export type PostState = {
   errors?: {
-    title?: string[];
     content?: string[];
     imagesUrl?: string[];
   };
@@ -177,13 +173,11 @@ export async function createPost(
   prevState: PostState,
   formData: FormData
 ): Promise<PostState> {
-  const title = parseString(formData.get("title")) as string;
   const content = parseString(formData.get("content")) as string;
   const files = formData.getAll("images") as File[];
 
   const errors: PostState["errors"] = {};
 
-  if (!title) errors.title = ["Title is required."];
   if (!content) errors.content = ["Content is required."];
   if (files.length === 0) errors.imagesUrl = ["At least one image is required."];
 
@@ -203,11 +197,10 @@ export async function createPost(
     }
   }
 
-  const slug = await generateUniqueSlug(title);
+  const slug = uuidv4();
 
   await prisma.post.create({
     data: {
-      title,
       content,
       imagesUrl: imagePaths,
       category: CategoryPost.Web,
@@ -223,15 +216,13 @@ export async function createPost(
 
 export async function updatePost(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
-  const title = parseString(formData.get("title"));
   const content = parseString(formData.get("content"));
   const files = formData.getAll("images") as File[];
 
-  if (!id || !title || !content) {
+  if (!id || !content) {
     return {
       message: "Missing required fields.",
       errors: {
-        title: !title ? ["The title is required."] : [],
         content: !content ? ["The content is required."] : []
       },
     };
@@ -258,18 +249,10 @@ export async function updatePost(prevState: any, formData: FormData) {
   // On conserve les anciennes images + on ajoute les nouvelles
   const updatedImagePaths = [...existingPost.imagesUrl, ...newImagePaths];
 
-  // Génération du slug si titre changé
-  let slug = existingPost.slug;
-  if (existingPost.title !== title) {
-    slug = await generateUniqueSlug(title);
-  }
-
   // Mise à jour en base
   await prisma.post.update({
     where: { id },
     data: {
-      title,
-      slug,
       content,
       imagesUrl: updatedImagePaths,
     },

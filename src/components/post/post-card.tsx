@@ -6,7 +6,6 @@ import Button from "@/components/ui/button";
 
 interface PostCardProps {
   slug: string;
-  title: string;
   category: string;
   content: string;
   createdAt: Date;
@@ -15,7 +14,6 @@ interface PostCardProps {
 
 export default function PostCard({
   slug,
-  title,
   category,
   content,
   createdAt,
@@ -32,7 +30,7 @@ export default function PostCard({
       <Link href={`/noticias/${slug}`}>
         <Image
           src={imagesUrl[0]}
-          alt={title}
+          alt=""
           width={300}
           height={200}
           className="rounded-t-lg w-full h-48 object-cover cursor-pointer"
@@ -40,13 +38,8 @@ export default function PostCard({
       </Link>
       <div className="p-5">
         <p className="text-sm font-semibold text-primary mb-1">{category}</p>
-        <Link href={`/noticias/${slug}`}>
-          <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 cursor-pointer">
-            {title}
-          </h3>
-        </Link>
         <p className="mb-3 font-normal text-gray-700">
-          {content.length > 100 ? content.slice(0, 100) + "..." : content}
+          {content.length > 100 ? content.slice(0, 200) + "..." : content}
         </p>
         <p className="text-xs text-gray-500 mb-3">{formattedDate}</p>
         <Button text="Ler mais" link={`/noticias/${slug}`} />

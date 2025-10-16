@@ -9,7 +9,8 @@ interface PostPageProps {
 }
 
 export async function generateMetadata(
-  { params }: PostPageProps): Promise<Metadata> {
+  { params }: PostPageProps
+): Promise<Metadata> {
   const post = await fetchPostBySlug(params.slug);
 
   if (!post) {
@@ -20,13 +21,13 @@ export async function generateMetadata(
   }
 
   return {
-    title: `${post.title} - Eagle Intuition`,
-    description: post.content.slice(0, 160), // Extrait 160 chars du contenu si pas de description
+    title: `Eagle Intuition`, // plus de titre du post
+    description: post.content.slice(0, 160),
     openGraph: {
-      title: post.title,
+      title: `Eagle Intuition`,
       description: post.content.slice(0, 160),
       images: post.imagesUrl?.length
-        ? [{ url: post.imagesUrl[0], alt: post.title }]
+        ? [{ url: post.imagesUrl[0], alt: "Post image" }]
         : undefined,
     },
   };
@@ -42,7 +43,6 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <main className="max-w-4xl mx-auto p-6 pt-30">
-      <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
       <p className="text-sm text-gray-500 mb-8">
         {new Date(post.createdAt).toLocaleDateString("fr-FR", {
           year: "numeric",
@@ -58,7 +58,7 @@ export default async function PostPage({ params }: PostPageProps) {
             <ZoomableImage
               key={index}
               src={imgSrc}
-              alt={`${post.title} image ${index + 1}`}
+              alt={`Imagem ${index + 1}`}
             />
           ))}
         </div>

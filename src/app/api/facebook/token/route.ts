@@ -7,6 +7,7 @@ const USER_ACCESS_TOKEN = process.env.FACEBOOK_USER_ACCESS_TOKEN!;
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN!;
 const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID!;
+const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID
 
 interface FbTokenResponse {
   access_token: string;
@@ -50,7 +51,9 @@ async function refreshFacebookPageToken() {
   if (!newPageToken) throw new Error("Failed to retrieve new page token");
 
   // 🟢 3️⃣ Mettre à jour la variable sur Vercel via l’API
-  const vercelUrl = `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env`;
+  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
+  const vercelUrl = `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`;
+
   const updateRes = await fetch(vercelUrl, {
     method: "PATCH",
     headers: {

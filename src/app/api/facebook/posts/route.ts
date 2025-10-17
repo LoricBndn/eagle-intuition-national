@@ -4,8 +4,11 @@ import { v2 as cloudinary } from "cloudinary";
 
 const prisma = new PrismaClient();
 
-const PAGE_ID = process.env.FACEBOOK_PAGE_ID;
-const ACCESS_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+// === ⚙️ Configuration Vercel ===
+const VERCEL_TOKEN = process.env.VERCEL_TOKEN!;
+const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID!;
+const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID;
+const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
 
 const PLACEHOLDER_IMAGE = "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
 
@@ -15,14 +18,50 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Fonction principale (extraite pour réutiliser dans GET et POST)
+// === 📦 Interfaces ===
+interface VercelEnv {
+  id: string;
+  key: string;
+  value?: string;
+  target: string[];
+  type: string;
+}
+
+interface VercelEnvListResponse {
+  envs: VercelEnv[];
+}
+
+// === 🧩 Fonction pour récupérer une variable d'environnement depuis Vercel ===
+async function getVercelEnv(key: string): Promise<string | undefined> {
+  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
+  const res = await fetch(
+    `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`,
+    {
+      headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`Vercel API error: ${await res.text()}`);
+  }
+
+  const data: VercelEnvListResponse = await res.json();
+  const env = data.envs.find((e) => e.key === key);
+  return env?.value;
+}
+
+// === 🔄 Récupération et sauvegarde des posts Facebook ===
 async function fetchAndStoreFacebookPosts() {
+  const ACCESS_TOKEN = await getVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN");
   if (!PAGE_ID || !ACCESS_TOKEN) {
     throw new Error("Facebook Page ID or Access Token not set");
   }
 
+  // 1️⃣ Récupération des posts
   const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;
   const res = await fetch(url);
+
   if (!res.ok) {
     const errorText = await res.text();
     throw new Error(`Facebook API error: ${errorText}`);
@@ -32,12 +71,14 @@ async function fetchAndStoreFacebookPosts() {
   const posts = data.data;
   const prismaPosts = [];
 
+  // 2️⃣ Parcours des posts
   for (const p of posts) {
     if (p.story?.includes("créé un évènement")) continue;
 
     const postDate = p.created_time ? new Date(p.created_time) : new Date();
     let imagesUrl: string[] = [];
 
+    // 3️⃣ Récupération des images jointes
     const attachRes = await fetch(
       `https://graph.facebook.com/v24.0/${p.id}?fields=attachments&access_token=${ACCESS_TOKEN}&limit=10`
     );
@@ -79,6 +120,7 @@ async function fetchAndStoreFacebookPosts() {
     });
   }
 
+  // 4️⃣ Insertion en base
   if (prismaPosts.length === 0) {
     return { message: "No new posts to add" };
   }
@@ -91,18 +133,17 @@ async function fetchAndStoreFacebookPosts() {
   return { message: "Posts added", addedPosts };
 }
 
-// ✅ Supporte GET pour Vercel Cron
+// === ✅ Routes API ===
 export async function GET() {
   try {
     const result = await fetchAndStoreFacebookPosts();
     return NextResponse.json(result);
   } catch (error) {
-    console.error(error);
+    console.error("Facebook fetch failed:", error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
 
-// ✅ Et POST pour déclencher manuellement
 export async function POST() {
   return GET();
 }

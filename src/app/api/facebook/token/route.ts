@@ -1,24 +1,26 @@
 import { NextResponse } from "next/server";
-import { CategoryPost, PrismaClient } from "@prisma/client";
-import { v2 as cloudinary } from "cloudinary";
+import fetch from "node-fetch";
 
-const prisma = new PrismaClient();
-
-// === ⚙️ Configuration Vercel ===
+const APP_ID = process.env.FACEBOOK_APP_ID!;
+const APP_SECRET = process.env.FACEBOOK_APP_SECRET!;
+const USER_ACCESS_TOKEN = process.env.FACEBOOK_USER_ACCESS_TOKEN!;
+const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN!;
 const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID!;
 const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID;
-const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
 
-const PLACEHOLDER_IMAGE = "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
+interface FbTokenResponse {
+  access_token: string;
+  token_type?: string;
+  expires_in?: number;
+}
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+interface FbPageTokenResponse {
+  access_token?: string;
+  id?: string;
+  error?: { message: string; type: string; code: number };
+}
 
-// === 📦 Interfaces ===
 interface VercelEnv {
   id: string;
   key: string;
@@ -31,115 +33,89 @@ interface VercelEnvListResponse {
   envs: VercelEnv[];
 }
 
-// === 🧩 Fonction pour récupérer une variable d'environnement depuis Vercel ===
-async function getVercelEnv(key: string): Promise<string | undefined> {
+// Supprimer la variable si elle existe
+async function deleteVercelEnv(key: string) {
   const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
-  const res = await fetch(
+  const listRes = await fetch(
     `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`,
-    {
-      headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
-      cache: "no-store",
-    }
+    { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } }
   );
 
-  if (!res.ok) {
-    throw new Error(`Vercel API error: ${await res.text()}`);
-  }
+  if (!listRes.ok) throw new Error(await listRes.text());
 
-  const data: VercelEnvListResponse = await res.json();
-  const env = data.envs.find((e) => e.key === key);
-  return env?.value;
-}
+  const listData = (await listRes.json()) as VercelEnvListResponse;
+  const env = listData.envs.find(e => e.key === key);
 
-// === 🔄 Récupération et sauvegarde des posts Facebook ===
-async function fetchAndStoreFacebookPosts() {
-  const ACCESS_TOKEN = await getVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN");
-  if (!PAGE_ID || !ACCESS_TOKEN) {
-    throw new Error("Facebook Page ID or Access Token not set");
-  }
-
-  // 1️⃣ Récupération des posts
-  const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Facebook API error: ${errorText}`);
-  }
-
-  const data = await res.json();
-  const posts = data.data;
-  const prismaPosts = [];
-
-  // 2️⃣ Parcours des posts
-  for (const p of posts) {
-    if (p.story?.includes("créé un évènement")) continue;
-
-    const postDate = p.created_time ? new Date(p.created_time) : new Date();
-    let imagesUrl: string[] = [];
-
-    // 3️⃣ Récupération des images jointes
-    const attachRes = await fetch(
-      `https://graph.facebook.com/v24.0/${p.id}?fields=attachments&access_token=${ACCESS_TOKEN}&limit=10`
+  if (env) {
+    await fetch(
+      `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${env.id}${teamQuery}`,
+      { method: "DELETE", headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } }
     );
-    if (attachRes.ok) {
-      const attachData = await attachRes.json();
-      const attachments = attachData.attachments?.data || [];
-
-      imagesUrl = await Promise.all(
-        attachments.map(async (att: any) => {
-          if (att.media?.image?.src) {
-            try {
-              const uploadRes = await cloudinary.uploader.upload(att.media.image.src, {
-                folder: "facebook_posts",
-              });
-              return uploadRes.secure_url;
-            } catch (err) {
-              console.error("Cloudinary upload failed:", err);
-              return null;
-            }
-          }
-          return null;
-        })
-      ).then((urls) => urls.filter((u): u is string => !!u));
-    }
-
-    if (p.message && imagesUrl.length === 0) {
-      imagesUrl.push(PLACEHOLDER_IMAGE);
-    }
-
-    if (!p.message && imagesUrl.length === 0) continue;
-
-    prismaPosts.push({
-      content: p.message || "",
-      slug: p.id,
-      imagesUrl,
-      category: CategoryPost.National,
-      url: `https://www.facebook.com/${PAGE_ID}/posts/${p.id}`,
-      createdAt: postDate,
-    });
   }
-
-  // 4️⃣ Insertion en base
-  if (prismaPosts.length === 0) {
-    return { message: "No new posts to add" };
-  }
-
-  const addedPosts = await prisma.post.createMany({
-    data: prismaPosts,
-    skipDuplicates: true,
-  });
-
-  return { message: "Posts added", addedPosts };
 }
 
-// === ✅ Routes API ===
+// Créer la variable
+async function createVercelEnv(key: string, value: string) {
+  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
+  const res = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify([
+      { key, value, target: ["development", "preview", "production"], type: "encrypted" },
+    ]),
+  });
+  if (!res.ok) throw new Error(await res.text());
+}
+
+// Upsert = supprime si existant, puis crée
+async function upsertVercelEnv(key: string, value: string) {
+  await deleteVercelEnv(key);
+  await createVercelEnv(key, value);
+}
+
+// Rafraîchissement du token Facebook
+async function refreshFacebookPageToken() {
+  if (!APP_ID || !APP_SECRET || !USER_ACCESS_TOKEN || !PAGE_ID || !VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
+    throw new Error("Missing environment variables");
+  }
+
+  // 1️⃣ Rafraîchir le token utilisateur (long-lived)
+  const fbUserTokenUrl = `https://graph.facebook.com/v24.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${APP_ID}&client_secret=${APP_SECRET}&fb_exchange_token=${USER_ACCESS_TOKEN}`;
+  const fbUserRes = await fetch(fbUserTokenUrl);
+  if (!fbUserRes.ok) throw new Error(await fbUserRes.text());
+  const fbUserData = (await fbUserRes.json()) as FbTokenResponse;
+  const newUserToken = fbUserData.access_token;
+
+  // 2️⃣ Obtenir le token de la page
+  const fbPageUrl = `https://graph.facebook.com/v24.0/${PAGE_ID}?fields=access_token&access_token=${newUserToken}`;
+  const fbPageRes = await fetch(fbPageUrl);
+  if (!fbPageRes.ok) throw new Error(await fbPageRes.text());
+  const fbPageData = (await fbPageRes.json()) as FbPageTokenResponse;
+
+  if (fbPageData.error) throw new Error(`Facebook API error: ${fbPageData.error.message}`);
+  const newPageToken = fbPageData.access_token;
+  if (!newPageToken) throw new Error("Failed to retrieve new page token");
+
+  // 3️⃣ Upsert sur Vercel
+  await upsertVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN", newPageToken);
+  await upsertVercelEnv("FACEBOOK_USER_ACCESS_TOKEN", newUserToken);
+
+  return {
+    message: "Facebook Page token refreshed successfully",
+    pageToken: newPageToken,
+    userToken: newUserToken,
+  };
+}
+
 export async function GET() {
   try {
-    const result = await fetchAndStoreFacebookPosts();
+    const result = await refreshFacebookPageToken();
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Facebook fetch failed:", error);
+    console.error("Facebook token refresh failed:", error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

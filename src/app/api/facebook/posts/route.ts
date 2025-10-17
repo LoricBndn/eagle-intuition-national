@@ -59,13 +59,9 @@ async function getVercelEnv(key: string): Promise<string | undefined> {
 async function fetchAndStoreFacebookPosts() {
   const ACCESS_TOKEN = await getVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN");
 
-  console.log("ACCESS_TOKEN depuis Vercel :", ACCESS_TOKEN);
-
   if (!PAGE_ID || !ACCESS_TOKEN) {
     throw new Error("Facebook Page ID or Access Token not set");
   }
-
-  console.log("🔑 Using Facebook Page Token:", ACCESS_TOKEN.slice(0, 10) + "...");
 
   // 1️⃣ Récupération des posts Facebook
   const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;

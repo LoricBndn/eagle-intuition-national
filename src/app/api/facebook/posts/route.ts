@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 const prisma = new PrismaClient();
 
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID;
-const ACCESS_TOKEN = process.env.FACEBOOK_USER_ACCESS_TOKEN;
+const ACCESS_TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
 
 const PLACEHOLDER_IMAGE = "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
 

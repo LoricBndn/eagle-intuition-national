@@ -15,92 +15,94 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST() {
+// Fonction principale (extraite pour réutiliser dans GET et POST)
+async function fetchAndStoreFacebookPosts() {
   if (!PAGE_ID || !ACCESS_TOKEN) {
-    return NextResponse.json(
-      { error: "Facebook Page ID or Access Token not set" },
-      { status: 500 }
-    );
+    throw new Error("Facebook Page ID or Access Token not set");
   }
 
-  try {
-    const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;
-    const res = await fetch(url);
-    if (!res.ok) {
-      const errorText = await res.text();
-      return NextResponse.json({ error: `Facebook API error: ${errorText}` }, { status: 500 });
-    }
+  const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Facebook API error: ${errorText}`);
+  }
 
-    const data = await res.json();
-    const posts = data.data;
+  const data = await res.json();
+  const posts = data.data;
+  const prismaPosts = [];
 
-    const prismaPosts = [];
+  for (const p of posts) {
+    if (p.story?.includes("créé un évènement")) continue;
 
-    for (const p of posts) {
-      // Ignorer les posts d'événements
-      if (p.story?.includes("créé un évènement")) continue;
+    const postDate = p.created_time ? new Date(p.created_time) : new Date();
+    let imagesUrl: string[] = [];
 
-      const postDate = p.created_time ? new Date(p.created_time) : new Date();
-      let imagesUrl: string[] = [];
+    const attachRes = await fetch(
+      `https://graph.facebook.com/v24.0/${p.id}?fields=attachments&access_token=${ACCESS_TOKEN}&limit=10`
+    );
+    if (attachRes.ok) {
+      const attachData = await attachRes.json();
+      const attachments = attachData.attachments?.data || [];
 
-      // Récupérer les images via l'endpoint attachments
-      const attachRes = await fetch(
-        `https://graph.facebook.com/v24.0/${p.id}?fields=attachments&access_token=${ACCESS_TOKEN}&limit=10`
-      );
-      if (attachRes.ok) {
-        const attachData = await attachRes.json();
-        const attachments = attachData.attachments?.data || [];
-
-        imagesUrl = await Promise.all(
-          attachments.map(async (att: any) => {
-            if (att.media?.image?.src) {
-              try {
-                const uploadRes = await cloudinary.uploader.upload(att.media.image.src, {
-                  folder: "facebook_posts",
-                });
-                return uploadRes.secure_url;
-              } catch (err) {
-                console.error("Cloudinary upload failed:", err);
-                return null;
-              }
+      imagesUrl = await Promise.all(
+        attachments.map(async (att: any) => {
+          if (att.media?.image?.src) {
+            try {
+              const uploadRes = await cloudinary.uploader.upload(att.media.image.src, {
+                folder: "facebook_posts",
+              });
+              return uploadRes.secure_url;
+            } catch (err) {
+              console.error("Cloudinary upload failed:", err);
+              return null;
             }
-            return null;
-          })
-        ).then(urls => urls.filter((u): u is string => !!u));
-      }
-
-      // Si le post a du contenu mais aucune image, ajouter le placeholder
-      if (p.message && imagesUrl.length === 0) {
-        imagesUrl.push(PLACEHOLDER_IMAGE);
-      }
-
-      // Ignorer les posts totalement vides
-      if (!p.message && imagesUrl.length === 0) continue;
-
-      prismaPosts.push({
-        content: p.message || "",
-        slug: p.id,
-        imagesUrl,
-        category: CategoryPost.National,
-        url: `https://www.facebook.com/${PAGE_ID}/posts/${p.id}`,
-        createdAt: postDate,
-      });
+          }
+          return null;
+        })
+      ).then((urls) => urls.filter((u): u is string => !!u));
     }
 
-    if (prismaPosts.length === 0) {
-      return NextResponse.json({ message: "No new posts to add" });
+    if (p.message && imagesUrl.length === 0) {
+      imagesUrl.push(PLACEHOLDER_IMAGE);
     }
 
-    const addedPosts = await prisma.post.createMany({
-      data: prismaPosts,
-      skipDuplicates: true,
+    if (!p.message && imagesUrl.length === 0) continue;
+
+    prismaPosts.push({
+      content: p.message || "",
+      slug: p.id,
+      imagesUrl,
+      category: CategoryPost.National,
+      url: `https://www.facebook.com/${PAGE_ID}/posts/${p.id}`,
+      createdAt: postDate,
     });
-
-    return NextResponse.json({ message: "Posts added", addedPosts });
-  } catch (err) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : err },
-      { status: 500 }
-    );
   }
+
+  if (prismaPosts.length === 0) {
+    return { message: "No new posts to add" };
+  }
+
+  const addedPosts = await prisma.post.createMany({
+    data: prismaPosts,
+    skipDuplicates: true,
+  });
+
+  return { message: "Posts added", addedPosts };
+}
+
+// ✅ Supporte GET pour Vercel Cron
+export async function GET() {
+  try {
+    const result = await fetchAndStoreFacebookPosts();
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
+  }
+}
+
+// ✅ Et POST pour déclencher manuellement
+export async function POST() {
+  return GET();
 }

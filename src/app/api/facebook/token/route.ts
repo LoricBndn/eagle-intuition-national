@@ -30,25 +30,27 @@ interface VercelEnv {
 }
 
 interface VercelEnvListResponse {
-  env: VercelEnv[];
+  envs: VercelEnv[];
 }
 
 // Supprimer la variable si elle existe
 async function deleteVercelEnv(key: string) {
   const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
-  const listRes = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
-    headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
-  });
+  const listRes = await fetch(
+    `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`,
+    { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } }
+  );
 
   if (!listRes.ok) throw new Error(await listRes.text());
 
   const listData = (await listRes.json()) as VercelEnvListResponse;
-  const env = listData.env.find(e => e.key === key);
+  const env = listData.envs.find(e => e.key === key);
+
   if (env) {
-    await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${env.id}${teamQuery}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
-    });
+    await fetch(
+      `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${env.id}${teamQuery}`,
+      { method: "DELETE", headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } }
+    );
   }
 }
 
@@ -61,16 +63,20 @@ async function createVercelEnv(key: string, value: string) {
       Authorization: `Bearer ${VERCEL_TOKEN}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify([{ key, value, target: ["development", "preview", "production"], type: "encrypted" }]),
+    body: JSON.stringify([
+      { key, value, target: ["development", "preview", "production"], type: "encrypted" },
+    ]),
   });
   if (!res.ok) throw new Error(await res.text());
 }
 
+// Upsert = supprime si existant, puis crée
 async function upsertVercelEnv(key: string, value: string) {
   await deleteVercelEnv(key);
   await createVercelEnv(key, value);
 }
 
+// Rafraîchissement du token Facebook
 async function refreshFacebookPageToken() {
   if (!APP_ID || !APP_SECRET || !USER_ACCESS_TOKEN || !PAGE_ID || !VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
     throw new Error("Missing environment variables");
@@ -97,7 +103,11 @@ async function refreshFacebookPageToken() {
   await upsertVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN", newPageToken);
   await upsertVercelEnv("FACEBOOK_USER_ACCESS_TOKEN", newUserToken);
 
-  return { message: "Facebook Page token refreshed successfully", pageToken: newPageToken, userToken: newUserToken };
+  return {
+    message: "Facebook Page token refreshed successfully",
+    pageToken: newPageToken,
+    userToken: newUserToken,
+  };
 }
 
 export async function GET() {

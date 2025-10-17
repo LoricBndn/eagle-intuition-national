@@ -18,43 +18,57 @@ interface FbTokenResponse {
 interface FbPageTokenResponse {
   access_token?: string;
   id?: string;
-  error?: {
-    message: string;
-    type: string;
-    code: number;
-  };
+  error?: { message: string; type: string; code: number };
 }
 
-async function upsertVercelEnv(key: string, value: string) {
+interface VercelEnv {
+  id: string;
+  key: string;
+  value?: string;
+  target: string[];
+  type: string;
+}
+
+interface VercelEnvListResponse {
+  env: VercelEnv[];
+}
+
+// Supprimer la variable si elle existe
+async function deleteVercelEnv(key: string) {
   const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
-
-  // Supprimer si elle existe
-  await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${key}${teamQuery}`, {
-    method: "DELETE",
+  const listRes = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
     headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
-  }).catch(() => {}); // ignorer l'erreur si elle n'existe pas
+  });
 
-  // Créer la variable
-  const createRes = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
+  if (!listRes.ok) throw new Error(await listRes.text());
+
+  const listData = (await listRes.json()) as VercelEnvListResponse;
+  const env = listData.env.find(e => e.key === key);
+  if (env) {
+    await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${env.id}${teamQuery}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
+    });
+  }
+}
+
+// Créer la variable
+async function createVercelEnv(key: string, value: string) {
+  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
+  const res = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${VERCEL_TOKEN}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify([
-      {
-        key,
-        value,
-        target: ["development", "preview", "production"],
-        type: "encrypted",
-      },
-    ]),
+    body: JSON.stringify([{ key, value, target: ["development", "preview", "production"], type: "encrypted" }]),
   });
+  if (!res.ok) throw new Error(await res.text());
+}
 
-  if (!createRes.ok) {
-    const text = await createRes.text();
-    throw new Error(`Vercel API update failed: ${text}`);
-  }
+async function upsertVercelEnv(key: string, value: string) {
+  await deleteVercelEnv(key);
+  await createVercelEnv(key, value);
 }
 
 async function refreshFacebookPageToken() {
@@ -79,18 +93,13 @@ async function refreshFacebookPageToken() {
   const newPageToken = fbPageData.access_token;
   if (!newPageToken) throw new Error("Failed to retrieve new page token");
 
-  // 3️⃣ Supprimer et recréer les variables sur Vercel
+  // 3️⃣ Upsert sur Vercel
   await upsertVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN", newPageToken);
   await upsertVercelEnv("FACEBOOK_USER_ACCESS_TOKEN", newUserToken);
 
-  return {
-    message: "Facebook Page token refreshed successfully",
-    pageToken: newPageToken,
-    userToken: newUserToken,
-  };
+  return { message: "Facebook Page token refreshed successfully", pageToken: newPageToken, userToken: newUserToken };
 }
 
-// ✅ GET pour cron automatique
 export async function GET() {
   try {
     const result = await refreshFacebookPageToken();
@@ -101,7 +110,6 @@ export async function GET() {
   }
 }
 
-// ✅ POST pour test manuel
 export async function POST() {
   return GET();
 }

@@ -25,6 +25,38 @@ interface FbPageTokenResponse {
   };
 }
 
+async function upsertVercelEnv(key: string, value: string) {
+  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
+
+  // Supprimer si elle existe
+  await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env/${key}${teamQuery}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${VERCEL_TOKEN}` },
+  }).catch(() => {}); // ignorer l'erreur si elle n'existe pas
+
+  // Créer la variable
+  const createRes = await fetch(`https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify([
+      {
+        key,
+        value,
+        target: ["development", "preview", "production"],
+        type: "encrypted",
+      },
+    ]),
+  });
+
+  if (!createRes.ok) {
+    const text = await createRes.text();
+    throw new Error(`Vercel API update failed: ${text}`);
+  }
+}
+
 async function refreshFacebookPageToken() {
   if (!APP_ID || !APP_SECRET || !USER_ACCESS_TOKEN || !PAGE_ID || !VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
     throw new Error("Missing environment variables");
@@ -47,36 +79,9 @@ async function refreshFacebookPageToken() {
   const newPageToken = fbPageData.access_token;
   if (!newPageToken) throw new Error("Failed to retrieve new page token");
 
-  // 3️⃣ Créer ou mettre à jour la variable sur Vercel via POST
-  const teamQuery = VERCEL_TEAM_ID ? `?teamId=${VERCEL_TEAM_ID}` : "";
-  const vercelUrl = `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/env${teamQuery}`;
-
-  const updateRes = await fetch(vercelUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${VERCEL_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify([
-      {
-        key: "FACEBOOK_PAGE_ACCESS_TOKEN",
-        value: newPageToken,
-        target: ["production", "preview", "development"],
-        type: "encrypted",
-      },
-      {
-        key: "FACEBOOK_USER_ACCESS_TOKEN",
-        value: newUserToken,
-        target: ["production", "preview", "development"],
-        type: "encrypted",
-      },
-    ]),
-  });
-
-  if (!updateRes.ok) {
-    const text = await updateRes.text();
-    throw new Error(`Vercel API update failed: ${text}`);
-  }
+  // 3️⃣ Supprimer et recréer les variables sur Vercel
+  await upsertVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN", newPageToken);
+  await upsertVercelEnv("FACEBOOK_USER_ACCESS_TOKEN", newUserToken);
 
   return {
     message: "Facebook Page token refreshed successfully",
@@ -85,6 +90,7 @@ async function refreshFacebookPageToken() {
   };
 }
 
+// ✅ GET pour cron automatique
 export async function GET() {
   try {
     const result = await refreshFacebookPageToken();
@@ -95,6 +101,7 @@ export async function GET() {
   }
 }
 
+// ✅ POST pour test manuel
 export async function POST() {
   return GET();
 }

@@ -10,7 +10,8 @@ const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID!;
 const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID;
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
 
-const PLACEHOLDER_IMAGE = "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
+const PLACEHOLDER_IMAGE =
+  "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -48,17 +49,25 @@ async function getVercelEnv(key: string): Promise<string | undefined> {
 
   const data: VercelEnvListResponse = await res.json();
   const env = data.envs.find((e) => e.key === key);
+  if (!env?.value) {
+    console.warn(`[Vercel Env] ${key} non trouvé ou vide`);
+  }
   return env?.value;
 }
 
 // === 🔄 Récupération et sauvegarde des posts Facebook ===
 async function fetchAndStoreFacebookPosts() {
   const ACCESS_TOKEN = await getVercelEnv("FACEBOOK_PAGE_ACCESS_TOKEN");
+
+  console.log("ACCESS_TOKEN depuis Vercel :", ACCESS_TOKEN);
+
   if (!PAGE_ID || !ACCESS_TOKEN) {
     throw new Error("Facebook Page ID or Access Token not set");
   }
 
-  // 1️⃣ Récupération des posts
+  console.log("🔑 Using Facebook Page Token:", ACCESS_TOKEN.slice(0, 10) + "...");
+
+  // 1️⃣ Récupération des posts Facebook
   const url = `https://graph.facebook.com/v24.0/${PAGE_ID}/posts?access_token=${ACCESS_TOKEN}&limit=10`;
   const res = await fetch(url);
 
@@ -82,6 +91,7 @@ async function fetchAndStoreFacebookPosts() {
     const attachRes = await fetch(
       `https://graph.facebook.com/v24.0/${p.id}?fields=attachments&access_token=${ACCESS_TOKEN}&limit=10`
     );
+
     if (attachRes.ok) {
       const attachData = await attachRes.json();
       const attachments = attachData.attachments?.data || [];

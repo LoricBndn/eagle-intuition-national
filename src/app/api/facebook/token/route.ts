@@ -64,7 +64,7 @@ async function createVercelEnv(key: string, value: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify([
-      { key, value, target: ["development", "preview", "production"], type: "encrypted" },
+      { key, value, target: ["development", "preview", "production"], type: "plain" },
     ]),
   });
   if (!res.ok) throw new Error(await res.text());

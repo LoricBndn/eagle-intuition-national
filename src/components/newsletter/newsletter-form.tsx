@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { subscribeToNewsletter } from "@/lib/actions"; // l'action server
+import { subscribeToNewsletter } from "@/lib/actions"; // ação server
 
 interface NewsletterFormProps {
   category: 'National' | 'International';
@@ -22,10 +22,10 @@ export default function NewsletterForm({ category }: NewsletterFormProps) {
       formData.append('category', category);
 
       await subscribeToNewsletter(formData);
-      setMessage("Merci pour votre inscription !");
+      setMessage("Obrigado pela sua inscrição!");
       setEmail('');
     } catch (error: any) {
-      setMessage(error.message || "Une erreur est survenue.");
+      setMessage(error.message || "Ocorreu um erro.");
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function NewsletterForm({ category }: NewsletterFormProps) {
         disabled={loading}
         className="rounded-md bg-primary hover:bg-[#e3791e] px-3 py-2 text-sm text-white cursor-pointer disabled:opacity-50"
       >
-        {loading ? "Envoi..." : "Subscrever"}
+        {loading ? "Enviando..." : "Subscrever"}
       </button>
       {message && <p className="text-sm text-green-600">{message}</p>}
     </form>

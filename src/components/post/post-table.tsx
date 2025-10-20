@@ -11,7 +11,7 @@ export default async function PostTable({
   query: string;
   currentPage: number;
 }) {
-  const posts = await fetchFilteredPostsNationalWeb(query, currentPage);
+  const posts = await fetchFilteredPostsNationalWeb(query, "Todos", currentPage);
 
   if (!posts || posts.length === 0) {
     return <div className="mt-6 text-center text-gray-600">Não foram encontradas mensagens.</div>;

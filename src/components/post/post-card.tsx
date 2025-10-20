@@ -38,8 +38,8 @@ export default function PostCard({
       </Link>
       <div className="p-5">
         <p className="text-sm font-semibold text-primary mb-1">{category}</p>
-        <p className="mb-3 font-normal text-gray-700">
-          {content.length > 100 ? content.slice(0, 200) + "..." : content}
+        <p className="mb-3 font-normal text-gray-700 whitespace-pre-line">
+          {content.length > 200 ? content.slice(0, 200) + "..." : content}
         </p>
         <p className="text-xs text-gray-500 mb-3">{formattedDate}</p>
         <Button text="Ler mais" link={`/noticias/${slug}`} />

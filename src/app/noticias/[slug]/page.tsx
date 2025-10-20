@@ -50,7 +50,13 @@ export default async function PostPage({ params }: PostPageProps) {
           day: "numeric",
         })}
       </p>
-      <article className="prose max-w-none mb-10">{post.content}</article>
+      <article className="prose max-w-none mb-10">
+        {post.content.split(/\n{2,}/).map((paragraph, i) => (
+          <p key={i} className="whitespace-pre-line">
+            {paragraph}
+          </p>
+        ))}
+      </article>
 
       {post.imagesUrl && post.imagesUrl.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

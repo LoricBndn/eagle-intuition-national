@@ -28,6 +28,7 @@ export default async function Page({
 
   const allFilteredPosts = await fetchFilteredPostsNationalWeb(
     query,
+    category,
     currentPage,
     POSTS_PER_PAGE
   );
@@ -37,7 +38,7 @@ export default async function Page({
       ? allFilteredPosts
       : allFilteredPosts.filter((post) => post.category === category);
 
-  const totalPages = await fetchPostsPagesNationalWeb(query, POSTS_PER_PAGE);
+  const totalPages = await fetchPostsPagesNationalWeb(query, category, POSTS_PER_PAGE);
 
   const categories = ["Todos", "Web", "National"];
 
@@ -63,10 +64,18 @@ export default async function Page({
       </div>
 
       <div className="default-p-y" id="posts">
-        <Posts posts={filteredByCategory} />
-        <div className="mt-12 flex w-full justify-center">
-          <Pagination totalPages={totalPages} />
-        </div>
+        {filteredByCategory.length > 0 ? (
+          <>
+            <Posts posts={filteredByCategory} />
+            <div className="mt-12 flex w-full justify-center">
+              <Pagination totalPages={totalPages} />
+            </div>
+          </>
+        ) : (
+          <div className="text-center text-gray-400 text-lg py-20">
+            Nenhuma publicação encontrada nesta categoria.
+          </div>
+        )}
       </div>
     </div>
   );

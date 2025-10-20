@@ -163,11 +163,16 @@ export async function fetchPostsPagesInternational(query: string, itemsPerPage =
   return Math.ceil(total / itemsPerPage);
 }
 
-export async function fetchPostsPagesNationalWeb(query: string, itemsPerPage = 6) {
+export async function fetchPostsPagesNationalWeb(query: string, category: string, itemsPerPage = 6) {
   const where: Prisma.PostWhereInput = {
-    category: { in: [CategoryPost.National, CategoryPost.Web] },
+    category:
+      category === "Todos"
+        ? { in: [CategoryPost.National, CategoryPost.Web] }
+        : category === "Web"
+        ? CategoryPost.Web
+        : CategoryPost.National,
     ...(query?.trim() && {
-      title: {
+      content: {
         contains: query,
         mode: "insensitive",
       },
@@ -259,18 +264,25 @@ export async function fetchFilteredPostsInternational(query: string, currentPage
   });
 }
 
-export async function fetchFilteredPostsNationalWeb(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredPostsNationalWeb(query: string, category: string, currentPage: number, itemsPerPage = 6) {
   const offset = Math.max(currentPage - 1, 0) * itemsPerPage;
 
+  const where: Prisma.PostWhereInput = {
+    category:
+      category === "Todos"
+        ? { in: [CategoryPost.National, CategoryPost.Web] }
+        : category === "Web"
+        ? CategoryPost.Web
+        : CategoryPost.National,
+    ...(query?.trim() && {
+      OR: [
+        { content: { contains: query, mode: "insensitive" } },
+      ],
+    }),
+  };
+
   return await prisma.post.findMany({
-    where: {
-      category: { in: [CategoryPost.National, CategoryPost.Web] },
-      ...(query?.trim() && {
-        OR: [
-          { content: { contains: query, mode: "insensitive" } },
-        ],
-      }),
-    },
+    where,
     orderBy: { createdAt: "desc" },
     skip: offset,
     take: itemsPerPage,

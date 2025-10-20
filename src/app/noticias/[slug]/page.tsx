@@ -50,12 +50,14 @@ export default async function PostPage({ params }: PostPageProps) {
           day: "numeric",
         })}
       </p>
-      <article className="prose max-w-none mb-10">
-        {post.content.split(/\n{2,}/).map((paragraph, i) => (
-          <p key={i} className="whitespace-pre-line">
-            {paragraph}
-          </p>
-        ))}
+      <article className="prose max-w-none mb-10 leading-relaxed">
+        {post.content
+          .split(/\n{2,}/)
+          .map((paragraph, i) => (
+            <p key={i} className="whitespace-pre-line mb-4">
+              {paragraph.trim()}
+            </p>
+          ))}
       </article>
 
       {post.imagesUrl && post.imagesUrl.length > 0 && (

@@ -1,7 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 const prisma = new PrismaClient();
 let generator: any = null;
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const formatDateToLocal = (
   dateStr: string,

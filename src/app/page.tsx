@@ -7,14 +7,11 @@ import ContactForm from "@/components/contact/contact-form";
 import { fetchCourses } from "@/lib/data";
 
 export default async function Home() {
-  console.log(fetchCourses())
   const coursesFromDb = await fetchCourses();
 
-const courses = coursesFromDb.map(({ iconUrl, ...rest }) => ({
-  ...rest,
-  icon: iconUrl,
-}));
-
+  const courses = coursesFromDb.map(({...rest }) => ({
+    ...rest,
+  }));
 
   return (
     <div>

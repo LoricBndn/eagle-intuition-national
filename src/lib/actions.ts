@@ -17,7 +17,7 @@ const NewsletterSchema = z.object({
 export type CourseState = {
   errors?: {
     title?: string[];
-    iconUrl?: string[];
+    icon?: string[];
   };
   message?: string | null;
 };
@@ -94,30 +94,23 @@ async function uploadToApi(file: File): Promise<string> {
 
 export async function createCourse(prevState: any, formData: FormData) {
   const title = formData.get("title") as string;
-  const iconFile = formData.get("icon") as File;
+  const icon = formData.get("icon") as string;
 
-  if (!title || !iconFile) {
+  if (!title || !icon) {
     return {
-      message: "Title and icon image are required.",
+      message: "Title and icon are required.",
       errors: {
-        title: ["The title is required."],
-        iconUrl: ["An image must be uploaded."],
+        title: !title ? ["The title is required."] : [],
+        icon: !icon ? ["An icon must be selected."] : [],
       },
     };
   }
 
-  const buffer = Buffer.from(await iconFile.arrayBuffer());
-  const filename = `${uuidv4()}-${iconFile.name}`;
-  const uploadPath = path.join(process.cwd(), "public/courses/icons", filename);
-
-  await writeFile(uploadPath, buffer);
-
-  const imageUrl = `/courses/icons/${filename}`;
-
   await prisma.course.create({
     data: {
+      id: uuidv4(),
       title,
-      iconUrl: imageUrl,
+      icon,
     },
   });
 
@@ -125,46 +118,26 @@ export async function createCourse(prevState: any, formData: FormData) {
   redirect("/admin/dashboard/courses");
 }
 
-export async function updateCourse(
-  prevState: any,
-  formData: FormData
-) {
+export async function updateCourse(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
   const title = parseString(formData.get("title"));
-  const iconFile = formData.get("icon") as File | null;
+  const icon = formData.get("icon") as string;
 
   if (!id || !title) {
     return {
       message: "Missing required fields.",
       errors: {
-        title: ["The title is required."],
-        iconUrl: iconFile ? [] : ["An image must be uploaded or retained."],
+        title: !title ? ["The title is required."] : [],
+        icon: !icon ? ["An icon must be selected."] : [],
       },
     };
-  }
-
-  let imageUrl: string | null = null;
-
-  if (iconFile && iconFile.size > 0) {
-    const buffer = Buffer.from(await iconFile.arrayBuffer());
-    const filename = `${uuidv4()}-${iconFile.name}`;
-    const uploadPath = path.join(process.cwd(), "public/courses/icons", filename);
-
-    await writeFile(uploadPath, buffer);
-    imageUrl = `/courses/icons/${filename}`;
-
-    const existingCourse = await prisma.course.findUnique({ where: { id } });
-    if (existingCourse?.iconUrl && existingCourse.iconUrl.startsWith("/courses/icons/")) {
-      const oldPath = path.join(process.cwd(), "public", existingCourse.iconUrl);
-      await unlink(oldPath).catch(() => {});
-    }
   }
 
   await prisma.course.update({
     where: { id },
     data: {
       title,
-      ...(imageUrl && { iconUrl: imageUrl }),
+      ...(icon && { icon }),
     },
   });
 
@@ -173,15 +146,7 @@ export async function updateCourse(
 }
 
 export async function deleteCourse(id: string) {
-  const course = await prisma.course.findUnique({ where: { id } });
-
-  if (course?.iconUrl && course.iconUrl.startsWith("/courses/icons/")) {
-    const imagePath = path.join(process.cwd(), "public", course.iconUrl);
-    await unlink(imagePath).catch(() => {});
-  }
-
   await prisma.course.delete({ where: { id } });
-
   revalidatePath("/admin/dashboard/courses");
 }
 

@@ -18,7 +18,7 @@ model Course {
   id        String   @id @default(cuid())
   title     String
   createdAt DateTime @default(now())
-  iconUrl   String   @unique
+  icon      String
 }
 
 model Post {

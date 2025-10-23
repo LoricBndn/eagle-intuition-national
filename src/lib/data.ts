@@ -2,15 +2,9 @@ import {
   PrismaClient,
   Prisma,
   CategoryPost,
-  CategoryNewsletter,
 } from "@prisma/client";
-import { extractImagesFromAttachments } from "@/lib/utils";
 
 const prisma = new PrismaClient();
-
-const FACEBOOK_NATIONAL_PAGE_ID = process.env.FACEBOOK_NATIONAL_PAGE_ID;
-const FACEBOOK_INTERNATIONAL_PAGE_ID = process.env.FACEBOOK_INTERNATIONAL_PAGE_ID;
-const FACEBOOK_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
 
 // -------------------- PRINCIPAL --------------------
 
@@ -26,7 +20,7 @@ export async function fetchCourseById(id: string) {
 export async function fetchFilteredCourses(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -52,7 +46,7 @@ export async function fetchFilteredCourses(
   }
 }
 
-export async function fetchCoursesPages(query: string, itemsPerPage = 6) {
+export async function fetchCoursesPages(query: string, itemsPerPage = 8) {
   const where: Prisma.CourseWhereInput | undefined = query?.trim()
     ? {
         title: {
@@ -119,7 +113,7 @@ export async function fetchPostsByCategory(category: CategoryPost) {
   return await prisma.post.findMany({ where: { category } });
 }
 
-export async function fetchPostsPages(query: string, itemsPerPage = 6) {
+export async function fetchPostsPages(query: string, itemsPerPage = 8) {
   const where: Prisma.PostWhereInput | undefined = query?.trim()
     ? {
         content: {
@@ -133,7 +127,7 @@ export async function fetchPostsPages(query: string, itemsPerPage = 6) {
   return Math.ceil(Number(totalPosts) / itemsPerPage);
 }
 
-export async function fetchPostsPagesNational(query: string, itemsPerPage = 6) {
+export async function fetchPostsPagesNational(query: string, itemsPerPage = 8) {
   const where: Prisma.PostWhereInput = {
     category: CategoryPost.National,
     ...(query?.trim() && {
@@ -148,7 +142,7 @@ export async function fetchPostsPagesNational(query: string, itemsPerPage = 6) {
   return Math.ceil(total / itemsPerPage);
 }
 
-export async function fetchPostsPagesInternational(query: string, itemsPerPage = 6) {
+export async function fetchPostsPagesInternational(query: string, itemsPerPage = 8) {
   const where: Prisma.PostWhereInput = {
     category: CategoryPost.International,
     ...(query?.trim() && {
@@ -163,7 +157,7 @@ export async function fetchPostsPagesInternational(query: string, itemsPerPage =
   return Math.ceil(total / itemsPerPage);
 }
 
-export async function fetchPostsPagesNationalWeb(query: string, category: string, itemsPerPage = 6) {
+export async function fetchPostsPagesNationalWeb(query: string, category: string, itemsPerPage = 8) {
   const where: Prisma.PostWhereInput = {
     category:
       category === "Todos"
@@ -183,7 +177,7 @@ export async function fetchPostsPagesNationalWeb(query: string, category: string
   return Math.ceil(total / itemsPerPage);
 }
 
-export async function fetchPostsPagesInternationalWeb(query: string, itemsPerPage = 6) {
+export async function fetchPostsPagesInternationalWeb(query: string, itemsPerPage = 8) {
   const where: Prisma.PostWhereInput = {
     category: { in: [CategoryPost.International, CategoryPost.Web] },
     ...(query?.trim() && {
@@ -201,7 +195,7 @@ export async function fetchPostsPagesInternationalWeb(query: string, itemsPerPag
 export async function fetchFilteredPosts(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const safePage =
     typeof currentPage === "number" && currentPage > 0 ? currentPage : 1;
@@ -228,7 +222,7 @@ export async function fetchFilteredPosts(
   }
 }
 
-export async function fetchFilteredPostsNational(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredPostsNational(query: string, currentPage: number, itemsPerPage = 8) {
   const offset = Math.max(currentPage - 1, 0) * itemsPerPage;
 
   return await prisma.post.findMany({
@@ -246,7 +240,7 @@ export async function fetchFilteredPostsNational(query: string, currentPage: num
   });
 }
 
-export async function fetchFilteredPostsInternational(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredPostsInternational(query: string, currentPage: number, itemsPerPage = 8) {
   const offset = Math.max(currentPage - 1, 0) * itemsPerPage;
 
   return await prisma.post.findMany({
@@ -264,7 +258,7 @@ export async function fetchFilteredPostsInternational(query: string, currentPage
   });
 }
 
-export async function fetchFilteredPostsNationalWeb(query: string, category: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredPostsNationalWeb(query: string, category: string, currentPage: number, itemsPerPage = 8) {
   const offset = Math.max(currentPage - 1, 0) * itemsPerPage;
 
   const where: Prisma.PostWhereInput = {
@@ -289,7 +283,7 @@ export async function fetchFilteredPostsNationalWeb(query: string, category: str
   });
 }
 
-export async function fetchFilteredPostsInternationalWeb(query: string, currentPage: number, itemsPerPage = 6) {
+export async function fetchFilteredPostsInternationalWeb(query: string, currentPage: number, itemsPerPage = 8) {
   const offset = Math.max(currentPage - 1, 0) * itemsPerPage;
 
   return await prisma.post.findMany({
@@ -327,7 +321,7 @@ export async function fetchNewsletterById(id: string) {
 export async function fetchFilteredNewsletters(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -353,7 +347,7 @@ export async function fetchFilteredNewsletters(
   }
 }
 
-export async function fetchNewslettersPages(query: string, itemsPerPage = 6) {
+export async function fetchNewslettersPages(query: string, itemsPerPage = 8) {
   const where: Prisma.NewsletterWhereInput | undefined = query?.trim()
     ? {
         email: {
@@ -379,7 +373,7 @@ export async function fetchErasmusCourseById(id: string) {
 export async function fetchFilteredErasmusCourses(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -398,7 +392,7 @@ export async function fetchFilteredErasmusCourses(
   });
 }
 
-export async function fetchErasmusCoursesPages(query: string, itemsPerPage = 6) {
+export async function fetchErasmusCoursesPages(query: string, itemsPerPage = 8) {
   const where: Prisma.ErasmusCourseWhereInput | undefined = query?.trim()
     ? {
         title: {
@@ -424,7 +418,7 @@ export async function fetchErasmusProjectById(id: string) {
 export async function fetchFilteredErasmusProjects(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -443,7 +437,7 @@ export async function fetchFilteredErasmusProjects(
   });
 }
 
-export async function fetchErasmusProjectsPages(query: string, itemsPerPage = 6) {
+export async function fetchErasmusProjectsPages(query: string, itemsPerPage = 8) {
   const where: Prisma.ErasmusProjectWhereInput | undefined = query?.trim()
     ? {
         title: {
@@ -470,7 +464,7 @@ export async function fetchPartnerById(id: string) {
 export async function fetchFilteredPartners(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -489,7 +483,7 @@ export async function fetchFilteredPartners(
   });
 }
 
-export async function fetchPartnersPages(query: string, itemsPerPage = 6) {
+export async function fetchPartnersPages(query: string, itemsPerPage = 8) {
   const where: Prisma.PartnerWhereInput | undefined = query?.trim()
     ? {
         name: {
@@ -515,7 +509,7 @@ export async function fetchVideoById(id: string) {
 export async function fetchFilteredVideos(
   query: string,
   currentPage: number,
-  itemsPerPage = 6
+  itemsPerPage = 8
 ) {
   const offset = (currentPage - 1) * itemsPerPage;
 
@@ -534,7 +528,7 @@ export async function fetchFilteredVideos(
   });
 }
 
-export async function fetchVideosPages(query: string, itemsPerPage = 6) {
+export async function fetchVideosPages(query: string, itemsPerPage = 8) {
   const where: Prisma.VideoWhereInput | undefined = query?.trim()
     ? {
         title: {
@@ -557,83 +551,4 @@ export async function fetchUsers() {
 
 export async function fetchUserById(id: string) {
   return await prisma.user.findUnique({ where: { id } });
-}
-
-// Facebook Posts
-export async function fetchFacebookAndStorePosts(url?: string) {
-  if (!FACEBOOK_NATIONAL_PAGE_ID || !FACEBOOK_ACCESS_TOKEN) {
-    console.error("Missing Facebook credentials.");
-    return;
-  }
-
-  const seenIds = new Set<string>();
-
-  const apiUrl = url
-    ? url
-    : `https://graph.facebook.com/v23.0/${FACEBOOK_NATIONAL_PAGE_ID}/posts?access_token=${FACEBOOK_ACCESS_TOKEN}&fields=id,message,created_time,attachments,status_type,permalink_url&limit=25`;
-
-  try {
-    const res = await fetch(apiUrl);
-
-    if (!res.ok) {
-      console.error("Facebook API Error:", await res.text());
-      return;
-    }
-
-    const { data, paging } = await res.json();
-
-    for (const post of data) {
-      console.log(post);
-      if (seenIds.has(post.id)) continue;
-      seenIds.add(post.id);
-      if (post.status_type === "mobile_status_update") continue;
-
-      const exists = await prisma.post.findUnique({ where: { id: post.id } });
-      if (!exists) {
-        try {
-          const slug = `fb-${post.id}`;
-
-          let imagesUrl: string[] = [];
-          if (post.attachments?.data) {
-            imagesUrl = extractImagesFromAttachments(post.attachments.data);
-          }
-
-          let sharedContent = "";
-          if (post.status_type === "shared_story") {
-            const sharedAttachment = post.attachments.data[0];
-            sharedContent = [
-              sharedAttachment?.title,
-              sharedAttachment?.description,
-              sharedAttachment?.url,
-            ]
-              .filter(Boolean)
-              .join("\n");
-          }
-
-          await prisma.post.create({
-            data: {
-              id: post.id,
-              slug,
-              content: post.message || sharedContent || "",
-              createdAt: new Date(post.created_time),
-              imagesUrl,
-              category: CategoryPost.National,
-              url: post.permalink_url,
-            },
-          });
-        } catch (error) {
-          console.error(
-            `Erreur lors de la création du post ${post.id} :`,
-            error
-          );
-        }
-      }
-    }
-
-    if (paging?.next) {
-      return fetchFacebookAndStorePosts(paging.next);
-    }
-  } catch (error) {
-    console.error("Error fetching or storing Facebook posts:", error);
-  }
 }

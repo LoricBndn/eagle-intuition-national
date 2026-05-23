@@ -31,7 +31,7 @@ export function CourseSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-7 w-7 rounded-full bg-gray-200" />
@@ -93,7 +93,7 @@ export function PostSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr
                   key={i}
                   className="border-b py-3 text-sm last-of-type:border-none"
@@ -163,7 +163,7 @@ export function NewsletterSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-4 w-40 rounded bg-gray-200" />
@@ -227,7 +227,7 @@ export function ErasmusCourseSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-20 w-20 rounded-md bg-gray-200" />
@@ -300,7 +300,7 @@ export function ErasmusProjectSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-20 w-20 rounded-md bg-gray-200" />
@@ -367,7 +367,7 @@ export function PartnerSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-20 w-20 rounded-md bg-gray-200" />
@@ -431,7 +431,7 @@ export function VideoSkeleton() {
               </tr>
             </thead>
             <tbody className="bg-white animate-pulse">
-              {Array.from({ length: 6 }).map((_, i) => (
+              {Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="border-b text-sm last-of-type:border-none">
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="h-12 w-20 rounded-md bg-gray-200" /> {/* Image de couverture */}

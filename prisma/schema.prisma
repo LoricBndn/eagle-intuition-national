@@ -26,7 +26,7 @@ model Post {
   slug      String       @unique
   category  CategoryPost
   content   String       @db.Text
-  url       String?      @unique
+  url       String?
   createdAt DateTime     @default(now())
   imagesUrl String[]
 }
@@ -42,10 +42,10 @@ model ErasmusCourse {
   id          String   @id @default(cuid())
   title       String
   description String
-  pdf         String   @unique
-  url         String   @unique
+  pdf         String?
+  url         String
   createdAt   DateTime @default(now())
-  imageUrl    String   @unique
+  imageUrl    String
 }
 
 model ErasmusProject {
@@ -53,7 +53,7 @@ model ErasmusProject {
   title     String
   url       String   @unique
   createdAt DateTime @default(now())
-  imageUrl  String   @unique
+  imageUrl  String
 }
 
 model Partner {
@@ -61,7 +61,7 @@ model Partner {
   name      String
   url       String   @unique
   createdAt DateTime @default(now())
-  imageUrl  String   @unique
+  imageUrl  String
 }
 
 model Video {

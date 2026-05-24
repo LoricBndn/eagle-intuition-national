@@ -3,14 +3,13 @@ import ZoomableImage from "@/components/ui/zoomImage";
 import type { Metadata } from "next";
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export async function generateMetadata(
-  { params }: PostPageProps
-): Promise<Metadata> {
+export async function generateMetadata(props: PostPageProps): Promise<Metadata> {
+  const params = await props.params;
   const post = await fetchPostBySlug(params.slug);
 
   if (!post) {
@@ -33,7 +32,8 @@ export async function generateMetadata(
   };
 }
 
-export default async function PostPage({ params }: PostPageProps) {
+export default async function PostPage(props: PostPageProps) {
+  const params = await props.params;
   const { slug } = params;
   const post = await fetchPostBySlug(slug);
 
@@ -59,7 +59,6 @@ export default async function PostPage({ params }: PostPageProps) {
             </p>
           ))}
       </article>
-
       {post.imagesUrl && post.imagesUrl.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {post.imagesUrl.map((imgSrc, index) => (

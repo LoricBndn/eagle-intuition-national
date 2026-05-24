@@ -1,9 +1,9 @@
-import { withAuth } from 'next-auth/middleware'
-
-export default withAuth({
-  callbacks: {
-    authorized: ({ token }) => !!token,
-  },
+import { auth } from '@/auth'
+export default auth((req) => {
+  if (!req.auth) {
+    const signInUrl = new URL('/admin/login', req.url)
+    return Response.redirect(signInUrl)
+  }
 })
 
 export const config = {

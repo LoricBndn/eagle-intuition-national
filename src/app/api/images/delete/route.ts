@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
-import { getToken } from 'next-auth/jwt'
+import { auth } from '@/auth'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,8 +9,8 @@ cloudinary.config({
 })
 
 export async function POST(req: NextRequest) {
-  const token = await getToken({ req })
-  if (!token) {
+  const session = await auth()
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

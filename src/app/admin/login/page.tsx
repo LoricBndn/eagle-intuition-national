@@ -14,17 +14,20 @@ export default function AdminLoginPage() {
     e.preventDefault()
     setError('')
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    })
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      })
 
-    if (result?.ok) {
-      // Connexion réussie : on set le flag
-      localStorage.setItem('adminLoggedIn', 'true')
-      router.push('/admin/dashboard')
-    } else {
+      if (result?.ok) {
+        localStorage.setItem('adminLoggedIn', 'true')
+        router.push('/admin/dashboard')
+      } else {
+        setError('Email ou mot de passe invalide')
+      }
+    } catch {
       setError('Email ou mot de passe invalide')
     }
   }

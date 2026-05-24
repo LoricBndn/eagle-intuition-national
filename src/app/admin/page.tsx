@@ -1,18 +1,13 @@
-import { getServerSession } from "next-auth/next"
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: "Admin",
-  robots: "noindex, nofollow",
-};
+  title: 'Admin',
+  robots: 'noindex, nofollow',
+}
 
 export default async function AdminPage() {
-  const session = await getServerSession(authOptions)
-
-  if (!session) {
-    redirect('/admin/login')
-  }
-
+  const session = await auth()
+  if (!session) redirect('/admin/login')
   redirect('/admin/dashboard')
 }

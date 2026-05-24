@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import { CategoryPost, PrismaClient } from "@prisma/client";
+import { CategoryPost } from "@prisma/client";
 import { v2 as cloudinary } from "cloudinary";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import { requireEnv } from "@/lib/utils";
 
 // === ⚙️ Configuration Vercel ===
-const VERCEL_TOKEN = process.env.VERCEL_TOKEN!;
-const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID!;
+const VERCEL_TOKEN = requireEnv("VERCEL_TOKEN");
+const VERCEL_PROJECT_ID = requireEnv("VERCEL_PROJECT_ID");
 const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID;
-const PAGE_ID = process.env.FACEBOOK_PAGE_ID!;
+const PAGE_ID = requireEnv("FACEBOOK_PAGE_ID");
 
 const PLACEHOLDER_IMAGE =
   "https://citygem.app/wp-content/uploads/2024/08/placeholder-1-1.png";
@@ -26,6 +26,10 @@ interface VercelEnv {
   value?: string;
   target: string[];
   type: string;
+}
+
+interface FacebookAttachment {
+  media?: { image?: { src: string } };
 }
 
 interface VercelEnvListResponse {
@@ -93,7 +97,7 @@ async function fetchAndStoreFacebookPosts() {
       const attachments = attachData.attachments?.data || [];
 
       imagesUrl = await Promise.all(
-        attachments.map(async (att: any) => {
+        attachments.map(async (att: FacebookAttachment) => {
           if (att.media?.image?.src) {
             try {
               const uploadRes = await cloudinary.uploader.upload(att.media.image.src, {

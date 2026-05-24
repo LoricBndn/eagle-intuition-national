@@ -1,9 +1,12 @@
-import { PrismaClient } from "@prisma/client";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { prisma } from "@/lib/prisma"
 
-const prisma = new PrismaClient();
-let generator: any = null;
+export function requireEnv(key: string): string {
+  const value = process.env[key];
+  if (!value) throw new Error(`Missing required environment variable: ${key}`);
+  return value;
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -70,7 +73,12 @@ export async function generateUniqueSlug(title: string): Promise<string> {
   return slug;
 }
 
-export function extractImagesFromAttachments(attachments: any[]): string[] {
+interface FacebookAttachment {
+  media?: { image?: { src: string } };
+  subattachments?: { data: FacebookAttachment[] };
+}
+
+export function extractImagesFromAttachments(attachments: FacebookAttachment[]): string[] {
   let images: string[] = [];
 
   for (const attachment of attachments) {

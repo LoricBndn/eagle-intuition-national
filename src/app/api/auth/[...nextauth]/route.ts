@@ -1,8 +1,9 @@
 import NextAuth from 'next-auth/next'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs'  // si tu as changé à bcryptjs
-const prisma = new PrismaClient();
+import type { Session } from 'next-auth'
+import type { JWT } from 'next-auth/jwt'
+import bcrypt from 'bcryptjs'
+import { prisma } from '@/lib/prisma'
 
 export const authOptions = {
   providers: [
@@ -31,13 +32,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async session({
-      session,
-      token,
-    }: {
-      session: any
-      token: { sub?: string }
-    }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user && token.sub) {
         session.user.id = token.sub
       }

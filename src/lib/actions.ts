@@ -3,12 +3,11 @@
 import { z } from 'zod';
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { CategoryPost, PrismaClient } from "@prisma/client";
+import { CategoryPost } from "@prisma/client";
 import { writeFile, unlink } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 const NewsletterSchema = z.object({
   email: z.string().email("A valid email is required."),
@@ -19,7 +18,7 @@ export type CourseState = {
     title?: string[];
     icon?: string[];
   };
-  message?: string | null;
+  message: string | null;
 };
 
 export type PostState = {
@@ -34,7 +33,7 @@ export type NewsletterState = {
   errors?: {
     email?: string[];
   };
-  message?: string | null;
+  message: string | null;
 };
 
 export type ErasmusCourseState = {
@@ -44,7 +43,7 @@ export type ErasmusCourseState = {
     pdf?: string[];
     imageUrl?: string[];
   };
-  message?: string | null;
+  message: string | null;
 };
 
 export type ErasmusProjectState = {
@@ -53,7 +52,7 @@ export type ErasmusProjectState = {
     url?: string[];
     imageUrl?: string[];
   };
-  message?: string | null;
+  message: string | null;
 };
 
 export type PartnerState = {
@@ -62,7 +61,16 @@ export type PartnerState = {
     url?: string[];
     imageUrl?: string[];
   };
-  message?: string | null;
+  message: string | null;
+};
+
+export type VideoState = {
+  errors?: {
+    title?: string[];
+    url?: string[];
+    imageUrl?: string[];
+  };
+  message: string | null;
 };
 
 function parseString(value: FormDataEntryValue | null): string | null {
@@ -92,7 +100,7 @@ async function uploadToApi(file: File): Promise<string> {
 
 // -------------------- COURSE --------------------
 
-export async function createCourse(prevState: any, formData: FormData) {
+export async function createCourse(prevState: CourseState, formData: FormData): Promise<CourseState> {
   const title = formData.get("title") as string;
   const icon = formData.get("icon") as string;
 
@@ -118,7 +126,7 @@ export async function createCourse(prevState: any, formData: FormData) {
   redirect("/admin/dashboard/courses");
 }
 
-export async function updateCourse(prevState: any, formData: FormData) {
+export async function updateCourse(prevState: CourseState, formData: FormData): Promise<CourseState> {
   const id = formData.get("id") as string;
   const title = parseString(formData.get("title"));
   const icon = formData.get("icon") as string;
@@ -298,7 +306,11 @@ export async function createErasmusCourse(
   if (!title) errors.title = ['The title is required.'];
   if (!description) errors.description = ['The description is required.'];
   if (!imageFile || imageFile.size === 0) errors.imageUrl = ['An image must be uploaded.'];
-  if (pdfFile && !pdfFile.name.endsWith('.pdf')) errors.pdf = ['Only PDF files are accepted.'];
+  if (pdfFile && pdfFile.size > 0) {
+    const pdfBuffer = Buffer.from(await pdfFile.arrayBuffer());
+    const magicBytes = pdfBuffer.slice(0, 4).toString('hex');
+    if (magicBytes !== '25504446') errors.pdf = ['Le fichier doit être un PDF valide.'];
+  }
 
   if (Object.keys(errors).length > 0) {
     return {
@@ -373,7 +385,7 @@ export async function updateErasmusCourse(
   if (imageFile instanceof File && imageFile.size > 0) {
     // Supprimer ancienne image
     const oldImagePath = path.join(process.cwd(), 'public', existingCourse.imageUrl);
-    await unlink(oldImagePath).catch(() => {});
+    await unlink(oldImagePath).catch((err) => { console.error("[unlink]", err); });
 
     // Sauvegarder nouvelle image
     const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
@@ -388,7 +400,7 @@ export async function updateErasmusCourse(
     // Supprimer ancien pdf
     if (existingCourse.pdf) {
       const oldPdfPath = path.join(process.cwd(), 'public', existingCourse.pdf);
-      await unlink(oldPdfPath).catch(() => {});
+      await unlink(oldPdfPath).catch((err) => { console.error("[unlink]", err); });
     }
     // Sauvegarder nouveau pdf
     const pdfBuffer = Buffer.from(await pdfFile.arrayBuffer());
@@ -423,11 +435,11 @@ export async function deleteErasmusCourse(id: string): Promise<void> {
   // Supprimer fichiers image et pdf
   if (course.imageUrl) {
     const imagePath = path.join(process.cwd(), 'public', course.imageUrl);
-    await unlink(imagePath).catch(() => {});
+    await unlink(imagePath).catch((err) => { console.error("[unlink]", err); });
   }
   if (course.pdf) {
     const pdfPath = path.join(process.cwd(), 'public', course.pdf);
-    await unlink(pdfPath).catch(() => {});
+    await unlink(pdfPath).catch((err) => { console.error("[unlink]", err); });
   }
 
   await prisma.erasmusCourse.delete({ where: { id } });
@@ -439,7 +451,7 @@ export async function deleteErasmusCourse(id: string): Promise<void> {
 
 // -------------------- ERASMUS PROJECT --------------------
 
-export async function createErasmusProject(prevState: any, formData: FormData) {
+export async function createErasmusProject(prevState: ErasmusProjectState, formData: FormData): Promise<ErasmusProjectState> {
   const title = formData.get("title") as string;
   const url = formData.get("url") as string;
   const imageFile = formData.get("image") as File;
@@ -470,7 +482,7 @@ export async function createErasmusProject(prevState: any, formData: FormData) {
   redirect("/admin/dashboard/erasmus-projects");
 }
 
-export async function updateErasmusProject(prevState: any, formData: FormData) {
+export async function updateErasmusProject(prevState: ErasmusProjectState, formData: FormData): Promise<ErasmusProjectState> {
   const id = formData.get("id") as string;
   const title = parseString(formData.get("title"));
   const url = parseString(formData.get("url"));
@@ -499,7 +511,7 @@ export async function updateErasmusProject(prevState: any, formData: FormData) {
     const existing = await prisma.erasmusProject.findUnique({ where: { id } });
     if (existing?.imageUrl?.startsWith("/erasmus/projects/images/")) {
       const oldPath = path.join(process.cwd(), "public", existing.imageUrl);
-      await unlink(oldPath).catch(() => {});
+      await unlink(oldPath).catch((err) => { console.error("[unlink]", err); });
     }
   }
 
@@ -520,7 +532,7 @@ export async function deleteErasmusProject(id: string) {
   const project = await prisma.erasmusProject.findUnique({ where: { id } });
   if (project?.imageUrl?.startsWith("/erasmus/projects/images/")) {
     const imagePath = path.join(process.cwd(), "public", project.imageUrl);
-    await unlink(imagePath).catch(() => {});
+    await unlink(imagePath).catch((err) => { console.error("[unlink]", err); });
   }
 
   await prisma.erasmusProject.delete({ where: { id } });
@@ -530,7 +542,7 @@ export async function deleteErasmusProject(id: string) {
 
 // -------------------- PARTNER --------------------
 
-export async function createPartner(prevState: any, formData: FormData) {
+export async function createPartner(prevState: PartnerState, formData: FormData): Promise<PartnerState> {
   const name = formData.get("name") as string;
   const url = formData.get("url") as string;
   const imageFile = formData.get("image") as File;
@@ -561,7 +573,7 @@ export async function createPartner(prevState: any, formData: FormData) {
   redirect("/admin/dashboard/partners");
 }
 
-export async function updatePartner(prevState: any, formData: FormData) {
+export async function updatePartner(prevState: PartnerState, formData: FormData): Promise<PartnerState> {
   const id = formData.get("id") as string;
   const name = parseString(formData.get("name"));
   const url = parseString(formData.get("url"));
@@ -590,7 +602,7 @@ export async function updatePartner(prevState: any, formData: FormData) {
     const existing = await prisma.partner.findUnique({ where: { id } });
     if (existing?.imageUrl?.startsWith("/partners/images/")) {
       const oldPath = path.join(process.cwd(), "public", existing.imageUrl);
-      await unlink(oldPath).catch(() => {});
+      await unlink(oldPath).catch((err) => { console.error("[unlink]", err); });
     }
   }
 
@@ -611,7 +623,7 @@ export async function deletePartner(id: string) {
   const partner = await prisma.partner.findUnique({ where: { id } });
   if (partner?.imageUrl?.startsWith("/partners/images/")) {
     const imagePath = path.join(process.cwd(), "public", partner.imageUrl);
-    await unlink(imagePath).catch(() => {});
+    await unlink(imagePath).catch((err) => { console.error("[unlink]", err); });
   }
 
   await prisma.partner.delete({ where: { id } });
@@ -621,7 +633,7 @@ export async function deletePartner(id: string) {
 
 // -------------------- VIDEO --------------------
 
-export async function createVideo(prevState: any, formData: FormData) {
+export async function createVideo(prevState: VideoState, formData: FormData): Promise<VideoState> {
   const title = formData.get("title") as string;
   const url = formData.get("url") as string;
   const imageUrl = formData.get("imageUrl") as string;
@@ -645,7 +657,7 @@ export async function createVideo(prevState: any, formData: FormData) {
   redirect("/admin/dashboard/videos");
 }
 
-export async function updateVideo(prevState: any, formData: FormData) {
+export async function updateVideo(prevState: VideoState, formData: FormData): Promise<VideoState> {
   const id = formData.get("id") as string;
   const title = parseString(formData.get("title"));
   const url = parseString(formData.get("url"));

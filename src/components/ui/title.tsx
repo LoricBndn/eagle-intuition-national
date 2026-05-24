@@ -1,4 +1,4 @@
-import { ElementType } from "react";
+import { ElementType, type JSX } from "react";
 
 interface TitleProps {
   title: string;

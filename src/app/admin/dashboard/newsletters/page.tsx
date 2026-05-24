@@ -11,19 +11,17 @@ export const metadata: Metadata = {
   title: "Newsletters",
 };
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: {
+export default async function Page(props: {
+  searchParams?: Promise<{
     query?: string;
     page?: string;
-  };
+  }>;
 }) {
   const newsletters = await fetchNewsletters();
 
-  const params = await searchParams;
-  const query = params ?.query || "";
-  const currentPage = Number(params?.page) || 1;
+  const searchParams = await props.searchParams;
+  const query = (searchParams?.query || "").trim().slice(0, 200);
+  const currentPage = Math.max(1, Number(searchParams?.page) || 1);
   const totalPages = await fetchNewslettersPages(query);
 
   return (

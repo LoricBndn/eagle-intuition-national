@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/ui/button";
@@ -20,6 +20,14 @@ export default function EditPostForm({
   const [state, formAction] = useActionState(updatePost, initialState);
   const [previews, setPreviews] = useState<string[]>(post.imagesUrl || []);
   const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    return () => {
+      previews.forEach((url) => {
+        if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+      });
+    };
+  }, [previews]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(e.target.files || []);

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import fetch from "node-fetch";
 
 const APP_ID = process.env.FACEBOOK_APP_ID!;
 const APP_SECRET = process.env.FACEBOOK_APP_SECRET!;

@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
       })
 
       if (result?.ok) {
-        localStorage.setItem('adminLoggedIn', 'true')
+        sessionStorage.setItem('adminLoggedIn', 'true')
         router.push('/admin/dashboard')
       } else {
         setError('Email ou mot de passe invalide')

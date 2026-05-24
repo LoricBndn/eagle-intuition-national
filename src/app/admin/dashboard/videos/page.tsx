@@ -19,7 +19,7 @@ export default async function Page(props: {
 }) {
       const searchParams = await props.searchParams;
       const query = searchParams?.query || '';
-      const currentPage = Number(searchParams?.page) || 1;
+      const currentPage = Math.max(1, Number(searchParams?.page) || 1);
       const totalPages = await fetchVideosPages(query);
 
     return (

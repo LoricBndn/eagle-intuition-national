@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate &&  next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "seed": "tsx seed.ts"
   },
   "dependencies": {
@@ -41,7 +41,6 @@
     "zod": "^3.25.30"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.17.57",

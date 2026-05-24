@@ -27,7 +27,7 @@ export type PostState = {
     content?: string[];
     imagesUrl?: string[];
   };
-  message?: string | null;
+  message: string | null;
 };
 
 export type NewsletterState = {
@@ -184,7 +184,7 @@ export async function createPost(prevState: PostState, formData: FormData): Prom
   redirect("/admin/dashboard/posts");
 }
 
-export async function updatePost(prevState: any, formData: FormData) {
+export async function updatePost(prevState: PostState, formData: FormData): Promise<PostState> {
   const id = formData.get("id") as string;
   const content = parseString(formData.get("content"));
   const files = formData.getAll("images") as File[];
@@ -416,11 +416,9 @@ export async function updateErasmusCourse(
 }
 
 // Delete function
-export async function deleteErasmusCourse(id: string): Promise<ErasmusCourseState> {
+export async function deleteErasmusCourse(id: string): Promise<void> {
   const course = await prisma.erasmusCourse.findUnique({ where: { id } });
-  if (!course) {
-    return { message: 'Course not found.' };
-  }
+  if (!course) return;
 
   // Supprimer fichiers image et pdf
   if (course.imageUrl) {
@@ -436,8 +434,6 @@ export async function deleteErasmusCourse(id: string): Promise<ErasmusCourseStat
 
   revalidatePath('/admin/dashboard/erasmus-courses');
   redirect('/admin/dashboard/erasmus-courses');
-
-  return { message: 'Erasmus course deleted successfully.' };
 }
 
 

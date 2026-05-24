@@ -3,8 +3,9 @@ import Breadcrumbs from '@/components/admin/dashboard/breadcrumbs';
 import { fetchPostById } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const post = await fetchPostById(params.id);
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
+  const post = await fetchPostById(id);
 
   if (!post) notFound();
 
@@ -15,7 +16,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           { label: 'Post', href: '/dashboard/posts' },
           {
             label: 'Edit Post',
-            href: `/dashboard/posts/${params.id}/edit`,
+            href: `/dashboard/posts/${id}/edit`,
             active: true,
           },
         ]}

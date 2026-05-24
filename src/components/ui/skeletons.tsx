@@ -1,3 +1,39 @@
+export function PostsHomeSkeleton() {
+  return (
+    <div className="default-p-x">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm animate-pulse">
+            <div className="h-48 w-full rounded-t-lg bg-gray-200" />
+            <div className="p-5 space-y-3">
+              <div className="h-3 w-20 rounded bg-gray-200" />
+              <div className="h-4 w-full rounded bg-gray-200" />
+              <div className="h-4 w-3/4 rounded bg-gray-200" />
+              <div className="h-3 w-24 rounded bg-gray-200" />
+              <div className="h-9 w-full rounded bg-gray-200 mt-2" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function CourseCarouselSkeleton() {
+  return (
+    <div className="bg-secondary w-full px-0 xl:px-40 default-p-y flex justify-center items-center">
+      <div className="max-w-6xl w-full grid grid-cols-3 gap-4 animate-pulse">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="flex flex-col items-center gap-3 p-6 bg-white/50 rounded-lg">
+            <div className="h-12 w-12 rounded-full bg-gray-300" />
+            <div className="h-4 w-32 rounded bg-gray-300" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function CourseSkeleton() {
   return (
     <div className="mt-6 flow-root">

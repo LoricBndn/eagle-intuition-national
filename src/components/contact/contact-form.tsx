@@ -53,7 +53,7 @@ export default function ContactForm({ hn = "h2" }: ContactFormProps) {
       } else {
         alert("Falha ao enviar a mensagem. Por favor, tente novamente.");
       }
-    } catch (error) {
+    } catch {
       alert("Ocorreu um erro ao enviar a mensagem.");
     } finally {
       setSubmitting(false);

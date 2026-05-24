@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
     return NextResponse.json({ url: data.secure_url });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

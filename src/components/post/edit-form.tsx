@@ -19,7 +19,7 @@ export default function EditPostForm({
   const initialState: PostState = { message: null, errors: {} };
   const [state, formAction] = useActionState(updatePost, initialState);
   const [previews, setPreviews] = useState<string[]>(post.imagesUrl || []);
-  const [files, setFiles] = useState<File[]>([]);
+  const [, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     return () => {

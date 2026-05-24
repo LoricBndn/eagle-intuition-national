@@ -24,8 +24,9 @@ export default function NewsletterForm({ category }: NewsletterFormProps) {
       await subscribeToNewsletter(formData);
       setMessage("Obrigado pela sua inscrição!");
       setEmail('');
-    } catch (error: any) {
-      setMessage(error.message || "Ocorreu um erro.");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Ocorreu um erro.";
+      setMessage(msg);
     } finally {
       setLoading(false);
     }

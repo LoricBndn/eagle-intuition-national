@@ -10,12 +10,12 @@ interface PaginationProps {
 }
 
 export default function Pagination({ totalPages }: PaginationProps) {
-  if (totalPages === 0) return null;
-  
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
+
+  if (totalPages === 0) return null;
 
   const updatePage = (pageNumber: number) => {
     const params = new URLSearchParams(searchParams.toString());

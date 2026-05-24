@@ -1,5 +1,8 @@
 import { fetchPostBySlug } from "@/lib/data";
 import ZoomableImage from "@/components/ui/zoomImage";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 interface PostPageProps {
@@ -8,26 +11,29 @@ interface PostPageProps {
   }>;
 }
 
+function postTitle(content: string) {
+  const firstLine = content.split("\n")[0].trim();
+  return firstLine.length > 70 ? firstLine.slice(0, 70) + "…" : firstLine;
+}
+
 export async function generateMetadata(props: PostPageProps): Promise<Metadata> {
   const params = await props.params;
   const post = await fetchPostBySlug(params.slug);
 
-  if (!post) {
-    return {
-      title: "Post non trouvé",
-      description: "Le post demandé n'existe pas.",
-    };
-  }
+  if (!post) return { title: "Publicação não encontrada" };
+
+  const title = postTitle(post.content);
+  const description = post.content.slice(0, 160);
+  const image = post.imagesUrl?.[0];
 
   return {
-    title: `Eagle Intuition`, // plus de titre du post
-    description: post.content.slice(0, 160),
+    title,
+    description,
     openGraph: {
-      title: `Eagle Intuition`,
-      description: post.content.slice(0, 160),
-      images: post.imagesUrl?.length
-        ? [{ url: post.imagesUrl[0], alt: "Post image" }]
-        : undefined,
+      title,
+      description,
+      type: "article",
+      images: image ? [{ url: image, alt: title }] : undefined,
     },
   };
 }
@@ -37,14 +43,19 @@ export default async function PostPage(props: PostPageProps) {
   const { slug } = params;
   const post = await fetchPostBySlug(slug);
 
-  if (!post) {
-    return <p>Post not found.</p>;
-  }
+  if (!post) notFound();
 
   return (
     <main className="max-w-4xl mx-auto p-6 pt-30">
+      <Link
+        href="/noticias"
+        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors mb-8"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Notícias
+      </Link>
       <p className="text-sm text-gray-500 mb-8">
-        {new Date(post.createdAt).toLocaleDateString("fr-FR", {
+        {new Date(post.createdAt).toLocaleDateString("pt-PT", {
           year: "numeric",
           month: "long",
           day: "numeric",

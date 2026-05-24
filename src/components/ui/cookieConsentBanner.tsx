@@ -23,7 +23,6 @@ const CookieConsentBanner = () => {
     // Exemple : active un cookie analytics (à toi de l’adapter)
     Cookies.set("analytics", "enabled", { expires: 365 });
 
-    console.log("Cookies accepted, analytics enabled");
     setShowBanner(false);
   };
 
@@ -33,7 +32,6 @@ const CookieConsentBanner = () => {
     // Ici tu pourrais aussi supprimer les cookies analytics si besoin
     Cookies.remove("analytics");
 
-    console.log("Cookies declined, analytics disabled");
     setShowBanner(false);
   };
 

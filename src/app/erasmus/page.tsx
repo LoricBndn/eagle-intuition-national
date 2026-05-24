@@ -8,7 +8,7 @@ interface ErasmusCourse {
   id: string;
   title: string;
   description: string;
-  pdf: string;
+  pdf: string | null;
   url: string;
   createdAt: Date;
   imageUrl: string;
@@ -50,7 +50,7 @@ export default async function Page() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-16">
         {courses.map((post) => (
-          <ErasmusCard key={post.id} {...post} />
+          <ErasmusCard key={post.id} {...post} pdf={post.pdf ?? undefined} />
         ))}
       </div>
 

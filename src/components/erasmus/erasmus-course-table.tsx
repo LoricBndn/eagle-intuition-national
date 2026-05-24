@@ -36,7 +36,7 @@ export default async function ErasmusCourseTable({
                   />
                 </div>
                 <div className="text-sm text-blue-600 underline">
-                  <a href={course.pdf} target="_blank" rel="noopener noreferrer">Ver PDF</a>
+                  <a href={course.pdf ?? undefined} target="_blank" rel="noopener noreferrer">Ver PDF</a>
                 </div>
                 {course.url && (
                   <div className="text-sm text-blue-600 underline">
@@ -82,7 +82,7 @@ export default async function ErasmusCourseTable({
                   <td className="whitespace-nowrap px-3 py-3">{course.title}</td>
                   <td className="whitespace-nowrap px-3 py-3 max-w-xs truncate">{course.description}</td>
                   <td className="whitespace-nowrap px-3 py-3 text-blue-600 underline">
-                    <a href={course.pdf} target="_blank" rel="noopener noreferrer">PDF</a>
+                    <a href={course.pdf ?? undefined} target="_blank" rel="noopener noreferrer">PDF</a>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-blue-600 underline">
                     {course.url ? (

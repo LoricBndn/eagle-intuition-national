@@ -16,7 +16,7 @@ export default function EditErasmusCourseForm({
     title: string;
     description: string;
     imageUrl: string;
-    pdf: string;
+    pdf: string | null;
   };
 }) {
   const initialState: ErasmusCourseState = { message: null, errors: {} };
